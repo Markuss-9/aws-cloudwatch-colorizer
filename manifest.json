@@ -1,0 +1,28 @@
+{
+	"name": "AWS CloudWatch Colorizer",
+	"description": "visual logs testing",
+	"version": "1.0.0",
+	"homepage_url": "http://www.google.com",
+	"manifest_version": 3,
+	"icons": {
+		"128": "img/aws_colorized.png"
+	},
+	"action": {
+		"default_popup": "js/index.html",
+		"default_icon": {
+			"128": "img/aws_colorized.png"
+		}
+	},
+	"permissions": ["activeTab", "storage", "scripting"],
+	"content_scripts": [
+		{
+			"matches": [
+				"https://*.console.aws.amazon.com/cloudwatch/home*",
+				"https://www.google.com/"
+			],
+			"js": ["colorize.js"],
+			"css": ["backgroundColor.css"],
+			"run_at": "document_idle"
+		}
+	]
+}

@@ -1,0 +1,20 @@
+.logs-table__body-row:nth-child(2n),
+.logs-table__body-cell {
+	background-color: #ffffff00 !important;
+}
+
+.logs-table__body-row:nth-child(2n),
+.logs-table__body-row:nth-child(2n),
+.logs-table__body-cell {
+	background-color: #ffffff00 !important;
+}
+
+.awsui awsui-breadcrumb-item:last-child .awsui-breadcrumb-link,
+.awsui .awsui-breadcrumb-item:last-child .awsui-breadcrumb-link,
+.awsui .awsui-breadcrumb-ellipsis:last-child .awsui-breadcrumb-link {
+	color: yellow !important;
+}
+
+.globalNav-1218 {
+	color: rgb(200, 0, 255) !important;
+}

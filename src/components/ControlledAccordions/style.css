@@ -1,0 +1,11 @@
+.center {
+	text-align: -webkit-center;
+}
+
+.Accordion.Mui-disabled {
+	background-color: rgb(108, 108, 108, 80%) !important;
+}
+
+.Accordion.MuiAccordion-root {
+	background-color: rgb(108 108 108);
+}
