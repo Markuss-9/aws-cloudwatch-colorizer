@@ -1,4 +1,3 @@
-import { useState } from "react";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew";
 import FlashOnIcon from "@mui/icons-material/FlashOn";
@@ -13,38 +12,25 @@ import {
 } from "@mui/material";
 
 import packageJson from "../../../package.json";
+import { useEffect, useState } from "react";
 
 const Home = ({ settings, setSettings }: any) => {
-	const handleToggle = () => {
-		let temp: any = settings;
-		temp.master = !settings.master;
-		//! ********************** if condition only for debug
-		if (process.env.NODE_ENV === "production")
-			chrome.storage.local.set({ settings: temp }).then(() => {
-				console.log("Changed settings master", temp);
-			});
-		setSettings({ ...temp });
-	};
-
-	const [performance, setPerformance] = useState("timer");
-	const [isAuto, setAuto] = useState(true);
+	const handleToggle = () =>
+		setSettings({ ...settings, ...{ master: !settings.master } });
 
 	const handleChange = (
 		event: React.MouseEvent<HTMLElement>,
 		newPerf: string
-	) => {
-		// let temp: any = settings;
-		// temp.performance = newPerf;
-		// setSettings({ ...temp });
-		setPerformance(newPerf);
-	};
+	) => setSettings({ ...settings, ...{ performance: newPerf } });
 
-	const handleAutoMode = () => {
-		if (isAuto) setPerformance("manual");
-		setAuto(!isAuto);
-	};
-
-	console.log(packageJson.version);
+	const handleAutoMode = () =>
+		setSettings({
+			...settings,
+			...{
+				performance:
+					settings.performance !== "manual" ? "manual" : "timer",
+			},
+		});
 
 	return (
 		<>
@@ -56,6 +42,7 @@ const Home = ({ settings, setSettings }: any) => {
 					right: 0,
 					position: "absolute",
 					fontSize: 12,
+					lineHeight: 1,
 				}}
 			>
 				{packageJson.version}
@@ -83,12 +70,12 @@ const Home = ({ settings, setSettings }: any) => {
 			<ToggleButton
 				color="primary"
 				value={"AUTO"}
-				selected={isAuto}
+				selected={settings.performance !== "manual"}
 				onChange={handleAutoMode}
 				sx={{
 					position: "absolute",
 					top: 120,
-					right: 0,
+					right: 15,
 				}}
 			>
 				<Tooltip title="Auto mode">
@@ -98,11 +85,11 @@ const Home = ({ settings, setSettings }: any) => {
 			<br />
 			<ToggleButtonGroup
 				color="secondary"
-				value={performance}
+				value={settings.performance}
 				exclusive
 				onChange={handleChange}
 				aria-label="performance"
-				disabled={!isAuto}
+				disabled={settings.performance === "manual"}
 			>
 				<ToggleButton value="timer">
 					<Tooltip title="Every 3 seconds it updates">
@@ -139,7 +126,9 @@ const Home = ({ settings, setSettings }: any) => {
 				<GitHubIcon
 					sx={{ fontSize: 30 }}
 					onClick={() => {
-						window.open("http://www.google.com");
+						window.open(
+							"https://github.com/Markuss-9/aws-cloudwatch-colorizer"
+						);
 					}}
 				/>
 			</Typography>

@@ -6,11 +6,12 @@ import { Route, Routes } from "react-router-dom";
 import Settings from "./pages/Settings";
 import Tutorial from "./pages/Tutorial";
 
-import Scrollbars from "rc-scrollbars";
 import Home from "./pages/Home";
 
 import { createTheme } from "@mui/material/styles";
 import { ThemeProvider } from "@mui/material/styles";
+import SimpleBar from "simplebar-react";
+import "simplebar/dist/simplebar.min.css";
 
 declare module "@mui/material/styles" {
 	interface Palette {
@@ -93,65 +94,24 @@ function App() {
 	const [settings, setSettings] = useState<any>(defaultSettings);
 
 	if (process.env.NODE_ENV === "production") {
-		console.log(`clear watch`);
-
 		useEffect(() => {
 			chrome.storage.local.get(["settings"], (result) => {
-				console.log("🚀 ~ chrome.storage.local.get ~ result:", result);
-				console.log(
-					"🚀 ~ chrome.storage.local.get ~ result.settings:",
-					result.settings
-				);
-
-				if (!result.settings) {
-					chrome.storage.local
-						.set({ settings: defaultSettings })
-						.then(() => {
-							console.log(
-								"1 - Setting default value",
-								defaultSettings
-							);
-						});
-					setSettings(defaultSettings);
-				} else {
-					console.log(
-						"1 - Setting the state with the current chrome local storage"
-					);
-					setSettings(result.settings);
-				}
+				if (!result.settings) setSettings(defaultSettings);
+				else setSettings(result.settings);
 				console.log(`1 - finished settings`);
 			});
 		}, []);
+
+		useEffect(() => {
+			chrome.storage.local.set({ settings: settings });
+			console.log(`setting to chrome storage`);
+		}, [settings]);
 	}
 
 	return (
 		<ThemeProvider theme={theme}>
 			<div className="App">
-				<Scrollbars
-					autoHide
-					autoHideDuration={500}
-					renderThumbVertical={({ style }) => (
-						<div
-							style={{
-								...style,
-								...{ backgroundColor: "#9f9f9f", margin: 0 },
-							}}
-						></div>
-					)}
-					renderView={({ style }) => (
-						<div
-							style={{
-								...style,
-								...{
-									position: "absolute",
-									inset: 0,
-									overflow: "scroll",
-									margin: 0,
-								},
-							}}
-						></div>
-					)}
-				>
+				<SimpleBar style={{ maxHeight: 400 }}>
 					<Routes>
 						<Route
 							path="/*"
@@ -165,7 +125,7 @@ function App() {
 						<Route path="/settings" element={<Settings />} />
 						<Route path="/tutorial" element={<Tutorial />} />
 					</Routes>
-				</Scrollbars>
+				</SimpleBar>
 				<SimpleBottomNavigation />
 			</div>
 		</ThemeProvider>
