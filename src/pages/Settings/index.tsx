@@ -6,10 +6,11 @@ const Settings = () => {
 	return (
 		<>
 			<Typography variant="h3" sx={{ margin: 1 }}>
-				Settings2
+				Settings
 			</Typography>
 			<br />
 			<ControlledAccordions />
+			<br />
 			<br />
 			<br />
 			<br />

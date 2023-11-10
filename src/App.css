@@ -2,22 +2,13 @@
 	color: rgb(255, 255, 255);
 	text-align: center;
 	height: inherit;
-	/* min-height: inherit; */
-	/* overflow-y: auto; */
 	display: flex;
 	flex-direction: column;
 	position: relative;
 }
 
-.content {
-	flex: 1;
-	overflow-y: auto;
-}
-
 .container {
 	width: 350px;
-	/* min-height: 400px;
-  	height: fit-content; */
 	height: 400px;
 	background-color: rgb(54, 54, 54);
 }
@@ -28,12 +19,4 @@ body {
 	-ms-user-select: none;
 	user-select: none;
 	margin: 0px;
-}
-
-::-webkit-scrollbar,
-::-webkit-scrollbar-track,
-::-webkit-scrollbar-thumb,
-::-webkit-scrollbar-corner,
-::-webkit-scrollbar-button {
-	background-color: transparent;
 }
