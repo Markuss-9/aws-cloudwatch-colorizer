@@ -109,6 +109,7 @@ export default function ControlledAccordions() {
 						disabled={!section.isAvailable}
 						// disabled={disabledAccordions.includes(key)}
 						className="Accordion"
+						key={i}
 					>
 						<AccordionSummary
 							expandIcon={
@@ -140,7 +141,7 @@ export default function ControlledAccordions() {
 						<AccordionDetails>
 							{section.words.map((options: any) => {
 								return (
-									<Typography>
+									<Typography key={options.word}>
 										{options.word}
 										<Switch />
 									</Typography>

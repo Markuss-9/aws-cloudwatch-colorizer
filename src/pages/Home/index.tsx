@@ -112,8 +112,8 @@ const Home = ({ settings, setSettings }: any) => {
 			<br />
 			<br />
 
-			<Typography sx={{ display: "inline-flex", alignItems: "center" }}>
-				<Box
+			<Box sx={{ display: "inline-flex", alignItems: "center" }}>
+				<Typography
 					sx={{
 						width: 165,
 						fontSize: "0.9rem",
@@ -122,7 +122,7 @@ const Home = ({ settings, setSettings }: any) => {
 					}}
 				>
 					Give a star at the repo
-				</Box>
+				</Typography>
 				<GitHubIcon
 					sx={{ fontSize: 30 }}
 					onClick={() => {
@@ -131,7 +131,7 @@ const Home = ({ settings, setSettings }: any) => {
 						);
 					}}
 				/>
-			</Typography>
+			</Box>
 		</>
 	);
 };
