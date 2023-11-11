@@ -13,6 +13,10 @@ import { ThemeProvider } from "@mui/material/styles";
 import SimpleBar from "simplebar-react";
 import "simplebar/dist/simplebar.min.css";
 
+import manifest from "./scripts/manifest.json";
+
+import defaultSettings from "./defaultSettings";
+
 declare module "@mui/material/styles" {
 	interface Palette {
 		off: Palette["primary"];
@@ -47,51 +51,8 @@ const theme = createTheme({
 	},
 });
 
-const defaultSettings = {
-	master: true,
-	performance: "manual",
-	advancedSettings: {
-		Accordion_1: {
-			title: "Log groups",
-			words: [
-				{ word: "error", color: "red", emoji: "❌" },
-				{ word: "warn", color: "yellow", emoji: "⚠️" },
-				{ word: "info", color: "green", emoji: "ℹ️" },
-				{ word: "debug", color: "blue", emoji: "🐛" },
-			],
-			id: "Accordion_1",
-			switch: true,
-			isAvailable: true,
-		},
-		Accordion_2: {
-			title: "Log Tails",
-			words: [
-				{ word: "error", color: "red", emoji: "❌" },
-				{ word: "warn", color: "yellow", emoji: "⚠️" },
-				{ word: "info", color: "green", emoji: "ℹ️" },
-				{ word: "debug", color: "blue", emoji: "🐛" },
-			],
-			id: "Accordion_2",
-			switch: false,
-			isAvailable: false,
-		},
-		Accordion_3: {
-			title: "Log Insights",
-			words: [
-				{ word: "error", color: "red", emoji: "❌" },
-				{ word: "warn", color: "yellow", emoji: "⚠️" },
-				{ word: "info", color: "green", emoji: "ℹ️" },
-				{ word: "debug", color: "blue", emoji: "🐛" },
-			],
-			id: "Accordion_3",
-			switch: true,
-			isAvailable: true,
-		},
-	},
-};
-
 function App() {
-	const [settings, setSettings] = useState<any>(defaultSettings);
+	const [settings, setSettings] = useState(defaultSettings);
 
 	if (process.env.NODE_ENV === "production") {
 		useEffect(() => {
@@ -105,6 +66,32 @@ function App() {
 		useEffect(() => {
 			chrome.storage.local.set({ settings: settings });
 			console.log(`setting to chrome storage`);
+
+			// {active: true}
+			chrome.tabs.query(
+				{
+					status: "complete",
+					url: manifest.content_scripts[0].matches,
+				},
+				function (tabs) {
+					tabs.forEach(async (tab: any) => {
+						try {
+							chrome.tabs.sendMessage(
+								tab.id,
+								{ type: "yourMessageType" },
+								(respond) => console.log(respond)
+							);
+						} catch (error) {
+							console.error(
+								"Error communicating with content script:",
+								error
+							);
+						}
+
+						console.log("🚀 ~ tabs.forEach ~ tab:", tab);
+					});
+				}
+			);
 		}, [settings]);
 	}
 
@@ -122,7 +109,15 @@ function App() {
 								/>
 							}
 						/>
-						<Route path="/settings" element={<Settings />} />
+						<Route
+							path="/settings"
+							element={
+								<Settings
+									settings={settings}
+									setSettings={setSettings}
+								/>
+							}
+						/>
 						<Route path="/tutorial" element={<Tutorial />} />
 					</Routes>
 				</SimpleBar>

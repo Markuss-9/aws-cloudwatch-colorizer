@@ -12,9 +12,16 @@ import {
 } from "@mui/material";
 
 import packageJson from "../../../package.json";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Dispatch } from "react";
+import settingsType from "../../types/settingsType";
 
-const Home = ({ settings, setSettings }: any) => {
+const Home = ({
+	settings,
+	setSettings,
+}: {
+	settings: settingsType;
+	setSettings: Dispatch<settingsType>;
+}) => {
 	const handleToggle = () =>
 		setSettings({ ...settings, ...{ master: !settings.master } });
 
