@@ -57,9 +57,12 @@ module.exports = {
 	plugins: [
 		new CopyPlugin({
 			patterns: [
-				{ from: "manifest.json", to: "../manifest.json" },
-				{ from: "colorize.js", to: "../colorize.js" },
-				{ from: "backgroundColor.css", to: "../backgroundColor.css" },
+				{ from: "src/scripts/manifest.json", to: "../manifest.json" },
+				{ from: "src/scripts/colorize.js", to: "../colorize.js" },
+				{
+					from: "src/scripts/backgroundColor.css",
+					to: "../backgroundColor.css",
+				},
 				{
 					from: "img/aws_colorized.png",
 					to: "../img/aws_colorized.png",
