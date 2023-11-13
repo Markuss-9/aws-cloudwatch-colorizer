@@ -17,7 +17,15 @@ const Settings = ({
 				Settings
 			</Typography>
 			<br />
-			<ControlledAccordions />
+			<ControlledAccordions
+				settings={settings}
+				setSettings={setSettings}
+			/>
+			<br />
+			<br />
+			<br />
+			<br />
+			<br />
 			<br />
 			<br />
 			<br />

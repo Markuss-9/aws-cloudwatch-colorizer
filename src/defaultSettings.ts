@@ -5,10 +5,30 @@ const defaultSettings = {
 		Accordion_1: {
 			title: "Log groups",
 			words: [
-				{ enabled: true, word: "error", color: "red", emoji: "❌" },
-				{ enabled: true, word: "warn", color: "yellow", emoji: "⚠️" },
-				{ enabled: true, word: "info", color: "green", emoji: "ℹ️" },
-				{ enabled: true, word: "debug", color: "blue", emoji: "🐛" },
+				{
+					enabled: true,
+					word: "error",
+					color: "rgba(255, 0, 0, 1)",
+					emoji: "❌",
+				},
+				{
+					enabled: true,
+					word: "warn",
+					color: "rgba(255, 255, 0, 1)",
+					emoji: "⚠️",
+				},
+				{
+					enabled: true,
+					word: "info",
+					color: "rgba(0, 128, 0, 1)",
+					emoji: "ℹ️",
+				},
+				{
+					enabled: true,
+					word: "debug",
+					color: "rgba(0, 0, 255, 1)",
+					emoji: "🐛",
+				},
 			],
 			id: "Accordion_1",
 			switch: true,
@@ -17,10 +37,30 @@ const defaultSettings = {
 		Accordion_2: {
 			title: "Log Tails",
 			words: [
-				{ enabled: true, word: "error", color: "red", emoji: "❌" },
-				{ enabled: true, word: "warn", color: "yellow", emoji: "⚠️" },
-				{ enabled: true, word: "info", color: "green", emoji: "ℹ️" },
-				{ enabled: true, word: "debug", color: "blue", emoji: "🐛" },
+				{
+					enabled: true,
+					word: "error",
+					color: "rgba(255, 0, 0, 1)",
+					emoji: "❌",
+				},
+				{
+					enabled: true,
+					word: "warn",
+					color: "rgba(255, 255, 0, 1)",
+					emoji: "⚠️",
+				},
+				{
+					enabled: true,
+					word: "info",
+					color: "rgba(0, 128, 0, 1)",
+					emoji: "ℹ️",
+				},
+				{
+					enabled: true,
+					word: "debug",
+					color: "rgba(0, 0, 255, 1)",
+					emoji: "🐛",
+				},
 			],
 			id: "Accordion_2",
 			switch: false,
@@ -29,10 +69,30 @@ const defaultSettings = {
 		Accordion_3: {
 			title: "Log Insights",
 			words: [
-				{ enabled: true, word: "error", color: "red", emoji: "❌" },
-				{ enabled: true, word: "warn", color: "yellow", emoji: "⚠️" },
-				{ enabled: true, word: "info", color: "green", emoji: "ℹ️" },
-				{ enabled: true, word: "debug", color: "blue", emoji: "🐛" },
+				{
+					enabled: true,
+					word: "error",
+					color: "rgba(255, 0, 0, 1)",
+					emoji: "❌",
+				},
+				{
+					enabled: true,
+					word: "warn",
+					color: "rgba(255, 255, 0, 1)",
+					emoji: "⚠️",
+				},
+				{
+					enabled: true,
+					word: "info",
+					color: "rgba(0, 128, 0, 1)",
+					emoji: "ℹ️",
+				},
+				{
+					enabled: true,
+					word: "debug",
+					color: "rgba(0, 0, 255, 1)",
+					emoji: "🐛",
+				},
 			],
 			id: "Accordion_3",
 			switch: true,

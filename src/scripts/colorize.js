@@ -190,31 +190,45 @@ const getListFromTag = (row) => {
 //! NETWORK FINISH
 
 var isRunning = false;
-//!
-// function checkForIframe() {
-//   const iframe = document.getElementById("microConsole-Logs");
+//! OBSERVE DOM
+// const checkForIframe = () => {
+// 	const iframe = document.getElementById("microConsole-Logs");
 
-//   if (iframe) {
-//     clearInterval(intervalId); // Stop the timer
-//     console.log('Found the iframe with ID "microConsole-Logs"');
-//     new MutationObserver(() => {
-//       if (!isRunning) {
-//         isRunning = true;
-//         setTimeout(() => {
-//           colorizeAll();
-//         }, 50);
-//       }
-//     }).observe(iframe.contentWindow.document.body, {
-//       subtree: true,
-//       childList: true,
-//       characterData: true,
-//     });
-//   }
-// }
+// 	if (iframe) {
+// 		clearInterval(intervalIdDOM); // Stop the timer
+// 		console.log('Found the iframe with ID "microConsole-Logs"');
+// 		new MutationObserver(() => {
+// 			if (!isRunning) {
+// 				isRunning = true;
+// 				setTimeout(() => {
+// 					colorizeAll();
+// 				}, 50);
+// 			}
+// 		}).observe(iframe.contentWindow.document.body, {
+// 			subtree: true,
+// 			childList: true,
+// 			characterData: true,
+// 		});
+// 	}
+// };
+
+const getIframeElement = () => {
+	return new Promise((resolve, reject) => {
+		const intervalIdDOM = setInterval(() => {
+			const element = document.getElementById("microConsole-Logs");
+			console.log("checking for iframe");
+			if (element) {
+				console.log("found iframe");
+				clearInterval(intervalIdDOM);
+				resolve(element);
+			}
+		}, 1000);
+	});
+};
 
 // // Set an interval to periodically check for the iframe
-// const intervalId = setInterval(checkForIframe, 1000);
-//!
+var intervalIdDOM = null;
+//! FINISH OBSERVE DOM
 
 var wantBackground = false; //to change the mode, if true it colorize the background
 var settings;
@@ -242,6 +256,8 @@ const resetInterval = () => {
 	}
 };
 
+var mutationObs = null;
+
 const startAction = async () => {
 	settings = await getSettings();
 
@@ -253,10 +269,31 @@ const startAction = async () => {
 				colorizeAll();
 				break;
 			case "timer":
-				intervalId = !intervalId && setInterval(colorizeAll, 500);
+				if (!intervalId) intervalId = setInterval(colorizeAll, 500);
 				break;
 			case "dom":
 				resetInterval();
+
+				if (!mutationObs)
+					getIframeElement()
+						.then((iframe) => {
+							mutationObs = new MutationObserver(() => {
+								if (!isRunning) {
+									isRunning = true;
+									setTimeout(() => {
+										colorizeAll();
+									}, 50);
+								}
+							}).observe(iframe.contentWindow.document.body, {
+								subtree: true,
+								childList: true,
+								characterData: true,
+							});
+						})
+						.catch((error) => {
+							console.error("Error:", error);
+						});
+				else console.log("mutation already exist");
 				break;
 			case "net":
 				resetInterval();
@@ -290,7 +327,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 	switch (message.type) {
 		case "yourMessageType":
 			sendResponse("risposta dal content script");
-
 			startAction();
 
 			break;

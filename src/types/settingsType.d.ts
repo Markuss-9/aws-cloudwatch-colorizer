@@ -13,9 +13,7 @@ interface accordion {
 	isAvailable: boolean;
 }
 interface accordionsID {
-	Accordion_1: accordion;
-	Accordion_2: accordion;
-	Accordion_3: accordion;
+	[key: string]: accordion;
 }
 
 interface settingsType {

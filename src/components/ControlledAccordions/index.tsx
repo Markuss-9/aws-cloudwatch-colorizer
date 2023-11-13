@@ -5,56 +5,24 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { Switch, Tooltip } from "@mui/material";
+import { Box, Button, Switch, Tooltip } from "@mui/material";
 import InfoIcon from "@mui/icons-material/Info";
 
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import ColorPickerButton from "../ColorPicker";
+import settingsType from "../../types/settingsType";
 
-export default function ControlledAccordions() {
+export default function ControlledAccordions({
+	settings,
+	setSettings,
+}: {
+	settings: settingsType;
+	setSettings: Dispatch<settingsType>;
+}) {
 	const [expanded, setExpanded] = useState<string | false>(false);
+	const [showColorPicker, setShowColorPicker] = useState<string>("");
 
 	const [disabledAccordions, setDisabledAccordions] = useState([""]);
-
-	let settingsDefault = {
-		Accordion_1: {
-			title: "Log groups",
-			words: [
-				{ word: "error", color: "red", emoji: "❌" },
-				{ word: "warn", color: "yellow", emoji: "⚠️" },
-				{ word: "info", color: "green", emoji: "ℹ️" },
-				{ word: "debug", color: "blue", emoji: "🐛" },
-			],
-			id: "Accordion_1",
-			switch: true,
-			isAvailable: true,
-		},
-		Accordion_2: {
-			title: "Log Tails",
-			words: [
-				{ word: "error", color: "red", emoji: "❌" },
-				{ word: "warn", color: "yellow", emoji: "⚠️" },
-				{ word: "info", color: "green", emoji: "ℹ️" },
-				{ word: "debug", color: "blue", emoji: "🐛" },
-			],
-			id: "Accordion_2",
-			switch: false,
-			isAvailable: false,
-		},
-		Accordion_3: {
-			title: "Log Insights",
-			words: [
-				{ word: "error", color: "red", emoji: "❌" },
-				{ word: "warn", color: "yellow", emoji: "⚠️" },
-				{ word: "info", color: "green", emoji: "ℹ️" },
-				{ word: "debug", color: "blue", emoji: "🐛" },
-			],
-			id: "Accordion_3",
-			switch: true,
-			isAvailable: true,
-		},
-	};
-
-	const [settings, setSettings] = useState<any>(settingsDefault);
 
 	const handleChange =
 		(panel: string) =>
@@ -67,7 +35,7 @@ export default function ControlledAccordions() {
 	const handleSwitchClick = (event: any, panel: string) => {
 		event.stopPropagation();
 
-		let currentAccordion: any = settings[panel];
+		let currentAccordion: any = settings.advancedSettings[panel];
 
 		if (currentAccordion.switch) {
 			setTimeout(() => {
@@ -82,75 +50,94 @@ export default function ControlledAccordions() {
 			setDisabledAccordions([...tempDis]);
 		}
 		tempSettings = settings;
-		tempSettings[panel].switch = !tempSettings[panel].switch;
-		setSettings(tempSettings);
+		tempSettings.advancedSettings[panel].switch =
+			!tempSettings.advancedSettings[panel].switch;
+		console.log("🚀 ~ handleSwitchClick ~ tempSettings:", tempSettings);
+		// setSettings({...settings, settings.advancedSettings[panel]: {switch: !settings.advancedSettings[panel].switch}});
 	};
 
 	useEffect(() => {
-		Object.entries(settings).forEach(([key, section]: any) => {
-			if (!section.switch)
-				setDisabledAccordions([...disabledAccordions, key]);
-		});
+		Object.entries(settings.advancedSettings).forEach(
+			([key, section]: any) => {
+				if (!section.switch)
+					setDisabledAccordions([...disabledAccordions, key]);
+			},
+		);
 	}, []);
 
 	return (
 		<div className="center">
 			{/* {accordionsDisplay} */}
 
-			{Object.entries(settings).map(([key, section]: any, i) => {
-				return (
-					<Accordion
-						expanded={
-							expanded === key &&
-							!disabledAccordions.includes(key)
-						}
-						sx={{ width: "90%" }}
-						onChange={handleChange(key)}
-						disabled={!section.isAvailable}
-						// disabled={disabledAccordions.includes(key)}
-						className="Accordion"
-						key={i}
-					>
-						<AccordionSummary
-							expandIcon={
-								!disabledAccordions.includes(key) && (
-									<ExpandMoreIcon />
-								)
+			{Object.entries(settings.advancedSettings).map(
+				([key, section]: any, i) => {
+					return (
+						<Accordion
+							expanded={
+								expanded === key &&
+								!disabledAccordions.includes(key)
 							}
-							aria-controls="panel2bh-content"
-							id="panel2bh-header"
+							sx={{ width: "90%" }}
+							onChange={handleChange(key)}
+							disabled={!section.isAvailable}
+							// disabled={disabledAccordions.includes(key)}
+							className="Accordion"
+							key={i}
 						>
-							<Tooltip
-								title={`Show logs for the ${section.title} pages`}
+							<AccordionSummary
+								expandIcon={
+									!disabledAccordions.includes(key) && (
+										<ExpandMoreIcon />
+									)
+								}
+								aria-controls="panel2bh-content"
+								id="panel2bh-header"
 							>
-								<Switch
-									// checked={section.switch}
-									defaultChecked={section.switch}
-									inputProps={{ "aria-label": "ant design" }}
-									onClick={(e: any) => {
-										handleSwitchClick(e, key);
-									}}
-								/>
-							</Tooltip>
-							<Typography
-								sx={{ flexShrink: 0, marginLeft: "40px" }}
-							>
-								{section.title}
-							</Typography>
-						</AccordionSummary>
-						<AccordionDetails>
-							{section.words.map((options: any) => {
-								return (
-									<Typography key={options.word}>
-										{options.word}
-										<Switch />
-									</Typography>
-								);
-							})}
-						</AccordionDetails>
-					</Accordion>
-				);
-			})}
+								<Tooltip
+									title={`Show logs for the ${section.title} pages`}
+								>
+									<Switch
+										// checked={section.switch}
+										defaultChecked={section.switch}
+										inputProps={{
+											"aria-label": "ant design",
+										}}
+										onClick={(e: any) => {
+											handleSwitchClick(e, key);
+										}}
+									/>
+								</Tooltip>
+								<Typography
+									sx={{ flexShrink: 0, marginLeft: "40px" }}
+								>
+									{section.title}
+								</Typography>
+							</AccordionSummary>
+							<AccordionDetails>
+								{section.words.map((options: any) => {
+									return (
+										<>
+											<ColorPickerButton
+												color={options.color}
+												settings={settings}
+												setSettings={setSettings}
+												key={options.word}
+												options={options}
+												showColorPicker={
+													showColorPicker
+												}
+												setShowColorPicker={
+													setShowColorPicker
+												}
+											/>
+										</>
+									);
+								})}
+							</AccordionDetails>
+						</Accordion>
+					);
+				},
+			)}
 			{/* <Tooltip title="Show logs for the Logs Insights pages">
 				<InfoIcon sx={{ color: "black" }} />
 			</Tooltip> */}

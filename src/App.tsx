@@ -16,6 +16,7 @@ import "simplebar/dist/simplebar.min.css";
 import manifest from "./scripts/manifest.json";
 
 import defaultSettings from "./defaultSettings";
+import settingsType from "./types/settingsType";
 
 declare module "@mui/material/styles" {
 	interface Palette {
@@ -52,9 +53,21 @@ const theme = createTheme({
 });
 
 function App() {
-	const [settings, setSettings] = useState(defaultSettings);
+	const [settings, setSettings] = useState<settingsType | undefined>();
 
 	if (process.env.NODE_ENV === "production") {
+		const getSettings = () => {
+			return new Promise((resolve, reject) => {
+				chrome.storage.local.get(["settings"], (result) => {
+					if (chrome.runtime.lastError) {
+						reject(new Error(String(chrome.runtime.lastError)));
+					} else {
+						resolve(result.settings);
+					}
+				});
+			});
+		};
+
 		useEffect(() => {
 			chrome.storage.local.get(["settings"], (result) => {
 				if (!result.settings) setSettings(defaultSettings);
@@ -63,35 +76,44 @@ function App() {
 			});
 		}, []);
 
+		const saveAndSendToContent = async () => {
+			if (settings !== (await getSettings())) {
+				chrome.storage.local.set({ settings: settings });
+				console.log(`setting to chrome storage`);
+
+				// {active: true}
+				chrome.tabs.query(
+					{
+						status: "complete",
+						url: manifest.content_scripts[0].matches,
+					},
+					(tabs) => {
+						tabs.forEach(async (tab: any) => {
+							try {
+								chrome.tabs.sendMessage(
+									tab.id,
+									{
+										type: "yourMessageType",
+										payload: settings,
+									},
+									(respond) => console.log(respond),
+								);
+							} catch (error) {
+								console.error(
+									"Error communicating with content script:",
+									error,
+								);
+							}
+
+							console.log("🚀 ~ tabs.forEach ~ tab:", tab);
+						});
+					},
+				);
+			} else console.log(`is equal`);
+		};
+
 		useEffect(() => {
-			chrome.storage.local.set({ settings: settings });
-			console.log(`setting to chrome storage`);
-
-			// {active: true}
-			chrome.tabs.query(
-				{
-					status: "complete",
-					url: manifest.content_scripts[0].matches,
-				},
-				function (tabs) {
-					tabs.forEach(async (tab: any) => {
-						try {
-							chrome.tabs.sendMessage(
-								tab.id,
-								{ type: "yourMessageType" },
-								(respond) => console.log(respond),
-							);
-						} catch (error) {
-							console.error(
-								"Error communicating with content script:",
-								error,
-							);
-						}
-
-						console.log("🚀 ~ tabs.forEach ~ tab:", tab);
-					});
-				},
-			);
+			saveAndSendToContent();
 		}, [settings]);
 	}
 
@@ -104,7 +126,7 @@ function App() {
 							path="/*"
 							element={
 								<Home
-									settings={settings}
+									settings={settings || defaultSettings}
 									setSettings={setSettings}
 								/>
 							}
@@ -113,7 +135,7 @@ function App() {
 							path="/settings"
 							element={
 								<Settings
-									settings={settings}
+									settings={settings || defaultSettings}
 									setSettings={setSettings}
 								/>
 							}
