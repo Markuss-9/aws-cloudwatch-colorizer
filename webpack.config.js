@@ -100,6 +100,6 @@ function getHtmlPlugins(chunks) {
 				title: "AWS Cloudwatch Colorizer",
 				filename: `${chunk}.html`,
 				chunks: [chunk],
-			})
+			}),
 	);
 }

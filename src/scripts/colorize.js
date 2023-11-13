@@ -123,7 +123,7 @@ const colorizing = (e, parent) => {
 		if (wantBackground) {
 			if (
 				!parent.style.backgroundColor.includes(
-					`${infoLogs[foundWord].backgroundColor}`
+					`${infoLogs[foundWord].backgroundColor}`,
 				)
 			) {
 				if (parent.style.backgroundColor.includes(`color-mix`)) {
@@ -136,10 +136,10 @@ const colorizing = (e, parent) => {
 		} else {
 			console.log("Switch is disabled, executing NORMAL colorizeAll");
 			const dynamicRegex = new RegExp(
-				`(\\x1b\\[${infoLogs[foundWord].code}m${foundWord}\\x1b\\[39m|${foundWord})(.*?)$`
+				`(\\x1b\\[${infoLogs[foundWord].code}m${foundWord}\\x1b\\[39m|${foundWord})(.*?)$`,
 			);
 			const dynamicRegexInit = new RegExp(
-				`\\x1b\\[${infoLogs[foundWord].code}m${foundWord}\\x1b\\[39m|${foundWord}`
+				`\\x1b\\[${infoLogs[foundWord].code}m${foundWord}\\x1b\\[39m|${foundWord}`,
 			);
 
 			if (!e.getElementsByTagName("span").length)
@@ -148,7 +148,7 @@ const colorizing = (e, parent) => {
 					parent,
 					dynamicRegex,
 					dynamicRegexInit,
-					`<span style="color:${infoLogs[foundWord].color}">${infoLogs[foundWord].emoji} ${infoLogs[foundWord].label}</span>`
+					`<span style="color:${infoLogs[foundWord].color}">${infoLogs[foundWord].emoji} ${infoLogs[foundWord].label}</span>`,
 				);
 		}
 	} else parent.removeAttribute("style");
@@ -339,7 +339,7 @@ const colorizeAll = () => {
 				if (regexUpdateStyle.test(styleElement.innerHTML)) {
 					styleElement.innerHTML = styleElement.innerHTML.replace(
 						".logs-table__body-row:nth-child(2n),.logs-table__body-row:nth-child(2n) .logs-table__body-cell{background-color:",
-						".logs-table__body-row:nth-child(2n),.logs-table__body-row:nth-child(2n) {background-color:"
+						".logs-table__body-row:nth-child(2n),.logs-table__body-row:nth-child(2n) {background-color:",
 					);
 				}
 			});
@@ -351,7 +351,7 @@ const colorizeAll = () => {
 			// logInsights(e.getElementsByClassName("logs-table__body-cell")[2]);
 			if (e.getElementsByClassName("logs-table__body-cell")[2]) {
 				const child = e.getElementsByClassName(
-					"logs-table__body-cell"
+					"logs-table__body-cell",
 				)[2];
 				colorizing(child, e);
 			}

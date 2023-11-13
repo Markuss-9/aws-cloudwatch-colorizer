@@ -79,18 +79,18 @@ function App() {
 							chrome.tabs.sendMessage(
 								tab.id,
 								{ type: "yourMessageType" },
-								(respond) => console.log(respond)
+								(respond) => console.log(respond),
 							);
 						} catch (error) {
 							console.error(
 								"Error communicating with content script:",
-								error
+								error,
 							);
 						}
 
 						console.log("🚀 ~ tabs.forEach ~ tab:", tab);
 					});
-				}
+				},
 			);
 		}, [settings]);
 	}

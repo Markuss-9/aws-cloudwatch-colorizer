@@ -27,7 +27,7 @@ const Home = ({
 
 	const handleChange = (
 		event: React.MouseEvent<HTMLElement>,
-		newPerf: string
+		newPerf: string,
 	) => setSettings({ ...settings, ...{ performance: newPerf } });
 
 	const handleAutoMode = () =>
@@ -134,7 +134,7 @@ const Home = ({
 					sx={{ fontSize: 30 }}
 					onClick={() => {
 						window.open(
-							"https://github.com/Markuss-9/aws-cloudwatch-colorizer"
+							"https://github.com/Markuss-9/aws-cloudwatch-colorizer",
 						);
 					}}
 				/>
