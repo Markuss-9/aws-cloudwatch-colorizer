@@ -37,7 +37,7 @@ chrome.webRequest.onBeforeRequest.addListener(
 		ongoingRequests++;
 	},
 	{ urls: ["<all_urls>"] },
-	["blocking"]
+	["blocking"],
 );
 
 chrome.webRequest.onCompleted.addListener(
@@ -49,7 +49,7 @@ chrome.webRequest.onCompleted.addListener(
 		}
 		checkIfRequestsFinished();
 	},
-	{ urls: ["<all_urls>"] }
+	{ urls: ["<all_urls>"] },
 );
 
 // Listen for messages from the content script
