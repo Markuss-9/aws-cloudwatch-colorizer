@@ -5,10 +5,10 @@ const defaultSettings = {
 		Accordion_1: {
 			title: "Log groups",
 			words: [
-				{ word: "error", color: "red", emoji: "❌" },
-				{ word: "warn", color: "yellow", emoji: "⚠️" },
-				{ word: "info", color: "green", emoji: "ℹ️" },
-				{ word: "debug", color: "blue", emoji: "🐛" },
+				{ enabled: true, word: "error", color: "red", emoji: "❌" },
+				{ enabled: true, word: "warn", color: "yellow", emoji: "⚠️" },
+				{ enabled: true, word: "info", color: "green", emoji: "ℹ️" },
+				{ enabled: true, word: "debug", color: "blue", emoji: "🐛" },
 			],
 			id: "Accordion_1",
 			switch: true,
@@ -17,10 +17,10 @@ const defaultSettings = {
 		Accordion_2: {
 			title: "Log Tails",
 			words: [
-				{ word: "error", color: "red", emoji: "❌" },
-				{ word: "warn", color: "yellow", emoji: "⚠️" },
-				{ word: "info", color: "green", emoji: "ℹ️" },
-				{ word: "debug", color: "blue", emoji: "🐛" },
+				{ enabled: true, word: "error", color: "red", emoji: "❌" },
+				{ enabled: true, word: "warn", color: "yellow", emoji: "⚠️" },
+				{ enabled: true, word: "info", color: "green", emoji: "ℹ️" },
+				{ enabled: true, word: "debug", color: "blue", emoji: "🐛" },
 			],
 			id: "Accordion_2",
 			switch: false,
@@ -29,10 +29,10 @@ const defaultSettings = {
 		Accordion_3: {
 			title: "Log Insights",
 			words: [
-				{ word: "error", color: "red", emoji: "❌" },
-				{ word: "warn", color: "yellow", emoji: "⚠️" },
-				{ word: "info", color: "green", emoji: "ℹ️" },
-				{ word: "debug", color: "blue", emoji: "🐛" },
+				{ enabled: true, word: "error", color: "red", emoji: "❌" },
+				{ enabled: true, word: "warn", color: "yellow", emoji: "⚠️" },
+				{ enabled: true, word: "info", color: "green", emoji: "ℹ️" },
+				{ enabled: true, word: "debug", color: "blue", emoji: "🐛" },
 			],
 			id: "Accordion_3",
 			switch: true,

@@ -1,4 +1,5 @@
 interface word {
+	enabled: boolean;
 	word: string;
 	color: string;
 	emoji: string;
