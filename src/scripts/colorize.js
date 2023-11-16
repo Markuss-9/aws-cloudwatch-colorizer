@@ -282,6 +282,7 @@ const startAction = async () => {
 									isRunning = true;
 									setTimeout(() => {
 										colorizeAll();
+										isRunning = false;
 									}, 50);
 								}
 							}).observe(iframe.contentWindow.document.body, {
@@ -393,7 +394,6 @@ const colorizeAll = () => {
 			}
 		}
 	}
-	isRunning = false;
 };
 
 //! setInterval(colorizeAll, 3000); //  not efficient

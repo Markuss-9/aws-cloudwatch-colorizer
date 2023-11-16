@@ -1,16 +1,9 @@
 import "./style.css";
 
-import Accordion from "@mui/material/Accordion";
-import AccordionDetails from "@mui/material/AccordionDetails";
-import AccordionSummary from "@mui/material/AccordionSummary";
-import Typography from "@mui/material/Typography";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { Box, Button, Switch, Tooltip } from "@mui/material";
-import InfoIcon from "@mui/icons-material/Info";
+import { Dispatch, useEffect, useState } from "react";
 
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import ColorPickerButton from "../ColorPicker";
 import settingsType from "../../types/settingsType";
+import Accordions from "./accordions";
 
 export default function ControlledAccordions({
 	settings,
@@ -30,8 +23,6 @@ export default function ControlledAccordions({
 			setExpanded(isExpanded ? panel : false);
 		};
 
-	var tempSettings: any = {};
-
 	const handleSwitchClick = (event: any, panel: string) => {
 		event.stopPropagation();
 
@@ -49,11 +40,10 @@ export default function ControlledAccordions({
 			});
 			setDisabledAccordions([...tempDis]);
 		}
-		tempSettings = settings;
+		let tempSettings = settings;
 		tempSettings.advancedSettings[panel].switch =
 			!tempSettings.advancedSettings[panel].switch;
-		console.log("🚀 ~ handleSwitchClick ~ tempSettings:", tempSettings);
-		// setSettings({...settings, settings.advancedSettings[panel]: {switch: !settings.advancedSettings[panel].switch}});
+		setSettings({ ...tempSettings });
 	};
 
 	useEffect(() => {
@@ -67,80 +57,25 @@ export default function ControlledAccordions({
 
 	return (
 		<div className="center">
-			{/* {accordionsDisplay} */}
-
 			{Object.entries(settings.advancedSettings).map(
-				([key, section]: any, i) => {
+				([keyAccordion, section]: any, i) => {
 					return (
-						<Accordion
-							expanded={
-								expanded === key &&
-								!disabledAccordions.includes(key)
-							}
-							sx={{ width: "90%" }}
-							onChange={handleChange(key)}
-							disabled={!section.isAvailable}
-							// disabled={disabledAccordions.includes(key)}
-							className="Accordion"
-							key={i}
-						>
-							<AccordionSummary
-								expandIcon={
-									!disabledAccordions.includes(key) && (
-										<ExpandMoreIcon />
-									)
-								}
-								aria-controls="panel2bh-content"
-								id="panel2bh-header"
-							>
-								<Tooltip
-									title={`Show logs for the ${section.title} pages`}
-								>
-									<Switch
-										// checked={section.switch}
-										defaultChecked={section.switch}
-										inputProps={{
-											"aria-label": "ant design",
-										}}
-										onClick={(e: any) => {
-											handleSwitchClick(e, key);
-										}}
-									/>
-								</Tooltip>
-								<Typography
-									sx={{ flexShrink: 0, marginLeft: "40px" }}
-								>
-									{section.title}
-								</Typography>
-							</AccordionSummary>
-							<AccordionDetails>
-								{section.words.map((options: any) => {
-									return (
-										<>
-											<ColorPickerButton
-												color={options.color}
-												settings={settings}
-												setSettings={setSettings}
-												key={options.word}
-												options={options}
-												showColorPicker={
-													showColorPicker
-												}
-												setShowColorPicker={
-													setShowColorPicker
-												}
-											/>
-										</>
-									);
-								})}
-							</AccordionDetails>
-						</Accordion>
+						<Accordions
+							expanded={expanded}
+							keyAccordion={keyAccordion}
+							disabledAccordions={disabledAccordions}
+							handleChange={handleChange}
+							section={section}
+							i={i}
+							handleSwitchClick={handleSwitchClick}
+							settings={settings}
+							setSettings={setSettings}
+							showColorPicker={showColorPicker}
+							setShowColorPicker={setShowColorPicker}
+						/>
 					);
 				},
 			)}
-			{/* <Tooltip title="Show logs for the Logs Insights pages">
-				<InfoIcon sx={{ color: "black" }} />
-			</Tooltip> */}
 		</div>
 	);
 }
