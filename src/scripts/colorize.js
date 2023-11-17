@@ -230,7 +230,7 @@ const getIframeElement = () => {
 var intervalIdDOM = null;
 //! FINISH OBSERVE DOM
 
-var wantBackground = false; //to change the mode, if true it colorize the background
+var wantBackground = true; //to change the mode, if true it colorize the background
 var settings;
 
 var intervalId = null;
@@ -256,7 +256,14 @@ const resetInterval = () => {
 	}
 };
 
-var mutationObs = null;
+var mutationObs = new MutationObserver(() => {
+	if (!isRunning) {
+		isRunning = true;
+		setTimeout(() => {
+			colorizeAll();
+		}, 50);
+	}
+});
 
 const startAction = async () => {
 	settings = await getSettings();
@@ -267,34 +274,31 @@ const startAction = async () => {
 		switch (settings.performance) {
 			case "manual":
 				colorizeAll();
+				mutationObs.disconnect();
 				break;
 			case "timer":
 				if (!intervalId) intervalId = setInterval(colorizeAll, 500);
+				mutationObs.disconnect();
 				break;
 			case "dom":
 				resetInterval();
 
-				if (!mutationObs)
-					getIframeElement()
-						.then((iframe) => {
-							mutationObs = new MutationObserver(() => {
-								if (!isRunning) {
-									isRunning = true;
-									setTimeout(() => {
-										colorizeAll();
-										isRunning = false;
-									}, 50);
-								}
-							}).observe(iframe.contentWindow.document.body, {
+				// if (!mutationObs)
+				getIframeElement()
+					.then((iframe) => {
+						mutationObs.observe(
+							iframe.contentWindow.document.body,
+							{
 								subtree: true,
 								childList: true,
 								characterData: true,
-							});
-						})
-						.catch((error) => {
-							console.error("Error:", error);
-						});
-				else console.log("mutation already exist");
+							},
+						);
+					})
+					.catch((error) => {
+						console.error("Error:", error);
+					});
+				// else console.log("mutation already exist");
 				break;
 			case "net":
 				resetInterval();
