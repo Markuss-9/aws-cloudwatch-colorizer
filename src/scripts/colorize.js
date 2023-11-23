@@ -1,3 +1,5 @@
+import { findIndex } from "lodash-es";
+
 // const regexIndexOf = (string, regex, startpos) => {
 // 	var indexOf = string.substring(startpos || 0).search(regex);
 // 	return indexOf >= 0 ? indexOf + (startpos || 0) : indexOf;
@@ -47,42 +49,6 @@ const pretty = (e, parent, reg, regInit, spanWordChange) => {
 	parent.removeAttribute("style");
 };
 
-const infoLogs = {
-	error: {
-		code: 31,
-		color: "red",
-		backgroundColor: "rgba(155, 0, 0, 0.44)",
-		// backgroundColor: "#9b000070",
-		emoji: "❌",
-		label: "Error",
-	},
-	info: {
-		code: 32,
-		color: "green",
-		backgroundColor: "rgba(0, 155, 10, 0.16)",
-		// backgroundColor: "#009b0a29",
-		emoji: "ℹ️",
-		label: "Info",
-	},
-	warn: {
-		code: 33,
-		color: "yellow",
-		backgroundColor: "rgba(227, 217, 0, 0.4)",
-		// backgroundColor: "#e3d90066",
-		// backgroundColor: "#e7dd00", prova
-		emoji: "⚠️",
-		label: "Warn",
-	},
-	debug: {
-		code: 34,
-		color: "blue",
-		backgroundColor: "rgba(0, 78, 155, 0.16)",
-		// backgroundColor: "#004e9b29",
-		emoji: "🐛",
-		label: "Debug",
-	},
-};
-
 // const escape_codes = new Map([
 //   ["0", "font-weight:normal"],
 //   ["1", "font-weight:bold"],
@@ -106,24 +72,30 @@ const infoLogs = {
 //   ["97", "color:whitesmoke"],
 // ]);
 
-const colorizing = (e, parent) => {
+const colorizing = (e, parent, wordsOptionsCurrentPage) => {
 	var computedStyle = window.getComputedStyle(parent);
 	var backgroundColor = computedStyle.backgroundColor;
 
 	const wordsToFind = ["error", "warn", "info", "debug"];
 	let foundWord = null;
 	for (const word of wordsToFind) {
-		if (e.textContent.slice(0, 50).includes(word)) {
+		const wordReg = new RegExp(`${word}`, "i");
+		if (wordReg.test(e.textContent.slice(0, 50))) {
 			foundWord = word;
 			break;
 		}
 	}
 
 	if (foundWord !== null) {
+		let pos = findIndex(wordsOptionsCurrentPage, {
+			word: foundWord,
+		});
+		const wordOptions = wordsOptionsCurrentPage[pos];
+
 		if (wantBackground) {
 			if (
 				!parent.style.backgroundColor.includes(
-					`${infoLogs[foundWord].backgroundColor}`,
+					`${wordOptions.backgroundColor}`,
 				)
 			) {
 				if (parent.style.backgroundColor.includes(`color-mix`)) {
@@ -131,15 +103,15 @@ const colorizing = (e, parent) => {
 					computedStyle = window.getComputedStyle(parent);
 					backgroundColor = computedStyle.backgroundColor;
 				}
-				parent.style.backgroundColor = `color-mix(in srgb, ${infoLogs[foundWord].backgroundColor}, ${backgroundColor})`;
+				parent.style.backgroundColor = `color-mix(in srgb, ${wordOptions.backgroundColor}, ${backgroundColor})`;
 			}
 		} else {
 			console.log("Switch is disabled, executing NORMAL colorizeAll");
 			const dynamicRegex = new RegExp(
-				`(\\x1b\\[${infoLogs[foundWord].code}m${foundWord}\\x1b\\[39m|${foundWord})(.*?)$`,
+				`(\\x1b\\[${wordOptions.code}m${foundWord}\\x1b\\[39m|${foundWord})(.*?)$`,
 			);
 			const dynamicRegexInit = new RegExp(
-				`\\x1b\\[${infoLogs[foundWord].code}m${foundWord}\\x1b\\[39m|${foundWord}`,
+				`\\x1b\\[${wordOptions.code}m${foundWord}\\x1b\\[39m|${foundWord}`,
 			);
 
 			if (!e.getElementsByTagName("span").length)
@@ -148,7 +120,7 @@ const colorizing = (e, parent) => {
 					parent,
 					dynamicRegex,
 					dynamicRegexInit,
-					`<span style="color:${infoLogs[foundWord].color}">${infoLogs[foundWord].emoji} ${infoLogs[foundWord].label}</span>`,
+					`<span style="color:${wordOptions.color}">${wordOptions.emoji} ${wordOptions.label}</span>`,
 				);
 		}
 	} else parent.removeAttribute("style");
@@ -261,11 +233,13 @@ var mutationObs = new MutationObserver(() => {
 		isRunning = true;
 		setTimeout(() => {
 			colorizeAll();
+			isRunning = false;
 		}, 50);
 	}
 });
 
 const startAction = async () => {
+	// chrome.storage.local.clear();
 	settings = await getSettings();
 
 	if (settings.master) {
@@ -351,12 +325,14 @@ const colorizeAll = () => {
 		//
 		console.log("log-groups");
 		const elements = getListFromClass("awsui-table-row");
+		const wordsOptionsCurrentPage =
+			settings.advancedSettings["Log_Groups"].words;
 		for (let e of elements) {
 			if (e.getElementsByClassName("logs__log-events-table__cell")[1]) {
 				const child = e
 					.getElementsByClassName("logs__log-events-table__cell")[1]
 					.getElementsByTagName("span")[0];
-				colorizing(child, e);
+				colorizing(child, e, wordsOptionsCurrentPage);
 			}
 		}
 		//? e.getElementsByTagName("td")[2] restituisce il parent
@@ -387,14 +363,15 @@ const colorizeAll = () => {
 		}
 
 		console.log("logs-insights da vedere");
-
+		const wordsOptionsCurrentPage =
+			settings.advancedSettings["Log_Insights"].words;
 		for (let e of elements) {
 			// logInsights(e.getElementsByClassName("logs-table__body-cell")[2]);
 			if (e.getElementsByClassName("logs-table__body-cell")[2]) {
 				const child = e.getElementsByClassName(
 					"logs-table__body-cell",
 				)[2];
-				colorizing(child, e);
+				colorizing(child, e, wordsOptionsCurrentPage);
 			}
 		}
 	}
