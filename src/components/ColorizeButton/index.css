@@ -1,0 +1,28 @@
+.rainbow {
+	--gradient: linear-gradient(
+		90deg,
+		#ff0000,
+		#ffdb00,
+		#23ff00,
+		#00e7ff,
+		#0020ff,
+		#ce00ff
+	);
+	background: var(--gradient);
+	background-size: 360% 360%;
+	/* animation: gradient-animation 10s ease infinite; */
+	-webkit-text-fill-color: transparent;
+	-webkit-background-clip: text;
+	background-clip: text;
+	/* transform: translateZ(0); */
+	/* border-image: var(--gradient) 1; */
+}
+
+@keyframes gradient-animation {
+	0% {
+		background-position: 0% 50%;
+	}
+	100% {
+		background-position: 100% 50%;
+	}
+}

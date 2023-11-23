@@ -14,6 +14,7 @@ import {
 import packageJson from "../../../package.json";
 import { useEffect, useState, Dispatch } from "react";
 import settingsType from "../../types/settingsType";
+import ColorizeButton from "../../components/ColorizeButton";
 
 const Home = ({
 	settings,
@@ -35,7 +36,7 @@ const Home = ({
 			...settings,
 			...{
 				performance:
-					settings.performance !== "manual" ? "manual" : "timer",
+					settings.performance !== "manual" ? "manual" : "dom",
 			},
 		});
 
@@ -73,7 +74,6 @@ const Home = ({
 					<PowerSettingsNewIcon sx={{ fontSize: 60 }} />
 				)}
 			</Button>
-			<br />
 			<ToggleButton
 				color="primary"
 				value={"AUTO"}
@@ -89,35 +89,43 @@ const Home = ({
 					<span>AUTO</span>
 				</Tooltip>
 			</ToggleButton>
-			<br />
-			<ToggleButtonGroup
-				color="secondary"
-				value={settings.performance}
-				exclusive
-				onChange={handleChange}
-				aria-label="performance"
-				disabled={settings.performance === "manual"}
+			<Box
+				sx={{
+					margin: 3,
+					height: 50,
+					display: "flex",
+					justifyContent: "center",
+					alignItems: "center",
+				}}
 			>
-				<ToggleButton value="timer">
-					<Tooltip title="Every 3 seconds it updates">
-						<span>TIMER</span>
-					</Tooltip>
-				</ToggleButton>
-
-				<ToggleButton value="dom">
-					<Tooltip title="[WIP] It updates when the DOM is changed">
-						<span>DOM</span>
-					</Tooltip>
-				</ToggleButton>
-				<ToggleButton value="net">
-					<Tooltip title="[WIP] It updates when the a network request has finished">
-						<span>NET</span>
-					</Tooltip>
-				</ToggleButton>
-			</ToggleButtonGroup>
-
-			<br />
-			<br />
+				{settings.performance === "manual" ? (
+					<ColorizeButton />
+				) : (
+					<ToggleButtonGroup
+						color="secondary"
+						value={settings.performance}
+						exclusive
+						onChange={handleChange}
+						aria-label="performance"
+					>
+						<ToggleButton value="timer">
+							<Tooltip title="Every 3 seconds it updates">
+								<span>TIMER</span>
+							</Tooltip>
+						</ToggleButton>
+						<ToggleButton value="dom">
+							<Tooltip title="It updates when the DOM is changed">
+								<span>DOM</span>
+							</Tooltip>
+						</ToggleButton>
+						<ToggleButton value="net">
+							<Tooltip title="[WIP] It updates when the a network request has finished, maybe it will never come out">
+								<span>NET</span>
+							</Tooltip>
+						</ToggleButton>
+					</ToggleButtonGroup>
+				)}
+			</Box>
 
 			<Box sx={{ display: "inline-flex", alignItems: "center" }}>
 				<Typography

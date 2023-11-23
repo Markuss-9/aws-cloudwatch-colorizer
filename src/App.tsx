@@ -22,11 +22,13 @@ declare module "@mui/material/styles" {
 	interface Palette {
 		off: Palette["primary"];
 		on: Palette["primary"];
+		rainbowButton: Palette["primary"];
 	}
 
 	interface PaletteOptions {
 		off?: PaletteOptions["primary"];
 		on?: PaletteOptions["primary"];
+		rainbowButton?: PaletteOptions["primary"];
 	}
 }
 
@@ -34,6 +36,7 @@ declare module "@mui/material/Button" {
 	interface ButtonPropsColorOverrides {
 		off: true;
 		on: true;
+		rainbowButton: true;
 	}
 }
 
@@ -46,6 +49,12 @@ const theme = createTheme({
 			contrastText: "#000000",
 		},
 		on: { main: "#1b5e20", light: "#1c6422", dark: "#164e1a" },
+		rainbowButton: {
+			main: "#ffffff00",
+			light: "#dbdbdb69",
+			dark: "#a5a5a57a",
+			contrastText: "#000000",
+		},
 	},
 	typography: {
 		fontFamily: ["cursive"].join(","),

@@ -307,7 +307,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 		case "yourMessageType":
 			sendResponse("risposta dal content script");
 			startAction();
-
+			break;
+		case "manualColorize":
+			colorizeAll();
 			break;
 		default:
 			console.log(`default no case matchato`);
