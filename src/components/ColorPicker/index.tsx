@@ -140,11 +140,11 @@ const ColorPickerButton = ({
 			</Typography>
 
 			{showColorPicker === options.word && (
-				<Box sx={{ position: "absolute", zIndex: "1000" }}>
-					<ChromePicker
-						color={currentColor}
-						onChange={handleColorChange}
-					/>
+				<Box sx={{ zIndex: "1000" }}>
+						<ChromePicker
+							color={currentColor}
+							onChange={handleColorChange}
+						/>
 				</Box>
 			)}
 		</>

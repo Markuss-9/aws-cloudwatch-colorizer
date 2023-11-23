@@ -3,7 +3,7 @@ import "./style.css";
 import { Dispatch, useEffect, useState } from "react";
 
 import settingsType from "../../types/settingsType";
-import Accordions from "./accordions";
+import CustomAccordion from "./CustomAccordion";
 
 export default function ControlledAccordions({
 	settings,
@@ -21,6 +21,7 @@ export default function ControlledAccordions({
 		(panel: string) =>
 		(event: React.SyntheticEvent, isExpanded: boolean) => {
 			setExpanded(isExpanded ? panel : false);
+			setShowColorPicker("");
 		};
 
 	const handleSwitchClick = (event: any, panel: string) => {
@@ -60,7 +61,7 @@ export default function ControlledAccordions({
 			{Object.entries(settings.advancedSettings).map(
 				([keyAccordion, section]: any, i) => {
 					return (
-						<Accordions
+						<CustomAccordion
 							expanded={expanded}
 							keyAccordion={keyAccordion}
 							disabledAccordions={disabledAccordions}
