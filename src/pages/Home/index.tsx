@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 
 import packageJson from "../../../package.json";
-import { useEffect, useState, Dispatch } from "react";
+import { Dispatch } from "react";
 import settingsType from "../../types/settingsType";
 import ColorizeButton from "../../components/ColorizeButton";
 
