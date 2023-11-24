@@ -1,17 +1,12 @@
 {
 	"name": "AWS CloudWatch Colorizer",
 	"description": "visual logs testing",
-	"version": "0.3.0",
-	"homepage_url": "http://www.google.com",
+	"homepage_url": "https://github.com/Markuss-9/aws-cloudwatch-colorizer",
 	"manifest_version": 3,
-	"icons": {
-		"128": "img/aws_colorized.png"
-	},
+	"icons": { "128": "img/aws_colorized.png" },
 	"action": {
 		"default_popup": "js/index.html",
-		"default_icon": {
-			"128": "img/aws_colorized.png"
-		}
+		"default_icon": { "128": "img/aws_colorized.png" }
 	},
 	"permissions": ["activeTab", "storage", "scripting", "tabs"],
 	"content_scripts": [
