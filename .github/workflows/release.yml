@@ -21,7 +21,7 @@ jobs:
                   node-version: "${{ steps.nvm.outputs.NVMRC }}"
             - name: Install dependencies
               run: npm install
-            - name: Build project # This would actually build your project, using zip for an example artifact
+            - name: Build project
               run: npm run build
             - name: Zip distribution folder
               run: zip aws-cloudwatch-colorize.zip dist -r
