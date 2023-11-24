@@ -13,11 +13,12 @@ jobs:
             - name: Clone repository
               uses: actions/checkout@v4
             - name: Getting Node.js version from .nvmrc
-              run: nvmrc=$(cat .nvmrc)
+              run: echo "##[set-output name=NVMRC;]$(cat .nvmrc)"
+              id: nvm
             - name: Use Node.js
               uses: actions/setup-node@v4
               with:
-                  node-version: $nvmrc
+                  node-version: "${{ steps.nvm.outputs.NVMRC }}"
             - name: Install dependencies
               run: npm install
             - name: Build project # This would actually build your project, using zip for an example artifact
