@@ -184,9 +184,16 @@ var isRunning = false;
 // 	}
 // };
 
+var intervalIdDOM = null;
+
+const resetCheckIframe = () => {
+	if (intervalIdDOM) clearInterval(intervalIdDOM);
+};
+
 const getIframeElement = () => {
 	return new Promise((resolve, reject) => {
-		const intervalIdDOM = setInterval(() => {
+		resetCheckIframe();
+		intervalIdDOM = setInterval(() => {
 			const element = document.getElementById("microConsole-Logs");
 			console.log("checking for iframe");
 			if (element) {
@@ -199,7 +206,6 @@ const getIframeElement = () => {
 };
 
 // // Set an interval to periodically check for the iframe
-var intervalIdDOM = null;
 //! FINISH OBSERVE DOM
 
 var wantBackground = true; //to change the mode, if true it colorize the background
@@ -246,13 +252,10 @@ const startAction = async () => {
 		console.log(`MASTER ON`);
 
 		switch (settings.performance) {
-			case "manual":
-				colorizeAll();
-				mutationObs.disconnect();
-				break;
 			case "timer":
 				if (!intervalId) intervalId = setInterval(colorizeAll, 500);
 				mutationObs.disconnect();
+				resetCheckIframe();
 				break;
 			case "dom":
 				resetInterval();
@@ -276,12 +279,21 @@ const startAction = async () => {
 				break;
 			case "net":
 				resetInterval();
+				mutationObs.disconnect();
+				resetCheckIframe();
 				break;
 
 			default:
+				resetInterval();
+				mutationObs.disconnect();
+				resetCheckIframe();
 				break;
 		}
-	} else resetInterval();
+	} else {
+		resetInterval();
+		mutationObs.disconnect();
+		resetCheckIframe();
+	}
 };
 
 startAction();
