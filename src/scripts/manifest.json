@@ -2,7 +2,7 @@
 	"name": "AWS CloudWatch Colorizer",
 	"description": "visual logs testing",
 	"homepage_url": "https://github.com/Markuss-9/aws-cloudwatch-colorizer",
-	"version": "0.3.1",
+	"version": "",
 	"manifest_version": 3,
 	"icons": { "128": "img/aws_colorized.png" },
 	"action": {

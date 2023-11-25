@@ -34,9 +34,8 @@
 	"scripts": {
 		"start": "react-scripts start",
 		"alignVersion": "node ./alignVersion.js",
-		"prettyManifest": "npx prettier ./src/scripts/manifest.json --write",
 		"dist": "webpack --config webpack.config.js",
-		"build": "npm-run-all alignVersion prettyManifest dist",
+		"build": "npm-run-all dist alignVersion",
 		"watch": "webpack -w --config webpack.config.js"
 	},
 	"devDependencies": {
