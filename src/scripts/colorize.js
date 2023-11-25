@@ -1,4 +1,8 @@
-import { findIndex } from "lodash-es";
+import colorizeAll from "./colorizeAll";
+import { settings, getSettings } from "./utils";
+
+import { startInterval, resetInterval } from "./performance/timer";
+import { resetCheckIframe, mutationObs, startObserve } from "./performance/dom";
 
 // const regexIndexOf = (string, regex, startpos) => {
 // 	var indexOf = string.substring(startpos || 0).search(regex);
@@ -29,26 +33,6 @@ import { findIndex } from "lodash-es";
 // 	return lastIndexOf;
 // };
 
-const pretty = (e, parent, reg, regInit, spanWordChange) => {
-	// const isoPattern = /^\[\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z\]/;
-
-	var content = e.textContent;
-	//? not necessary
-	// if (isoPattern.test(e.textContent)) {
-	//   // content = e.textContent.slice(24);
-	//   content.split(reg)[1];
-	// }
-
-	const match = content.match(reg);
-
-	if (match)
-		e.innerHTML = `${content.split(regInit)[0]}${spanWordChange}${
-			// content.split(reg)[1]
-			match[2]
-		}`;
-	parent.removeAttribute("style");
-};
-
 // const escape_codes = new Map([
 //   ["0", "font-weight:normal"],
 //   ["1", "font-weight:bold"],
@@ -72,74 +56,6 @@ const pretty = (e, parent, reg, regInit, spanWordChange) => {
 //   ["97", "color:whitesmoke"],
 // ]);
 
-const colorizing = (e, parent, wordsOptionsCurrentPage) => {
-	var computedStyle = window.getComputedStyle(parent);
-	var backgroundColor = computedStyle.backgroundColor;
-
-	const wordsToFind = ["error", "warn", "info", "debug"];
-	let foundWord = null;
-	for (const word of wordsToFind) {
-		const wordReg = new RegExp(`${word}`, "i");
-		if (wordReg.test(e.textContent.slice(0, 50))) {
-			foundWord = word;
-			break;
-		}
-	}
-
-	if (foundWord !== null) {
-		let pos = findIndex(wordsOptionsCurrentPage, {
-			word: foundWord,
-		});
-		const wordOptions = wordsOptionsCurrentPage[pos];
-
-		if (wantBackground) {
-			if (
-				!parent.style.backgroundColor.includes(
-					`${wordOptions.backgroundColor}`,
-				)
-			) {
-				if (parent.style.backgroundColor.includes(`color-mix`)) {
-					parent.style.backgroundColor = "";
-					computedStyle = window.getComputedStyle(parent);
-					backgroundColor = computedStyle.backgroundColor;
-				}
-				parent.style.backgroundColor = `color-mix(in srgb, ${wordOptions.backgroundColor}, ${backgroundColor})`;
-			}
-		} else {
-			console.log("Switch is disabled, executing NORMAL colorizeAll");
-			const dynamicRegex = new RegExp(
-				`(\\x1b\\[${wordOptions.code}m${foundWord}\\x1b\\[39m|${foundWord})(.*?)$`,
-			);
-			const dynamicRegexInit = new RegExp(
-				`\\x1b\\[${wordOptions.code}m${foundWord}\\x1b\\[39m|${foundWord}`,
-			);
-
-			if (!e.getElementsByTagName("span").length)
-				pretty(
-					e,
-					parent,
-					dynamicRegex,
-					dynamicRegexInit,
-					`<span style="color:${wordOptions.color}">${wordOptions.emoji} ${wordOptions.label}</span>`,
-				);
-		}
-	} else parent.removeAttribute("style");
-};
-
-const getListFromClass = (row) => {
-	let elements = [];
-	const iframe = document.querySelectorAll("iframe#microConsole-Logs")[0];
-	if (iframe) elements = iframe.contentDocument.getElementsByClassName(row);
-	return [].slice.call(elements);
-};
-
-const getListFromTag = (row) => {
-	let elements = [];
-	const iframe = document.querySelectorAll("iframe#microConsole-Logs")[0];
-	if (iframe) elements = iframe.contentDocument.getElementsByTagName(row);
-	return [].slice.call(elements);
-};
-
 //! NETWORK START
 // // Create a PerformanceObserver to monitor network activity
 // const networkObserver = new PerformanceObserver((list) => {
@@ -161,91 +77,7 @@ const getListFromTag = (row) => {
 // });
 //! NETWORK FINISH
 
-var isRunning = false;
-//! OBSERVE DOM
-// const checkForIframe = () => {
-// 	const iframe = document.getElementById("microConsole-Logs");
-
-// 	if (iframe) {
-// 		clearInterval(intervalIdDOM); // Stop the timer
-// 		console.log('Found the iframe with ID "microConsole-Logs"');
-// 		new MutationObserver(() => {
-// 			if (!isRunning) {
-// 				isRunning = true;
-// 				setTimeout(() => {
-// 					colorizeAll();
-// 				}, 50);
-// 			}
-// 		}).observe(iframe.contentWindow.document.body, {
-// 			subtree: true,
-// 			childList: true,
-// 			characterData: true,
-// 		});
-// 	}
-// };
-
-var intervalIdDOM = null;
-
-const resetCheckIframe = () => {
-	if (intervalIdDOM) clearInterval(intervalIdDOM);
-};
-
-const getIframeElement = () => {
-	return new Promise((resolve, reject) => {
-		resetCheckIframe();
-		intervalIdDOM = setInterval(() => {
-			const element = document.getElementById("microConsole-Logs");
-			console.log("checking for iframe");
-			if (element) {
-				console.log("found iframe");
-				clearInterval(intervalIdDOM);
-				resolve(element);
-			}
-		}, 1000);
-	});
-};
-
-// // Set an interval to periodically check for the iframe
-//! FINISH OBSERVE DOM
-
-var wantBackground = true; //to change the mode, if true it colorize the background
-var settings;
-
-var intervalId = null;
-
-var insertedStyle = false;
-
-function getSettings() {
-	return new Promise((resolve, reject) => {
-		chrome.storage.local.get(["settings"], (result) => {
-			if (chrome.runtime.lastError) {
-				reject(new Error(chrome.runtime.lastError));
-			} else {
-				resolve(result.settings);
-			}
-		});
-	});
-}
-
-const resetInterval = () => {
-	if (intervalId) {
-		clearInterval(intervalId);
-		intervalId = null;
-	}
-};
-
-var mutationObs = new MutationObserver(() => {
-	if (!isRunning) {
-		isRunning = true;
-		setTimeout(() => {
-			colorizeAll();
-			isRunning = false;
-		}, 50);
-	}
-});
-
 const startAction = async () => {
-	// chrome.storage.local.clear();
 	settings = await getSettings();
 
 	if (settings.master) {
@@ -253,36 +85,19 @@ const startAction = async () => {
 
 		switch (settings.performance) {
 			case "timer":
-				if (!intervalId) intervalId = setInterval(colorizeAll, 500);
+				startInterval();
 				mutationObs.disconnect();
 				resetCheckIframe();
 				break;
 			case "dom":
 				resetInterval();
-
-				// if (!mutationObs)
-				getIframeElement()
-					.then((iframe) => {
-						mutationObs.observe(
-							iframe.contentWindow.document.body,
-							{
-								subtree: true,
-								childList: true,
-								characterData: true,
-							},
-						);
-					})
-					.catch((error) => {
-						console.error("Error:", error);
-					});
-				// else console.log("mutation already exist");
+				startObserve();
 				break;
 			case "net":
 				resetInterval();
 				mutationObs.disconnect();
 				resetCheckIframe();
 				break;
-
 			default:
 				resetInterval();
 				mutationObs.disconnect();
@@ -311,68 +126,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 	}
 	console.log(`finito onMessage`);
 });
-
-const colorizeAll = () => {
-	// console.log("colorizing ALL");
-	console.log(`intervalId - `, intervalId);
-
-	const currentUrl = window.location.href;
-
-	if (currentUrl.includes("log-groups")) {
-		//
-		console.log("log-groups");
-		const elements = getListFromClass("awsui-table-row");
-		const wordsOptionsCurrentPage =
-			settings.advancedSettings["Log_Groups"].words;
-		for (let e of elements) {
-			if (e.getElementsByClassName("logs__log-events-table__cell")[1]) {
-				const child = e
-					.getElementsByClassName("logs__log-events-table__cell")[1]
-					.getElementsByTagName("span")[0];
-				colorizing(child, e, wordsOptionsCurrentPage);
-			}
-		}
-		//? e.getElementsByTagName("td")[2] restituisce il parent
-	} else if (currentUrl.includes("logs-insights")) {
-		//
-
-		const elements = getListFromClass("logs-table__body-row");
-		const iframe = document.querySelectorAll("iframe#microConsole-Logs")[0];
-		if (iframe) {
-			// var iframe = document.getElementsByTagName("iframe");
-			// console.log(" ~ testFunc1 ~ iframe:", iframe);
-			// var elmnt = iframe.contentWindow.document.getElementsByTagName("H1")[0];
-			// elmnt.style.display = "none";
-			// iframe.contentWindow.document;
-
-			var cont = getListFromTag("style");
-			const regexUpdateStyle =
-				/\.logs-table__body-row:nth-child\(2n\),.logs-table__body-row:nth-child\(2n\) .logs-table__body-cell{background-color:(.*)}/;
-
-			cont.forEach((styleElement) => {
-				if (regexUpdateStyle.test(styleElement.innerHTML)) {
-					styleElement.innerHTML = styleElement.innerHTML.replace(
-						".logs-table__body-row:nth-child(2n),.logs-table__body-row:nth-child(2n) .logs-table__body-cell{background-color:",
-						".logs-table__body-row:nth-child(2n),.logs-table__body-row:nth-child(2n) {background-color:",
-					);
-				}
-			});
-		}
-
-		console.log("logs-insights da vedere");
-		const wordsOptionsCurrentPage =
-			settings.advancedSettings["Log_Insights"].words;
-		for (let e of elements) {
-			// logInsights(e.getElementsByClassName("logs-table__body-cell")[2]);
-			if (e.getElementsByClassName("logs-table__body-cell")[2]) {
-				const child = e.getElementsByClassName(
-					"logs-table__body-cell",
-				)[2];
-				colorizing(child, e, wordsOptionsCurrentPage);
-			}
-		}
-	}
-};
 
 //! setInterval(colorizeAll, 3000); //  not efficient
 
