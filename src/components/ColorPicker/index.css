@@ -1,0 +1,17 @@
+.chrome-picker input[id^="rc-editable-input"] {
+	background-color: #444;
+	color: #fff !important;
+	border: 1px solid #666;
+}
+
+.react-color .chrome-picker button {
+	background-color: #555;
+	color: #fff;
+	border: 1px solid #666;
+	border-radius: 4px;
+}
+
+.chrome-picker svg {
+	fill: white !important;
+	background: transparent !important;
+}

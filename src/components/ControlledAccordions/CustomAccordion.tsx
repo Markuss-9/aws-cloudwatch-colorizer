@@ -6,7 +6,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { Box, Button, Grid, Switch, Tooltip } from "@mui/material";
 import InfoIcon from "@mui/icons-material/Info";
 
-import ColorPickerButton from "../ColorPicker";
+import WordRowSetting from "../WordRowSetting";
 import { useEffect, useState } from "react";
 
 const CustomAccordion = ({
@@ -104,7 +104,7 @@ const CustomAccordion = ({
 					{section.words.map((options: any) => {
 						return (
 							<>
-								<ColorPickerButton
+								<WordRowSetting
 									settings={settings}
 									setSettings={setSettings}
 									key={options.word}
