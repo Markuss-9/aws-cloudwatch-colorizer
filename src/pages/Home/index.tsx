@@ -99,7 +99,7 @@ const Home = ({
 				}}
 			>
 				{settings.performance === "manual" ? (
-					<ColorizeButton />
+					<ColorizeButton master={settings.master} />
 				) : (
 					<ToggleButtonGroup
 						color="secondary"

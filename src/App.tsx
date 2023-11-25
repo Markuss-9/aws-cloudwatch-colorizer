@@ -99,14 +99,9 @@ function App() {
 					(tabs) => {
 						tabs.forEach(async (tab: any) => {
 							try {
-								chrome.tabs.sendMessage(
-									tab.id,
-									{
-										type: "yourMessageType",
-										payload: settings,
-									},
-									(respond) => console.log(respond),
-								);
+								chrome.tabs.sendMessage(tab.id, {
+									type: "changeSettings",
+								});
 							} catch (error) {
 								console.error(
 									"Error communicating with content script:",

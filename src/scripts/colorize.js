@@ -299,25 +299,8 @@ const startAction = async () => {
 startAction();
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-	// if (message.type === "yourMessageType") {
-	// 	try {
-	// 		const settings = await getSettings();
-	// 		// Process settings or do something with them
-
-	// 		// Send a response back to the sender
-	// 		sendResponse({ success: true, settings });
-	// 		console.log(`setting the variable settings from chrome extension`);
-	// 	} catch (error) {
-	// 		console.error("Error getting settings:", error);
-	// 		sendResponse({ success: false, error: error.message });
-	// 	}
-
-	// 	// Return true to indicate that you will be sending a response asynchronously
-	// 	return true;
-	// }
 	switch (message.type) {
-		case "yourMessageType":
-			sendResponse("risposta dal content script");
+		case "changeSettings":
 			startAction();
 			break;
 		case "manualColorize":

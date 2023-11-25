@@ -1,34 +1,36 @@
 import { Button, Tooltip } from "@mui/material";
 import "./index.css";
 
-const ColorizeButton = () => {
+interface master {
+	master: boolean;
+}
+
+const ColorizeButton = ({ master }: master) => {
 	const manualColorize = () => {
 		if (process.env.NODE_ENV === "production")
-			chrome.tabs.query(
-				{ currentWindow: true, active: true },
-				(tabs: any) => {
+			chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
+				tabs.forEach(async (tab: any) => {
 					try {
-						chrome.tabs.sendMessage(
-							tabs[0].id,
-							{
-								type: "manualColorize",
-							},
-							(respond) => console.log(respond),
-						);
+						chrome.tabs.sendMessage(tab.id, {
+							type: "manualColorize",
+							payload: master,
+						});
 					} catch (error) {
 						console.error(
 							"Error communicating with content script:",
 							error,
 						);
 					}
-				},
-			);
+					console.log("🚀 ~ tabs.forEach ~ tab:", tab);
+				});
+			});
 	};
 	return (
 		<Button
-			onChange={manualColorize}
+			onClick={manualColorize}
 			variant="text"
 			color="rainbowButton"
+			disabled={!master}
 			// sx={{
 			// 	background:
 			// 		"linear-gradient(90deg, rgba(255,0,0,1) 0%, rgba(255,214,0,1) 20%, rgba(150,255,0,1) 50%, rgba(25,0,255,1) 80%, rgba(255,0,121,1) 100%)",
@@ -43,6 +45,9 @@ const ColorizeButton = () => {
 				"&:hover": {
 					animation: "gradient-animation 1s ease",
 					animationFillMode: "both",
+				},
+				"&:disabled": {
+					opacity: 0.4,
 				},
 			}}
 			className="rainbow"
