@@ -1,4 +1,4 @@
-import { Typography } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import ControlledAccordions from "../../components/ControlledAccordions";
 import "./style.css";
 import { Dispatch } from "react";
@@ -7,9 +7,11 @@ import settingsType from "../../types/settingsType";
 const Settings = ({
 	settings,
 	setSettings,
+	resetSettings,
 }: {
 	settings: settingsType;
 	setSettings: Dispatch<settingsType>;
+	resetSettings: any;
 }) => {
 	return (
 		<>
@@ -24,7 +26,9 @@ const Settings = ({
 			<br />
 			<br />
 			<br />
-			<br />
+			<Button variant="outlined" color="warning" onClick={resetSettings}>
+				RESET
+			</Button>
 			<br />
 			<br />
 			<br />

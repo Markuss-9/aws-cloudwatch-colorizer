@@ -2,7 +2,7 @@ import "./style.css";
 
 import { Dispatch, useEffect, useState } from "react";
 
-import settingsType from "../../types/settingsType";
+import settingsType, { accordionType } from "../../types/settingsType";
 import CustomAccordion from "./CustomAccordion";
 
 export default function ControlledAccordions({
@@ -24,11 +24,13 @@ export default function ControlledAccordions({
 			setShowColorPicker("");
 		};
 
-	const handleSwitchClick = (event: any, panel: string) => {
+	const handleSwitchClick = (
+		event: { stopPropagation: () => void },
+		panel: string,
+	) => {
 		event.stopPropagation();
 
-		let currentAccordion: any = settings.advancedSettings[panel];
-
+		let currentAccordion: accordionType = settings.advancedSettings[panel];
 		if (currentAccordion.switch) {
 			setTimeout(() => {
 				setExpanded(false);
@@ -49,7 +51,7 @@ export default function ControlledAccordions({
 
 	useEffect(() => {
 		Object.entries(settings.advancedSettings).forEach(
-			([key, section]: any) => {
+			([key, section]: [string, accordionType]) => {
 				if (!section.switch)
 					setDisabledAccordions([...disabledAccordions, key]);
 			},
@@ -59,7 +61,7 @@ export default function ControlledAccordions({
 	return (
 		<div className="center">
 			{Object.entries(settings.advancedSettings).map(
-				([keyAccordion, section]: any, i) => {
+				([keyAccordion, section]: [string, accordionType], i) => {
 					return (
 						<CustomAccordion
 							expanded={expanded}
@@ -68,6 +70,7 @@ export default function ControlledAccordions({
 							handleChange={handleChange}
 							section={section}
 							i={i}
+							key={`${keyAccordion}-CustomAccordion`}
 							handleSwitchClick={handleSwitchClick}
 							settings={settings}
 							setSettings={setSettings}
