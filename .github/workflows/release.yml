@@ -3,11 +3,11 @@ on:
         tags:
             - "*"
 
-name: Release pipeline
+name: Auto-release pipeline
 
 jobs:
     build:
-        name: Release pipeline
+        name: build-prod-pipeline
         runs-on: ubuntu-latest
         steps:
             - name: Clone repository
