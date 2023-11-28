@@ -121,6 +121,11 @@ function App() {
 		}, [settings]);
 	}
 
+	const resetSettings = () => {
+		if (process.env.NODE_ENV === "production") chrome.storage.local.clear(); // to be certain to clear all
+		setSettings(defaultSettings);
+	};
+
 	return (
 		<ThemeProvider theme={theme}>
 			<div className="App">
@@ -141,6 +146,7 @@ function App() {
 								<Settings
 									settings={settings || defaultSettings}
 									setSettings={setSettings}
+									resetSettings={resetSettings}
 								/>
 							}
 						/>

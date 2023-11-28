@@ -1,4 +1,4 @@
-interface word {
+export interface optionsType {
 	enabled: boolean;
 	code: number;
 	word: string;
@@ -8,22 +8,22 @@ interface word {
 	label: string;
 }
 
-interface accordion {
+export interface accordionType {
 	title: string;
-	words: Array<word>;
+	words: Array<optionsType>;
 	id: string;
 	switch: boolean;
 	isAvailable: boolean;
 	wantBackground: boolean;
 }
-interface accordionsID {
-	[key: string]: accordion;
+export interface accordionsIDType {
+	[key: string]: accordionType;
 }
 
 interface settingsType {
 	master: boolean;
 	performance: string;
-	advancedSettings: accordionsID;
+	advancedSettings: accordionsIDType;
 }
 
 export default settingsType;

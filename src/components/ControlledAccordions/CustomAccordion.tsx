@@ -3,11 +3,15 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { Box, Button, Grid, Switch, Tooltip } from "@mui/material";
-import InfoIcon from "@mui/icons-material/Info";
+import { Grid, Switch, Tooltip } from "@mui/material";
 
-import WordRowSetting from "../WordRowSetting";
-import { useEffect, useState } from "react";
+import { Dispatch, useState } from "react";
+import WordRowSettingColor from "../WordRowSettingColor";
+import WordRowSettingBackground from "../WordRowSettingBackground";
+import settingsType, {
+	accordionType,
+	optionsType,
+} from "../../types/settingsType";
 
 const CustomAccordion = ({
 	expanded,
@@ -21,7 +25,19 @@ const CustomAccordion = ({
 	setSettings,
 	showColorPicker,
 	setShowColorPicker,
-}: any) => {
+}: {
+	expanded: string | boolean;
+	keyAccordion: string;
+	disabledAccordions: string[];
+	handleChange: any;
+	section: accordionType;
+	i: number;
+	handleSwitchClick: any;
+	settings: settingsType;
+	setSettings: Dispatch<settingsType>;
+	showColorPicker: string;
+	setShowColorPicker: Dispatch<string>;
+}) => {
 	const [accordionEnabled, setAccordionEnabled] = useState<boolean>(
 		section.switch,
 	);
@@ -41,7 +57,7 @@ const CustomAccordion = ({
 				disabled={!section.isAvailable}
 				// disabled={disabledAccordions.includes(keyAccordion)}
 				className="Accordion"
-				key={i}
+				key={`${keyAccordion}-Accordion-${i}`}
 			>
 				<AccordionSummary
 					expandIcon={
@@ -51,12 +67,18 @@ const CustomAccordion = ({
 					}
 					aria-controls="panel2bh-content"
 					id="panel2bh-header"
+					key={`${keyAccordion}-AccordionSummary-${i}`}
 				>
 					<Tooltip title={`Show logs for the ${section.title} pages`}>
 						<Switch
 							checked={accordionEnabled}
 							// defaultChecked={section.switch}
-							onClick={(e: any) => {
+							onClick={(
+								e: React.MouseEvent<
+									HTMLButtonElement,
+									MouseEvent
+								>,
+							) => {
 								handleSwitchClick(e, keyAccordion);
 								setAccordionEnabled(!accordionEnabled);
 							}}
@@ -66,48 +88,63 @@ const CustomAccordion = ({
 						{section.title}
 					</Typography>
 				</AccordionSummary>
-				<AccordionDetails>
-					<Typography>
-						<Grid
-							container
-							direction="row"
-							justifyContent="center"
-							alignItems="center"
+				<AccordionDetails key={`${keyAccordion}-AccordionDetails-${i}`}>
+					<Grid
+						container
+						direction="row"
+						justifyContent="center"
+						alignItems="center"
+					>
+						<Tooltip
+							title={`The words are replaced with the colorized label`}
 						>
-							<Tooltip
-								title={`The words are replaced with the colorized label`}
-							>
-								<Grid item>Color</Grid>
-							</Tooltip>
-							<Grid item xs={4}>
-								<Switch
-									checked={wantBackground}
-									onClick={() => {
-										let tempSettings = settings;
-										tempSettings.advancedSettings[
-											keyAccordion
-										].wantBackground =
-											!tempSettings.advancedSettings[
-												keyAccordion
-											].wantBackground;
-										setSettings({ ...tempSettings });
-										setWantBackground(!wantBackground);
-									}}
-								/>
+							<Grid item>
+								<Typography>Color</Typography>
 							</Grid>
-							<Tooltip title={`The rows are colorized`}>
-								<Grid item>Background</Grid>
-							</Tooltip>
+						</Tooltip>
+						<Grid item xs={4}>
+							<Switch
+								checked={wantBackground}
+								onClick={() => {
+									let tempSettings = settings;
+									tempSettings.advancedSettings[
+										keyAccordion
+									].wantBackground =
+										!tempSettings.advancedSettings[
+											keyAccordion
+										].wantBackground;
+									setSettings({ ...tempSettings });
+									setShowColorPicker("");
+									setWantBackground(!wantBackground);
+								}}
+							/>
 						</Grid>
-					</Typography>
+						<Tooltip title={`The rows are colorized`}>
+							<Grid item>
+								<Typography>Background</Typography>
+							</Grid>
+						</Tooltip>
+					</Grid>
 
-					{section.words.map((options: any) => {
-						return (
+					{section.words.map((options: optionsType, i: number) => {
+						return wantBackground ? (
 							<>
-								<WordRowSetting
+								<WordRowSettingBackground
 									settings={settings}
 									setSettings={setSettings}
-									key={options.word}
+									key={`${keyAccordion}-bg-${options.word}-${i}`}
+									options={options}
+									showColorPicker={showColorPicker}
+									setShowColorPicker={setShowColorPicker}
+									keyAccordion={keyAccordion}
+								/>
+							</>
+						) : (
+							<>
+								<WordRowSettingColor
+									settings={settings}
+									setSettings={setSettings}
+									key={`${keyAccordion}-color-${options.word}-${i}`}
 									options={options}
 									showColorPicker={showColorPicker}
 									setShowColorPicker={setShowColorPicker}
