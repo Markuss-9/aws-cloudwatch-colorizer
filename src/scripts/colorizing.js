@@ -1,13 +1,12 @@
 import pretty from "./pretty";
 import { findIndex } from "lodash-es";
 
-var wantBackground = true; //to change the mode, if true it colorize the background
-
-const colorizing = (e, parent, wordsOptionsCurrentPage) => {
+const colorizing = (e, parent, pageSettings) => {
 	var computedStyle = window.getComputedStyle(parent);
 	var backgroundColor = computedStyle.backgroundColor;
 
-	const wordsToFind = ["error", "warn", "info", "debug"];
+	const wordsOptionsCurrentPage = pageSettings.words;
+	const wordsToFind = wordsOptionsCurrentPage.map((word) => word.word);
 	let foundWord = null;
 	for (const word of wordsToFind) {
 		const wordReg = new RegExp(`${word}`, "i");
@@ -23,7 +22,7 @@ const colorizing = (e, parent, wordsOptionsCurrentPage) => {
 		});
 		const wordOptions = wordsOptionsCurrentPage[pos];
 
-		if (wantBackground) {
+		if (pageSettings.wantBackground) {
 			if (
 				!parent.style.backgroundColor.includes(
 					`${wordOptions.backgroundColor}`,

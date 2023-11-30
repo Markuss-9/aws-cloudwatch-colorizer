@@ -8,14 +8,12 @@ const colorizeAll = () => {
 	if (currentUrl.includes("log-groups")) {
 		console.log("log-groups");
 		const elements = getListFromClass("awsui-table-row");
-		const wordsOptionsCurrentPage =
-			settings.advancedSettings["Log_Groups"].words;
 		for (let e of elements) {
 			if (e.getElementsByClassName("logs__log-events-table__cell")[1]) {
 				const child = e
 					.getElementsByClassName("logs__log-events-table__cell")[1]
 					.getElementsByTagName("span")[0];
-				colorizing(child, e, wordsOptionsCurrentPage);
+				colorizing(child, e, settings.advancedSettings["Log_Groups"]);
 			}
 		}
 		//? e.getElementsByTagName("td")[2] restituisce il parent
@@ -38,14 +36,12 @@ const colorizeAll = () => {
 		}
 
 		console.log("logs-insights da vedere");
-		const wordsOptionsCurrentPage =
-			settings.advancedSettings["Log_Insights"].words;
 		for (let e of elements) {
 			if (e.getElementsByClassName("logs-table__body-cell")[2]) {
 				const child = e.getElementsByClassName(
 					"logs-table__body-cell",
 				)[2];
-				colorizing(child, e, wordsOptionsCurrentPage);
+				colorizing(child, e, settings.advancedSettings["Log_Insights"]);
 			}
 		}
 	}
