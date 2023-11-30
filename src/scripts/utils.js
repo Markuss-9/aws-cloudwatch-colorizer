@@ -25,3 +25,6 @@ export const getSettings = () => {
 		});
 	});
 };
+
+export var page = ""; // default
+export var pageInDom = ""; // default
