@@ -15,6 +15,9 @@ jobs:
             - name: Getting Node.js version from .nvmrc
               run: echo "##[set-output name=NVMRC;]$(cat .nvmrc)"
               id: nvm
+            - name: Get the tag version
+              id: get_version
+              run: echo ::set-output name=TAG_VERSION::$(echo $GITHUB_REF | cut -d / -f 3)
             - name: Use Node.js
               uses: actions/setup-node@v4
               with:
@@ -23,10 +26,10 @@ jobs:
               run: npm install
             - name: Build project
               run: npm run build
-            - name: Zip distribution folder
-              run: zip aws-cloudwatch-colorize.zip dist -r
+            - name: Renaming folder with version
+              run: mv dist aws-cloudwatch-colorize-${{ steps.get_version.outputs.TAG_VERSION }}
             - uses: "marvinpinto/action-automatic-releases@latest"
               with:
                   repo_token: "${{ secrets.GITHUB_TOKEN }}"
                   prerelease: false
-                  files: aws-cloudwatch-colorize.zip
+                  files: aws-cloudwatch-colorize-${{ steps.get_version.outputs.TAG_VERSION }}
