@@ -10,11 +10,14 @@ import { useState } from "react";
 
 export default function SimpleBottomNavigation() {
 	const [value, setValue] = useState(1);
+	const [isHovered, setIsHovered] = useState(false);
 
 	const navigate = useNavigate();
 
 	return (
 		<Box
+			onMouseEnter={() => setIsHovered(true)}
+			onMouseLeave={() => setTimeout(() => setIsHovered(false), 1500)}
 			sx={{
 				// position: "sticky",
 				// bottom: 0,
@@ -25,6 +28,8 @@ export default function SimpleBottomNavigation() {
 				bottom: 5,
 				left: 0,
 				right: 0,
+				opacity: isHovered ? 1 : 0,
+				transition: "opacity 1.25s ease",
 			}}
 		>
 			<BottomNavigation
