@@ -1,4 +1,4 @@
-import { Button, Typography } from "@mui/material";
+import { Button, Tooltip, Typography } from "@mui/material";
 import ControlledAccordions from "../../components/ControlledAccordions";
 import "./style.css";
 import { Dispatch } from "react";
@@ -26,9 +26,15 @@ const Settings = ({
 			<br />
 			<br />
 			<br />
-			<Button variant="outlined" color="warning" onClick={resetSettings}>
-				RESET
-			</Button>
+			<Tooltip title={`Reset all settings to default`}>
+				<Button
+					variant="outlined"
+					color="warning"
+					onClick={resetSettings}
+				>
+					RESET
+				</Button>
+			</Tooltip>
 			<br />
 			<br />
 			<br />

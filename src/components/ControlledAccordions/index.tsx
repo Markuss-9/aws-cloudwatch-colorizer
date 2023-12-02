@@ -35,7 +35,7 @@ export default function ControlledAccordions({
 			setTimeout(() => {
 				setExpanded(false);
 				setDisabledAccordions([...disabledAccordions, panel]);
-			}, 500);
+			}, 100);
 		} else {
 			let tempDis = disabledAccordions;
 			tempDis = tempDis.filter(function (s) {
