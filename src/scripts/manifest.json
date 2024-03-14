@@ -1,6 +1,6 @@
 {
 	"name": "AWS CloudWatch Colorizer",
-	"description": "Enhance log interpretation with colorization for easy identification of errors, warnings, and more, streamlining workflow and debugging efficiency",
+	"description": "Enhance log interpretation with colorization for easy identification, streamlining workflow and debugging efficiency",
 	"homepage_url": "https://github.com/Markuss-9/aws-cloudwatch-colorizer",
 	"version": "",
 	"manifest_version": 3,
