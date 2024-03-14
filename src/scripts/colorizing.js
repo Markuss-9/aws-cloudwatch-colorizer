@@ -36,7 +36,6 @@ const colorizing = (e, parent, pageSettings) => {
 				parent.style.backgroundColor = `color-mix(in srgb, ${wordOptions.backgroundColor}, ${backgroundColor})`;
 			}
 		} else {
-			console.log("Switch is disabled, executing NORMAL colorizeAll");
 			const dynamicRegex = new RegExp(
 				`(\\x1b\\[${wordOptions.code}m${foundWord}\\x1b\\[39m|${foundWord})(.*?)$`,
 			);

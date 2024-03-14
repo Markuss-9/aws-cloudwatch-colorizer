@@ -47,8 +47,6 @@ const WordRowSettingBackground = ({
 	};
 
 	const handleColorChange = (color: ColorResult) => {
-		console.log(`handle color change`);
-
 		setCurrentColor(
 			`rgba(${color.rgb.r}, ${color.rgb.g}, ${color.rgb.b}, ${color.rgb.a})`,
 		);

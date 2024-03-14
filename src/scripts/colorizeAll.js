@@ -2,12 +2,10 @@ import colorizing from "./colorizing";
 import { getListFromClass, getListFromTag, settings } from "./utils";
 
 const colorizeAll = () => {
-	console.log("colorizing ALL");
 	const currentUrl = window.location.href;
 
 	if (currentUrl.includes("log-groups")) {
 		if (settings.advancedSettings["Log_Groups"].switch) {
-			console.log("log-groups");
 			const elements = getListFromClass("awsui-table-row");
 			for (let e of elements) {
 				if (
@@ -25,7 +23,7 @@ const colorizeAll = () => {
 					);
 				}
 			}
-			//? e.getElementsByTagName("td")[2] restituisce il parent
+			// e.getElementsByTagName("td")[2] gives the parent
 		}
 	} else if (currentUrl.includes("logs-insights")) {
 		if (settings.advancedSettings["Log_Insights"].switch) {
@@ -48,7 +46,6 @@ const colorizeAll = () => {
 				});
 			}
 
-			console.log("logs-insights da vedere");
 			for (let e of elements) {
 				if (e.getElementsByClassName("logs-table__body-cell")[2]) {
 					const child = e.getElementsByClassName(

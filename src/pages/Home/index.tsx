@@ -118,11 +118,15 @@ const Home = ({
 								<span>DOM</span>
 							</Tooltip>
 						</ToggleButton>
-						<ToggleButton value="net">
-							<Tooltip title="[WIP] It updates when the a network request has finished, maybe it will never come out">
-								<span>NET</span>
-							</Tooltip>
-						</ToggleButton>
+						{/* <ToggleButton disabled value="net"> */}
+						<Tooltip title="[WIP] It updates when the a network request has finished, maybe it will never come out">
+							<span>
+								<Button disabled sx={{ padding: "11px" }}>
+									NET
+								</Button>
+							</span>
+						</Tooltip>
+						{/* </ToggleButton> */}
 					</ToggleButtonGroup>
 				)}
 			</Box>

@@ -11,7 +11,7 @@ const Settings = ({
 }: {
 	settings: settingsType;
 	setSettings: Dispatch<settingsType>;
-	resetSettings: any;
+	resetSettings: VoidFunction;
 }) => {
 	return (
 		<>

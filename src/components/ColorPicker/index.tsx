@@ -1,8 +1,14 @@
 import { Box } from "@mui/material";
-import { ChromePicker } from "react-color";
+import { ChromePicker, ColorResult } from "react-color";
 import "./index.css";
 
-const ColorPicker = ({ currentColor, handleColorChange }: any) => {
+const ColorPicker = ({
+	currentColor,
+	handleColorChange,
+}: {
+	currentColor: string;
+	handleColorChange: (color: ColorResult) => void;
+}) => {
 	const chromePickerStyles = {
 		default: {
 			picker: {

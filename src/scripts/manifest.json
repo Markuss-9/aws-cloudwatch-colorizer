@@ -1,6 +1,6 @@
 {
 	"name": "AWS CloudWatch Colorizer",
-	"description": "visual logs testing",
+	"description": "visual logs in the cloudwatch console",
 	"homepage_url": "https://github.com/Markuss-9/aws-cloudwatch-colorizer",
 	"version": "",
 	"manifest_version": 3,
@@ -12,10 +12,7 @@
 	"permissions": ["activeTab", "storage", "scripting", "tabs"],
 	"content_scripts": [
 		{
-			"matches": [
-				"https://*.console.aws.amazon.com/cloudwatch/home*",
-				"https://www.google.com/"
-			],
+			"matches": ["https://*.console.aws.amazon.com/cloudwatch/home*"],
 			"js": ["colorize.js"],
 			"css": ["backgroundColor.css"],
 			"run_at": "document_idle"

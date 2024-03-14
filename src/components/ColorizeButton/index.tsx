@@ -21,7 +21,6 @@ const ColorizeButton = ({ master }: master) => {
 							error,
 						);
 					}
-					console.log("🚀 ~ tabs.forEach ~ tab:", tab);
 				});
 			});
 	};

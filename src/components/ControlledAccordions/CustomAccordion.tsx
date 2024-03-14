@@ -29,10 +29,10 @@ const CustomAccordion = ({
 	expanded: string | boolean;
 	keyAccordion: string;
 	disabledAccordions: string[];
-	handleChange: any;
+	handleChange: Function;
 	section: accordionType;
 	i: number;
-	handleSwitchClick: any;
+	handleSwitchClick: Function;
 	settings: settingsType;
 	setSettings: Dispatch<settingsType>;
 	showColorPicker: string;

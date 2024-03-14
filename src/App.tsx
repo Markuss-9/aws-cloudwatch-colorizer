@@ -81,14 +81,12 @@ function App() {
 			chrome.storage.local.get(["settings"], (result) => {
 				if (!result.settings) setSettings(defaultSettings);
 				else setSettings(result.settings);
-				console.log(`1 - finished settings`);
 			});
 		}, []);
 
 		const saveAndSendToContent = async () => {
 			if (settings !== (await getSettings())) {
 				chrome.storage.local.set({ settings: settings });
-				console.log(`setting to chrome storage`);
 
 				// {active: true}
 				chrome.tabs.query(
@@ -102,18 +100,20 @@ function App() {
 								chrome.tabs.sendMessage(tab.id, {
 									type: "changeSettings",
 								});
+								console.log(
+									"changing settings on tab: ",
+									tab.id,
+								);
 							} catch (error) {
 								console.error(
 									"Error communicating with content script:",
 									error,
 								);
 							}
-
-							console.log("🚀 ~ tabs.forEach ~ tab:", tab);
 						});
 					},
 				);
-			} else console.log(`is equal`);
+			}
 		};
 
 		useEffect(() => {

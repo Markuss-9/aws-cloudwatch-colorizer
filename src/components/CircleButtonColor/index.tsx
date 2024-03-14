@@ -6,7 +6,7 @@ const CircleButtonColor = ({
 	toggleColorPicker,
 }: {
 	savedColor: string;
-	toggleColorPicker: any;
+	toggleColorPicker: VoidFunction;
 }) => {
 	const lightenColor = (rgbaColor: string | number | chroma.Color) => {
 		return chroma(rgbaColor).brighten(0.5).css();
