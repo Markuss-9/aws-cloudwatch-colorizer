@@ -17,7 +17,7 @@ export const getIframeElement = () => {
 				clearInterval(intervalIdDOM);
 				resolve(element);
 			}
-		}, 1000);
+		}, 1500);
 	});
 };
 

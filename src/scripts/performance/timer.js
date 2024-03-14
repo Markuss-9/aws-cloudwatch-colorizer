@@ -10,5 +10,5 @@ export const resetInterval = () => {
 };
 
 export const startInterval = () => {
-	if (!intervalId) intervalId = setInterval(colorizeAll, 500);
+	if (!intervalId) intervalId = setInterval(colorizeAll, 3000);
 };
