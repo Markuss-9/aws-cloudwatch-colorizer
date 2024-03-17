@@ -14,7 +14,6 @@
 		{
 			"matches": ["https://*.console.aws.amazon.com/cloudwatch/home*"],
 			"js": ["colorize.js"],
-			"css": ["backgroundColor.css"],
 			"run_at": "document_idle"
 		}
 	]
