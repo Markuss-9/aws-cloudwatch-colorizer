@@ -9,7 +9,7 @@
 		"default_popup": "js/index.html",
 		"default_icon": { "128": "img/aws_colorized.png" }
 	},
-	"permissions": ["storage", "tabs"],
+	"permissions": ["activeTab", "storage", "scripting", "tabs"],
 	"content_scripts": [
 		{
 			"matches": ["https://*.console.aws.amazon.com/cloudwatch/home*"],
