@@ -2,8 +2,8 @@ import pretty from "./pretty";
 import { findIndex } from "lodash-es";
 
 const colorizing = (e, parent, pageSettings) => {
-	var computedStyle = window.getComputedStyle(parent);
-	var backgroundColor = computedStyle.backgroundColor;
+	let computedStyle = window.getComputedStyle(parent);
+	let backgroundColor = computedStyle.backgroundColor;
 
 	const wordsOptionsCurrentPage = pageSettings.words;
 	const wordsToFind = wordsOptionsCurrentPage.map((word) => word.word);
@@ -49,10 +49,10 @@ const colorizing = (e, parent, pageSettings) => {
 					parent,
 					dynamicRegex,
 					dynamicRegexInit,
-					`<span style="color:${wordOptions.color}">${wordOptions.emoji} ${wordOptions.label}</span>`,
+					`<span style="color:${wordOptions.color};">${wordOptions.emoji} ${wordOptions.label}</span>`,
 				);
 		}
-	} else parent.removeAttribute("style");
+	} else parent.attributeStyleMap.delete("background-color");
 };
 
 export default colorizing;

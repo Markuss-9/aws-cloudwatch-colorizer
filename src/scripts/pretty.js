@@ -1,7 +1,7 @@
 const pretty = (e, parent, reg, regInit, spanWordChange) => {
 	// const isoPattern = /^\[\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z\]/;
 
-	var content = e.textContent;
+	let content = e.textContent;
 	//? not necessary
 	// if (isoPattern.test(e.textContent)) {
 	//   // content = e.textContent.slice(24);
@@ -15,7 +15,6 @@ const pretty = (e, parent, reg, regInit, spanWordChange) => {
 			// content.split(reg)[1]
 			match[2]
 		}`;
-	if (parent.getAttribute("style")) parent.removeAttribute("style");
 };
 
 export default pretty;
