@@ -32,7 +32,7 @@ const colorizeAll = () => {
 				"iframe#microConsole-Logs",
 			)[0];
 			if (iframe) {
-				var cont = getListFromTag("style");
+				let cont = getListFromTag("style");
 				const regexUpdateStyle =
 					/\.logs-table__body-row:nth-child\(2n\),.logs-table__body-row:nth-child\(2n\) .logs-table__body-cell{background-color:(.*)}/;
 
