@@ -1,13 +1,13 @@
-import Box from "@mui/material/Box";
-import BottomNavigation from "@mui/material/BottomNavigation";
-import BottomNavigationAction from "@mui/material/BottomNavigationAction";
-import { useNavigate } from "react-router-dom";
+import Box from '@mui/material/Box';
+import BottomNavigation from '@mui/material/BottomNavigation';
+import BottomNavigationAction from '@mui/material/BottomNavigationAction';
+import { useNavigate } from 'react-router-dom';
 
-import SettingsIcon from "@mui/icons-material/Settings";
-import HomeIcon from "@mui/icons-material/Home";
-import LightbulbIcon from "@mui/icons-material/Lightbulb";
-import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
-import { useState } from "react";
+import SettingsIcon from '@mui/icons-material/Settings';
+import HomeIcon from '@mui/icons-material/Home';
+import LightbulbIcon from '@mui/icons-material/Lightbulb';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import { useState } from 'react';
 
 export default function SimpleBottomNavigation() {
 	const [value, setValue] = useState(1);
@@ -23,14 +23,14 @@ export default function SimpleBottomNavigation() {
 					// position: "sticky",
 					// bottom: 0,
 
-					width: "80%",
-					mx: "auto",
-					position: "absolute",
+					width: '80%',
+					mx: 'auto',
+					position: 'absolute',
 					bottom: 5,
 					left: 0,
 					right: 0,
 					opacity: isHovered ? 1 : 0,
-					transition: "opacity 1.25s ease",
+					transition: 'opacity 1.25s ease',
 				}}
 			>
 				<BottomNavigation
@@ -40,34 +40,34 @@ export default function SimpleBottomNavigation() {
 						setValue(newValue);
 					}}
 					sx={{
-						backgroundColor: "#9b9b9b",
-						border: "1px solid black",
-						borderRadius: "10px",
+						backgroundColor: '#9b9b9b',
+						border: '1px solid black',
+						borderRadius: '10px',
 					}}
 				>
 					<BottomNavigationAction
 						label="Settings"
 						icon={<SettingsIcon />}
 						onClick={() => {
-							navigate("settings");
+							navigate('settings');
 						}}
-						sx={{ fontWeight: "bold" }}
+						sx={{ fontWeight: 'bold' }}
 					/>
 					<BottomNavigationAction
 						label="Home"
 						icon={<HomeIcon />}
 						onClick={() => {
-							navigate("");
+							navigate('');
 						}}
-						sx={{ fontWeight: "bold" }}
+						sx={{ fontWeight: 'bold' }}
 					/>
 					<BottomNavigationAction
 						label="Tutorial"
 						icon={<LightbulbIcon />}
 						onClick={() => {
-							navigate("tutorial");
+							navigate('tutorial');
 						}}
-						sx={{ fontWeight: "bold" }}
+						sx={{ fontWeight: 'bold' }}
 					/>
 				</BottomNavigation>
 			</Box>
@@ -75,12 +75,12 @@ export default function SimpleBottomNavigation() {
 				<Box
 					onMouseEnter={() => setIsHovered(true)}
 					sx={{
-						position: "absolute",
+						position: 'absolute',
 						bottom: 0,
 						left: 0,
 						right: 0,
 						opacity: isHovered ? 0 : 1,
-						transition: "opacity 1.25s ease",
+						transition: 'opacity 1.25s ease',
 						height: 35,
 					}}
 				>

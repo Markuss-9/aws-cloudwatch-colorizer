@@ -1,12 +1,12 @@
-import { Dispatch, useState } from "react";
-import { ColorResult } from "react-color";
-import { Box, Grid, Switch, Tooltip, Typography } from "@mui/material";
-import _ from "lodash";
+import { Dispatch, useState } from 'react';
+import { ColorResult } from 'react-color';
+import { Box, Grid, Switch, Tooltip, Typography } from '@mui/material';
+import _ from 'lodash';
 
-import ColorPicker from "../ColorPicker";
-import info from "../Info";
-import CircleButtonColor from "../CircleButtonColor";
-import settingsType, { optionsType } from "../../types/settingsType";
+import ColorPicker from '../ColorPicker';
+import info from '../Info';
+import CircleButtonColor from '../CircleButtonColor';
+import settingsType, { optionsType } from '../../types/settingsType';
 
 const WordRowSettingBackground = ({
 	settings,
@@ -31,18 +31,15 @@ const WordRowSettingBackground = ({
 	const toggleColorPicker = () => {
 		if (showColorPicker) {
 			let tempSettings = settings;
-			let pos = _.findIndex(
-				tempSettings.advancedSettings[keyAccordion].words,
-				{
-					word: options.word,
-				},
-			);
+			let pos = _.findIndex(tempSettings.advancedSettings[keyAccordion].words, {
+				word: options.word,
+			});
 			tempSettings.advancedSettings[keyAccordion].words[pos] = {
 				...options,
 				color: currentColor,
 			};
 			setSettings({ ...tempSettings });
-			setShowColorPicker("");
+			setShowColorPicker('');
 		} else setShowColorPicker(options.word);
 	};
 
@@ -54,12 +51,9 @@ const WordRowSettingBackground = ({
 
 	const switchWordAction = () => {
 		let tempSettings = settings;
-		let pos = _.findIndex(
-			tempSettings.advancedSettings[keyAccordion].words,
-			{
-				word: options.word,
-			},
-		);
+		let pos = _.findIndex(tempSettings.advancedSettings[keyAccordion].words, {
+			word: options.word,
+		});
 		tempSettings.advancedSettings[keyAccordion].words[pos] = {
 			...options,
 			enabled: !switchWordEnabled,
@@ -84,21 +78,15 @@ const WordRowSettingBackground = ({
 						/>
 					</Grid>
 					<Grid item xs={2}>
-						<Typography color={options.color}>
-							{options.emoji}
-						</Typography>
+						<Typography color={options.color}>{options.emoji}</Typography>
 					</Grid>
 					<Grid item xs={2}>
-						<Typography color={options.color}>
-							{options.label}
-						</Typography>
+						<Typography color={options.color}>{options.label}</Typography>
 					</Grid>
 					<Grid item xs={4}>
 						<Tooltip
 							title={
-								switchWordEnabled
-									? info("Disable word")
-									: info("Enable word")
+								switchWordEnabled ? info('Disable word') : info('Enable word')
 							}
 						>
 							<Switch

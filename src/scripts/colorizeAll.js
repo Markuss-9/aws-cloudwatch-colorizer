@@ -31,8 +31,7 @@ const logsGroupsFlow = () => {
 					continue;
 				}
 
-				const span =
-					tdElements[messageColPos].getElementsByTagName('span');
+				const span = tdElements[messageColPos].getElementsByTagName('span');
 
 				console.assert(
 					span,
@@ -41,10 +40,7 @@ const logsGroupsFlow = () => {
 					span,
 				);
 
-				console.assert(
-					Object.keys(span).length,
-					'span cannot be empty',
-				);
+				console.assert(Object.keys(span).length, 'span cannot be empty');
 
 				const child = span[span.length - 1];
 				colorizing(child, row, settings.advancedSettings['Log_Groups']);
@@ -66,14 +62,10 @@ const logsInsightsFlow = () => {
 		const elements = getListFromClass('logs-table__body-row');
 		for (let row of elements) {
 			if (row.getElementsByClassName('logs-table__body-cell').length) {
-				const child = row.getElementsByClassName(
-					'logs-table__body-cell',
-				)[messageColPos];
-				colorizing(
-					child,
-					row,
-					settings.advancedSettings['Log_Insights'],
-				);
+				const child = row.getElementsByClassName('logs-table__body-cell')[
+					messageColPos
+				];
+				colorizing(child, row, settings.advancedSettings['Log_Insights']);
 			}
 		}
 	} catch (error) {
