@@ -1,38 +1,38 @@
-import { useEffect, useState } from "react";
-import "./App.css";
+import { useEffect, useState } from 'react';
+import './App.css';
 
-import SimpleBottomNavigation from "./components/SimpleBottomNavigation";
-import { Route, Routes } from "react-router-dom";
-import Settings from "./pages/Settings";
-import Tutorial from "./pages/Tutorial";
+import SimpleBottomNavigation from './components/SimpleBottomNavigation';
+import { Route, Routes } from 'react-router-dom';
+import Settings from './pages/Settings';
+import Tutorial from './pages/Tutorial';
 
-import Home from "./pages/Home";
+import Home from './pages/Home';
 
-import { createTheme } from "@mui/material/styles";
-import { ThemeProvider } from "@mui/material/styles";
-import SimpleBar from "simplebar-react";
-import "simplebar/dist/simplebar.min.css";
+import { createTheme } from '@mui/material/styles';
+import { ThemeProvider } from '@mui/material/styles';
+import SimpleBar from 'simplebar-react';
+import 'simplebar/dist/simplebar.min.css';
 
-import manifest from "./scripts/manifest.json";
+import manifest from './scripts/manifest.json';
 
-import defaultSettings from "./defaultSettings";
-import settingsType from "./types/settingsType";
+import defaultSettings from './defaultSettings';
+import settingsType from './types/settingsType';
 
-declare module "@mui/material/styles" {
+declare module '@mui/material/styles' {
 	interface Palette {
-		off: Palette["primary"];
-		on: Palette["primary"];
-		rainbowButton: Palette["primary"];
+		off: Palette['primary'];
+		on: Palette['primary'];
+		rainbowButton: Palette['primary'];
 	}
 
 	interface PaletteOptions {
-		off?: PaletteOptions["primary"];
-		on?: PaletteOptions["primary"];
-		rainbowButton?: PaletteOptions["primary"];
+		off?: PaletteOptions['primary'];
+		on?: PaletteOptions['primary'];
+		rainbowButton?: PaletteOptions['primary'];
 	}
 }
 
-declare module "@mui/material/Button" {
+declare module '@mui/material/Button' {
 	interface ButtonPropsColorOverrides {
 		off: true;
 		on: true;
@@ -43,31 +43,31 @@ declare module "@mui/material/Button" {
 const theme = createTheme({
 	palette: {
 		off: {
-			main: "#530606",
-			light: "#5c0707",
-			dark: "#430505",
-			contrastText: "#000000",
+			main: '#530606',
+			light: '#5c0707',
+			dark: '#430505',
+			contrastText: '#000000',
 		},
-		on: { main: "#1b5e20", light: "#1c6422", dark: "#164e1a" },
+		on: { main: '#1b5e20', light: '#1c6422', dark: '#164e1a' },
 		rainbowButton: {
-			main: "#ffffff00",
-			light: "#dbdbdb69",
-			dark: "#a5a5a57a",
-			contrastText: "#000000",
+			main: '#ffffff00',
+			light: '#dbdbdb69',
+			dark: '#a5a5a57a',
+			contrastText: '#000000',
 		},
 	},
 	typography: {
-		fontFamily: ["cursive"].join(","),
+		fontFamily: ['cursive'].join(','),
 	},
 });
 
 function App() {
 	const [settings, setSettings] = useState<settingsType | undefined>();
 
-	if (process.env.NODE_ENV === "production") {
+	if (process.env.NODE_ENV === 'production') {
 		const getSettings = () => {
 			return new Promise((resolve, reject) => {
-				chrome.storage.local.get(["settings"], (result) => {
+				chrome.storage.local.get(['settings'], (result) => {
 					if (chrome.runtime.lastError) {
 						reject(new Error(String(chrome.runtime.lastError)));
 					} else {
@@ -78,7 +78,7 @@ function App() {
 		};
 
 		useEffect(() => {
-			chrome.storage.local.get(["settings"], (result) => {
+			chrome.storage.local.get(['settings'], (result) => {
 				if (!result.settings) setSettings(defaultSettings);
 				else setSettings(result.settings);
 			});
@@ -91,22 +91,19 @@ function App() {
 				// {active: true}
 				chrome.tabs.query(
 					{
-						status: "complete",
+						status: 'complete',
 						url: manifest.content_scripts[0].matches,
 					},
 					(tabs) => {
 						tabs.forEach(async (tab: any) => {
 							try {
 								chrome.tabs.sendMessage(tab.id, {
-									type: "changeSettings",
+									type: 'changeSettings',
 								});
-								console.log(
-									"changing settings on tab: ",
-									tab.id,
-								);
+								console.log('changing settings on tab: ', tab.id);
 							} catch (error) {
 								console.error(
-									"Error communicating with content script:",
+									'Error communicating with content script:',
 									error,
 								);
 							}
@@ -122,7 +119,7 @@ function App() {
 	}
 
 	const resetSettings = () => {
-		if (process.env.NODE_ENV === "production") chrome.storage.local.clear(); // to be certain to clear all
+		if (process.env.NODE_ENV === 'production') chrome.storage.local.clear(); // to be certain to clear all
 		setSettings(defaultSettings);
 	};
 

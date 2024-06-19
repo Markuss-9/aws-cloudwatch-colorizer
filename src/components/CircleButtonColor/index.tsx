@@ -1,5 +1,5 @@
-import { Button } from "@mui/material";
-import chroma from "chroma-js";
+import { Button } from '@mui/material';
+import chroma from 'chroma-js';
 
 const CircleButtonColor = ({
 	savedColor,
@@ -23,32 +23,32 @@ const CircleButtonColor = ({
 				width: 25,
 				height: 25,
 				padding: 0,
-				borderRadius: "50%",
+				borderRadius: '50%',
 				backgroundColor: savedColor,
-				"&:hover": {
+				'&:hover': {
 					backgroundColor: darkenColor(savedColor),
 				},
-				"&:before": {
+				'&:before': {
 					content: '""',
-					position: "absolute",
+					position: 'absolute',
 					top: 0,
 					left: 0,
 					right: 0,
 					bottom: 0,
 					border: `1px solid black`,
 					zIndex: 1,
-					borderRadius: "50%",
+					borderRadius: '50%',
 				},
-				"&:after": {
+				'&:after': {
 					content: '""',
-					position: "absolute",
+					position: 'absolute',
 					top: 1,
 					left: 1,
 					right: 1,
 					bottom: 1,
 					border: `1px solid white`,
 					zIndex: 0,
-					borderRadius: "50%",
+					borderRadius: '50%',
 				},
 				color: lightenColor(savedColor),
 			}}

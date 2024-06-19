@@ -1,9 +1,9 @@
-import "./style.css";
+import './style.css';
 
-import { Dispatch, useEffect, useState } from "react";
+import { Dispatch, useEffect, useState } from 'react';
 
-import settingsType, { accordionType } from "../../types/settingsType";
-import CustomAccordion from "./CustomAccordion";
+import settingsType, { accordionType } from '../../types/settingsType';
+import CustomAccordion from './CustomAccordion';
 
 export default function ControlledAccordions({
 	settings,
@@ -13,15 +13,14 @@ export default function ControlledAccordions({
 	setSettings: Dispatch<settingsType>;
 }) {
 	const [expanded, setExpanded] = useState<string | false>(false);
-	const [showColorPicker, setShowColorPicker] = useState<string>("");
+	const [showColorPicker, setShowColorPicker] = useState<string>('');
 
-	const [disabledAccordions, setDisabledAccordions] = useState([""]);
+	const [disabledAccordions, setDisabledAccordions] = useState(['']);
 
 	const handleChange =
-		(panel: string) =>
-		(event: React.SyntheticEvent, isExpanded: boolean) => {
+		(panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
 			setExpanded(isExpanded ? panel : false);
-			setShowColorPicker("");
+			setShowColorPicker('');
 		};
 
 	const handleSwitchClick = (

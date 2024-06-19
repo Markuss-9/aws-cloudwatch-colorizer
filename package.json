@@ -36,7 +36,8 @@
 		"alignVersion": "node ./alignVersion.js",
 		"dist": "webpack --config webpack.config.js",
 		"build": "npm-run-all dist alignVersion",
-		"watch": "webpack -w --config webpack.config.js"
+		"watch": "webpack -w --config webpack.config.js",
+		"pretty": "prettier -w '**/*.{js,jsx,ts,tsx}'"
 	},
 	"devDependencies": {
 		"@types/chroma-js": "^2.4.3",

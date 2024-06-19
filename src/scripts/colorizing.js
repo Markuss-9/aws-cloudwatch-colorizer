@@ -44,9 +44,7 @@ const colorizing = (elWithMessage, parentElem, pageSettings) => {
 		);
 
 		if (pageSettings.wantBackground) {
-			if (
-				parentElem.style.backgroundColor !== wordOptions.backgroundColor
-			) {
+			if (parentElem.style.backgroundColor !== wordOptions.backgroundColor) {
 				parentElem.style.backgroundColor = wordOptions.backgroundColor;
 			}
 		} else {

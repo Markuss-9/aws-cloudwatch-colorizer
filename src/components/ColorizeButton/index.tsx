@@ -1,5 +1,5 @@
-import { Button, Tooltip } from "@mui/material";
-import "./index.css";
+import { Button, Tooltip } from '@mui/material';
+import './index.css';
 
 interface master {
 	master: boolean;
@@ -7,19 +7,16 @@ interface master {
 
 const ColorizeButton = ({ master }: master) => {
 	const manualColorize = () => {
-		if (process.env.NODE_ENV === "production")
+		if (process.env.NODE_ENV === 'production')
 			chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
 				tabs.forEach(async (tab: any) => {
 					try {
 						chrome.tabs.sendMessage(tab.id, {
-							type: "manualColorize",
+							type: 'manualColorize',
 							payload: master,
 						});
 					} catch (error) {
-						console.error(
-							"Error communicating with content script:",
-							error,
-						);
+						console.error('Error communicating with content script:', error);
 					}
 				});
 			});
@@ -40,12 +37,12 @@ const ColorizeButton = ({ master }: master) => {
 			// }}
 			sx={{
 				border: 1,
-				borderImage: "var(--gradient) 1",
-				"&:hover": {
-					animation: "gradient-animation 1s ease",
-					animationFillMode: "both",
+				borderImage: 'var(--gradient) 1',
+				'&:hover': {
+					animation: 'gradient-animation 1s ease',
+					animationFillMode: 'both',
 				},
-				"&:disabled": {
+				'&:disabled': {
 					opacity: 0.4,
 				},
 			}}

@@ -9,7 +9,7 @@ let recentRequests = [];
 function notifyContentScript() {
 	chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
 		chrome.tabs.sendMessage(tabs[0].id, {
-			type: "networkRequestsCompleted",
+			type: 'networkRequestsCompleted',
 			recentRequests,
 		});
 	});
@@ -36,25 +36,25 @@ chrome.webRequest.onBeforeRequest.addListener(
 	function () {
 		ongoingRequests++;
 	},
-	{ urls: ["<all_urls>"] },
-	["blocking"],
+	{ urls: ['<all_urls>'] },
+	['blocking'],
 );
 
 chrome.webRequest.onCompleted.addListener(
 	function (details) {
 		ongoingRequests--;
-		if (details.method === "GET" || details.method === "POST") {
+		if (details.method === 'GET' || details.method === 'POST') {
 			// Track successful GET and POST requests only
 			trackRequest(details);
 		}
 		checkIfRequestsFinished();
 	},
-	{ urls: ["<all_urls>"] },
+	{ urls: ['<all_urls>'] },
 );
 
 // Listen for messages from the content script
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
-	if (message === "getOngoingRequests") {
+	if (message === 'getOngoingRequests') {
 		// Send the number of ongoing requests to the content script
 		sendResponse({ ongoingRequests });
 	}
@@ -62,7 +62,7 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 
 // Listen for page load completion to send the message
 chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
-	if (changeInfo.status === "complete") {
+	if (changeInfo.status === 'complete') {
 		notifyContentScript();
 	}
 });

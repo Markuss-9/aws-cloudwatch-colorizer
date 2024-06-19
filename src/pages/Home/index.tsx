@@ -1,6 +1,6 @@
-import GitHubIcon from "@mui/icons-material/GitHub";
-import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew";
-import FlashOnIcon from "@mui/icons-material/FlashOn";
+import GitHubIcon from '@mui/icons-material/GitHub';
+import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
+import FlashOnIcon from '@mui/icons-material/FlashOn';
 
 import {
 	ToggleButtonGroup,
@@ -9,12 +9,12 @@ import {
 	Typography,
 	Tooltip,
 	Box,
-} from "@mui/material";
+} from '@mui/material';
 
-import packageJson from "../../../package.json";
-import { Dispatch } from "react";
-import settingsType from "../../types/settingsType";
-import ColorizeButton from "../../components/ColorizeButton";
+import packageJson from '../../../package.json';
+import { Dispatch } from 'react';
+import settingsType from '../../types/settingsType';
+import ColorizeButton from '../../components/ColorizeButton';
 
 const Home = ({
 	settings,
@@ -35,8 +35,7 @@ const Home = ({
 		setSettings({
 			...settings,
 			...{
-				performance:
-					settings.performance !== "manual" ? "manual" : "dom",
+				performance: settings.performance !== 'manual' ? 'manual' : 'dom',
 			},
 		});
 
@@ -44,11 +43,11 @@ const Home = ({
 		<>
 			<Typography
 				sx={{
-					width: "fit-content",
-					height: "fit-content",
+					width: 'fit-content',
+					height: 'fit-content',
 					padding: 1,
 					right: 0,
-					position: "absolute",
+					position: 'absolute',
 					fontSize: 12,
 					lineHeight: 1,
 				}}
@@ -60,12 +59,12 @@ const Home = ({
 			</Typography>
 			<Button
 				variant="contained"
-				color={settings.master ? "on" : "off"}
+				color={settings.master ? 'on' : 'off'}
 				onClick={handleToggle}
 				sx={{
-					borderRadius: "50%",
-					width: "130px",
-					height: "130px",
+					borderRadius: '50%',
+					width: '130px',
+					height: '130px',
 				}}
 			>
 				{settings.master ? (
@@ -76,11 +75,11 @@ const Home = ({
 			</Button>
 			<ToggleButton
 				color="primary"
-				value={"AUTO"}
-				selected={settings.performance !== "manual"}
+				value={'AUTO'}
+				selected={settings.performance !== 'manual'}
 				onChange={handleAutoMode}
 				sx={{
-					position: "absolute",
+					position: 'absolute',
 					top: 120,
 					right: 15,
 				}}
@@ -93,12 +92,12 @@ const Home = ({
 				sx={{
 					margin: 3,
 					height: 50,
-					display: "flex",
-					justifyContent: "center",
-					alignItems: "center",
+					display: 'flex',
+					justifyContent: 'center',
+					alignItems: 'center',
 				}}
 			>
-				{settings.performance === "manual" ? (
+				{settings.performance === 'manual' ? (
 					<ColorizeButton master={settings.master} />
 				) : (
 					<ToggleButtonGroup
@@ -121,7 +120,7 @@ const Home = ({
 						{/* <ToggleButton disabled value="net"> */}
 						<Tooltip title="[WIP] It updates when the a network request has finished, maybe it will never come out">
 							<span>
-								<Button disabled sx={{ padding: "11px" }}>
+								<Button disabled sx={{ padding: '11px' }}>
 									NET
 								</Button>
 							</span>
@@ -131,13 +130,13 @@ const Home = ({
 				)}
 			</Box>
 
-			<Box sx={{ display: "inline-flex", alignItems: "center" }}>
+			<Box sx={{ display: 'inline-flex', alignItems: 'center' }}>
 				<Typography
 					sx={{
 						width: 165,
-						fontSize: "0.9rem",
-						display: "inline-flex",
-						alignItems: "center",
+						fontSize: '0.9rem',
+						display: 'inline-flex',
+						alignItems: 'center',
 					}}
 				>
 					Give a star at the repo
@@ -146,7 +145,7 @@ const Home = ({
 					sx={{ fontSize: 30 }}
 					onClick={() => {
 						window.open(
-							"https://github.com/Markuss-9/aws-cloudwatch-colorizer",
+							'https://github.com/Markuss-9/aws-cloudwatch-colorizer',
 						);
 					}}
 				/>

@@ -1,17 +1,17 @@
-import Accordion from "@mui/material/Accordion";
-import AccordionDetails from "@mui/material/AccordionDetails";
-import AccordionSummary from "@mui/material/AccordionSummary";
-import Typography from "@mui/material/Typography";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { Grid, Switch, Tooltip } from "@mui/material";
+import Accordion from '@mui/material/Accordion';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import Typography from '@mui/material/Typography';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { Grid, Switch, Tooltip } from '@mui/material';
 
-import { Dispatch, useState } from "react";
-import WordRowSettingColor from "../WordRowSettingColor";
-import WordRowSettingBackground from "../WordRowSettingBackground";
+import { Dispatch, useState } from 'react';
+import WordRowSettingColor from '../WordRowSettingColor';
+import WordRowSettingBackground from '../WordRowSettingBackground';
 import settingsType, {
 	accordionType,
 	optionsType,
-} from "../../types/settingsType";
+} from '../../types/settingsType';
 
 const CustomAccordion = ({
 	expanded,
@@ -52,7 +52,7 @@ const CustomAccordion = ({
 					expanded === keyAccordion &&
 					!disabledAccordions.includes(keyAccordion)
 				}
-				sx={{ width: "90%" }}
+				sx={{ width: '90%' }}
 				onChange={handleChange(keyAccordion)}
 				disabled={!section.isAvailable}
 				// disabled={disabledAccordions.includes(keyAccordion)}
@@ -61,9 +61,7 @@ const CustomAccordion = ({
 			>
 				<AccordionSummary
 					expandIcon={
-						!disabledAccordions.includes(keyAccordion) && (
-							<ExpandMoreIcon />
-						)
+						!disabledAccordions.includes(keyAccordion) && <ExpandMoreIcon />
 					}
 					aria-controls="panel2bh-content"
 					id="panel2bh-header"
@@ -73,18 +71,13 @@ const CustomAccordion = ({
 						<Switch
 							checked={accordionEnabled}
 							// defaultChecked={section.switch}
-							onClick={(
-								e: React.MouseEvent<
-									HTMLButtonElement,
-									MouseEvent
-								>,
-							) => {
+							onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
 								handleSwitchClick(e, keyAccordion);
 								setAccordionEnabled(!accordionEnabled);
 							}}
 						/>
 					</Tooltip>
-					<Typography sx={{ flexShrink: 0, marginLeft: "40px" }}>
+					<Typography sx={{ flexShrink: 0, marginLeft: '40px' }}>
 						{section.title}
 					</Typography>
 				</AccordionSummary>
@@ -95,9 +88,7 @@ const CustomAccordion = ({
 						justifyContent="center"
 						alignItems="center"
 					>
-						<Tooltip
-							title={`The words are replaced with the colorized label`}
-						>
+						<Tooltip title={`The words are replaced with the colorized label`}>
 							<Grid item>
 								<Typography>Color</Typography>
 							</Grid>
@@ -107,14 +98,10 @@ const CustomAccordion = ({
 								checked={wantBackground}
 								onClick={() => {
 									let tempSettings = settings;
-									tempSettings.advancedSettings[
-										keyAccordion
-									].wantBackground =
-										!tempSettings.advancedSettings[
-											keyAccordion
-										].wantBackground;
+									tempSettings.advancedSettings[keyAccordion].wantBackground =
+										!tempSettings.advancedSettings[keyAccordion].wantBackground;
 									setSettings({ ...tempSettings });
-									setShowColorPicker("");
+									setShowColorPicker('');
 									setWantBackground(!wantBackground);
 								}}
 							/>
