@@ -1,0 +1,14 @@
+[
+	{
+		"timestamp": 1718388747003,
+		"message": "warn A third generic error message"
+	},
+	{
+		"timestamp": 1718388747003,
+		"message": "WaRning some stuff"
+	},
+	{
+		"timestamp": 1718388747003,
+		"message": "WARN some stuff"
+	}
+]
