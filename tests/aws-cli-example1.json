@@ -1,0 +1,18 @@
+[
+	{
+		"timestamp": 1718388747000,
+		"message": "[31merror[39m A generic error message"
+	},
+	{
+		"timestamp": 1718388747000,
+		"message": "Today --- [31merror[39m A second generic error message"
+	},
+	{
+		"timestamp": 1718388747000,
+		"message": "321098 - [31merror[39m A third generic error message"
+	},
+	{
+		"timestamp": 1718388747000,
+		"message": "49071 - WARN - A generic error message"
+	}
+]
