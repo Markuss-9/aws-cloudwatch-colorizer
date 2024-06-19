@@ -1,6 +1,6 @@
 const defaultSettings = {
 	master: true,
-	performance: 'manual',
+	performance: 'dom',
 	advancedSettings: {
 		Log_Groups: {
 			title: 'Log groups',
