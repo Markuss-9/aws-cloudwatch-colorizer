@@ -1,3 +1,5 @@
+import defaultSettings from '../defaultSettings.ts';
+
 export const getListFromClass = (row) => {
 	let elements = [];
 	const iframe = document.querySelectorAll('iframe#microConsole-Logs')[0];
@@ -26,6 +28,9 @@ export const getSettings = () => {
 			if (chrome.runtime.lastError) {
 				reject(new Error(chrome.runtime.lastError));
 			} else {
+				if (!result.settings) {
+					return resolve(defaultSettings);
+				}
 				resolve(result.settings);
 			}
 		});
