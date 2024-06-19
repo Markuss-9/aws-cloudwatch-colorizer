@@ -1,23 +1,23 @@
-import colorizeAll from "./colorizeAll";
-import { settings, getSettings } from "./utils";
+import colorizeAll from './colorizeAll';
+import { settings, getSettings } from './utils';
 
-import { startInterval, resetInterval } from "./performance/timer";
-import { resetCheckIframe, mutationObs, startObserve } from "./performance/dom";
+import { startInterval, resetInterval } from './performance/timer';
+import { resetCheckIframe, mutationObs, startObserve } from './performance/dom';
 
 const startAction = async () => {
 	settings = await getSettings();
 	if (settings.master) {
 		switch (settings.performance) {
-			case "timer":
+			case 'timer':
 				startInterval();
 				mutationObs.disconnect();
 				resetCheckIframe();
 				break;
-			case "dom":
+			case 'dom':
 				resetInterval();
 				startObserve();
 				break;
-			case "net":
+			case 'net':
 				resetInterval();
 				mutationObs.disconnect();
 				resetCheckIframe();
@@ -37,12 +37,12 @@ const startAction = async () => {
 
 startAction();
 
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener((message) => {
 	switch (message.type) {
-		case "changeSettings":
+		case 'changeSettings':
 			startAction();
 			break;
-		case "manualColorize":
+		case 'manualColorize':
 			colorizeAll();
 			break;
 		default:

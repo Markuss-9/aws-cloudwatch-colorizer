@@ -1,64 +1,109 @@
-import colorizing from "./colorizing";
-import { getListFromClass, getListFromTag, settings } from "./utils";
+import _get from 'lodash/get';
+import _findIndex from 'lodash/findIndex';
+
+import colorizing from './colorizing';
+import { getListFromClass, getListFromTag, settings } from './utils';
+import injectStyleShadedEvenRows from './injectStyleShadedEvenRows';
+
+const logsGroupsFlow = () => {
+	try {
+		const tables = getListFromTag('table');
+		if (!tables.length) return;
+
+		const table = tables.find(
+			(table) => table['data-testid'] !== 'relative-range-slow-picks',
+		);
+
+		const thElements = getListFromTag('th', table);
+
+		const messageColPos = thElements.findIndex(
+			(thEl) => _get(thEl, ['dataset', 'focusId']) === 'header-message',
+		);
+
+		const tbody = getListFromTag('tbody', table)[0];
+		const trElements = getListFromTag('tr', tbody);
+
+		for (const row of trElements) {
+			if (row.getElementsByTagName('td')) {
+				const tdElements = row.getElementsByTagName('td');
+
+				if (Object.keys(tdElements).length - 1 < messageColPos) {
+					continue;
+				}
+
+				const span =
+					tdElements[messageColPos].getElementsByTagName('span');
+
+				console.assert(
+					span,
+					'span cannot be empty - type %s and value',
+					typeof span,
+					span,
+				);
+
+				console.assert(
+					Object.keys(span).length,
+					'span cannot be empty',
+				);
+
+				const child = span[span.length - 1];
+				colorizing(child, row, settings.advancedSettings['Log_Groups']);
+			}
+		}
+	} catch (error) {
+		console.error(`LOGS_GROUPS_FLOW: `, error);
+	}
+};
+
+const logsInsightsFlow = () => {
+	try {
+		const thElements = getListFromClass('logs-table__header-cell');
+
+		const messageColPos = _findIndex(thElements, {
+			innerText: '@message',
+		});
+
+		const elements = getListFromClass('logs-table__body-row');
+		for (let row of elements) {
+			if (row.getElementsByClassName('logs-table__body-cell').length) {
+				const child = row.getElementsByClassName(
+					'logs-table__body-cell',
+				)[messageColPos];
+				colorizing(
+					child,
+					row,
+					settings.advancedSettings['Log_Insights'],
+				);
+			}
+		}
+	} catch (error) {
+		console.error(`LOGS_INSIGHTS_FLOW: `, error);
+	}
+};
 
 const colorizeAll = () => {
-	const currentUrl = window.location.href;
+	try {
+		console.assert(settings !== undefined, 'Settings are not loaded');
+		const currentUrl = window.location.href;
 
-	if (currentUrl.includes("log-groups")) {
-		if (settings.advancedSettings["Log_Groups"].switch) {
-			const elements = getListFromClass("awsui-table-row");
-			for (let e of elements) {
-				if (
-					e.getElementsByClassName("logs__log-events-table__cell")[1]
-				) {
-					const child = e
-						.getElementsByClassName(
-							"logs__log-events-table__cell",
-						)[1]
-						.getElementsByTagName("span")[0];
-					colorizing(
-						child,
-						e,
-						settings.advancedSettings["Log_Groups"],
-					);
-				}
-			}
-			// e.getElementsByTagName("td")[2] gives the parent
+		const isLogsGroupsPage = currentUrl.includes('log-groups');
+		const isLogsInsightsPage = currentUrl.includes('logs-insights');
+
+		if (isLogsGroupsPage || isLogsInsightsPage) {
+			injectStyleShadedEvenRows();
 		}
-	} else if (currentUrl.includes("logs-insights")) {
-		if (settings.advancedSettings["Log_Insights"].switch) {
-			const elements = getListFromClass("logs-table__body-row");
-			const iframe = document.querySelectorAll(
-				"iframe#microConsole-Logs",
-			)[0];
-			if (iframe) {
-				let cont = getListFromTag("style");
-				const regexUpdateStyle =
-					/\.logs-table__body-row:nth-child\(2n\),.logs-table__body-row:nth-child\(2n\) .logs-table__body-cell{background-color:(.*)}/;
 
-				cont.forEach((styleElement) => {
-					if (regexUpdateStyle.test(styleElement.innerHTML)) {
-						styleElement.innerHTML = styleElement.innerHTML.replace(
-							".logs-table__body-row:nth-child(2n),.logs-table__body-row:nth-child(2n) .logs-table__body-cell{background-color:",
-							".logs-table__body-row:nth-child(2n),.logs-table__body-row:nth-child(2n) {background-color:",
-						);
-					}
-				});
+		if (isLogsGroupsPage) {
+			if (settings.advancedSettings['Log_Groups'].switch) {
+				logsGroupsFlow();
 			}
-
-			for (let e of elements) {
-				if (e.getElementsByClassName("logs-table__body-cell")[2]) {
-					const child = e.getElementsByClassName(
-						"logs-table__body-cell",
-					)[2];
-					colorizing(
-						child,
-						e,
-						settings.advancedSettings["Log_Insights"],
-					);
-				}
+		} else if (isLogsInsightsPage) {
+			if (settings.advancedSettings['Log_Insights'].switch) {
+				logsInsightsFlow();
 			}
 		}
+	} catch (error) {
+		console.error('COLORIZE_ALL: ', error);
 	}
 };
 

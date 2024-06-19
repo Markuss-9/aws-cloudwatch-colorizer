@@ -1,58 +1,63 @@
-import pretty from "./pretty";
-import { findIndex } from "lodash-es";
+import _isEmpty from 'lodash/isEmpty';
 
-const colorizing = (e, parent, pageSettings) => {
-	let computedStyle = window.getComputedStyle(parent);
-	let backgroundColor = computedStyle.backgroundColor;
+const changeWordColor = ({ wordOptions, foundWord, elWithMessage }) => {
+	const regex = new RegExp(`([\\S]*${foundWord}[\\S]*)(.*)`, 'i');
 
-	const wordsOptionsCurrentPage = pageSettings.words;
+	if (!elWithMessage.getElementsByTagName('label').length) {
+		const content = elWithMessage.textContent;
+
+		const match = content.match(regex);
+
+		if (match) {
+			const contentSplit = content.split(regex);
+			const injectLabel = `<label style="color:${wordOptions.color};">${wordOptions.emoji} ${wordOptions.label}</label>`;
+			elWithMessage.innerHTML = `${contentSplit[0]}${injectLabel}${contentSplit[2]}`;
+		}
+	}
+};
+
+const findWourd = ({ wordsOptionsCurrentPage, elWithMessage }) => {
 	const wordsToFind = wordsOptionsCurrentPage.map((word) => word.word);
-	let foundWord = null;
+	let foundWords = {};
+	const textToSearch = elWithMessage.textContent.slice(0, 50).toLowerCase();
 	for (const word of wordsToFind) {
-		const wordReg = new RegExp(`${word}`, "i");
-		if (wordReg.test(e.textContent.slice(0, 50))) {
-			foundWord = word;
-			break;
+		const index = textToSearch.indexOf(word);
+		if (index !== -1) {
+			foundWords[index] = word;
 		}
 	}
 
+	if (!_isEmpty(foundWords)) {
+		const words = Object.keys(foundWords);
+		return foundWords[words[0]];
+	}
+	return null;
+};
+
+const colorizing = (elWithMessage, parentElem, pageSettings) => {
+	const wordsOptionsCurrentPage = pageSettings.words;
+	const foundWord = findWourd({ wordsOptionsCurrentPage, elWithMessage });
+
 	if (foundWord !== null) {
-		let pos = findIndex(wordsOptionsCurrentPage, {
-			word: foundWord,
-		});
-		const wordOptions = wordsOptionsCurrentPage[pos];
+		const wordOptions = wordsOptionsCurrentPage.find(
+			(wordSettings) => wordSettings.word === foundWord,
+		);
 
 		if (pageSettings.wantBackground) {
 			if (
-				!parent.style.backgroundColor.includes(
-					`${wordOptions.backgroundColor}`,
-				)
+				parentElem.style.backgroundColor !== wordOptions.backgroundColor
 			) {
-				if (parent.style.backgroundColor.includes(`color-mix`)) {
-					parent.style.backgroundColor = "";
-					computedStyle = window.getComputedStyle(parent);
-					backgroundColor = computedStyle.backgroundColor;
-				}
-				parent.style.backgroundColor = `color-mix(in srgb, ${wordOptions.backgroundColor}, ${backgroundColor})`;
+				parentElem.style.backgroundColor = wordOptions.backgroundColor;
 			}
 		} else {
-			const dynamicRegex = new RegExp(
-				`(\\x1b\\[${wordOptions.code}m${foundWord}\\x1b\\[39m|${foundWord})(.*?)$`,
-			);
-			const dynamicRegexInit = new RegExp(
-				`\\x1b\\[${wordOptions.code}m${foundWord}\\x1b\\[39m|${foundWord}`,
-			);
-
-			if (!e.getElementsByTagName("span").length)
-				pretty(
-					e,
-					parent,
-					dynamicRegex,
-					dynamicRegexInit,
-					`<span style="color:${wordOptions.color};">${wordOptions.emoji} ${wordOptions.label}</span>`,
-				);
+			changeWordColor({
+				wordOptions,
+				foundWord,
+				elWithMessage,
+			});
 		}
-	} else parent.attributeStyleMap.delete("background-color");
+		return wordOptions;
+	} else parentElem.attributeStyleMap.delete('background-color');
 };
 
 export default colorizing;

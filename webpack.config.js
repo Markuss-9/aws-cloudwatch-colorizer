@@ -1,21 +1,21 @@
-const path = require("path");
-const HTMLPlugin = require("html-webpack-plugin");
-const CopyPlugin = require("copy-webpack-plugin");
-const TerserPlugin = require("terser-webpack-plugin");
+const path = require('path');
+const HTMLPlugin = require('html-webpack-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = [
 	{
 		entry: {
-			index: "./src/index.tsx",
+			index: './src/index.tsx',
 		},
-		mode: "production",
+		mode: 'production',
 		module: {
 			rules: [
 				{
 					test: /\.tsx?$/,
 					use: [
 						{
-							loader: "ts-loader",
+							loader: 'ts-loader',
 							options: {
 								compilerOptions: { noEmit: false },
 							},
@@ -25,13 +25,13 @@ module.exports = [
 				},
 				{
 					test: /\.css$/i,
-					use: ["style-loader", "css-loader"],
+					use: ['style-loader', 'css-loader'],
 				},
 				{
 					test: /\.svg$/,
 					use: [
 						{
-							loader: require.resolve("@svgr/webpack"),
+							loader: require.resolve('@svgr/webpack'),
 							options: {
 								prettier: false,
 								svgo: false,
@@ -43,9 +43,9 @@ module.exports = [
 							},
 						},
 						{
-							loader: require.resolve("file-loader"),
+							loader: require.resolve('file-loader'),
 							options: {
-								name: "static/media/[name].[hash].[ext]",
+								name: 'static/media/[name].[hash].[ext]',
 							},
 						},
 					],
@@ -59,34 +59,34 @@ module.exports = [
 			new CopyPlugin({
 				patterns: [
 					{
-						from: "src/scripts/manifest.json",
-						to: "../manifest.json",
+						from: 'src/scripts/manifest.json',
+						to: '../manifest.json',
 					},
 					{
-						from: "src/scripts/backgroundColor.css",
-						to: "../backgroundColor.css",
+						from: 'src/scripts/backgroundColor.css',
+						to: '../backgroundColor.css',
 					},
 					{
-						from: "img/aws_colorized.png",
-						to: "../img/aws_colorized.png",
+						from: 'img/aws_colorized.png',
+						to: '../img/aws_colorized.png',
 					},
 					{
-						from: "LICENSE",
-						to: "../",
+						from: 'LICENSE',
+						to: '../',
 					},
 				],
 			}),
-			...getHtmlPlugins(["index"]),
+			...getHtmlPlugins(['index']),
 		],
 		resolve: {
-			extensions: [".tsx", ".ts", ".js"],
+			extensions: ['.tsx', '.ts', '.js'],
 			alias: {
-				lodash: "lodash-es",
+				lodash: 'lodash-es',
 			},
 		},
 		output: {
-			path: path.join(__dirname, "dist/js"),
-			filename: "[name].js",
+			path: path.join(__dirname, 'dist/js'),
+			filename: '[name].js',
 		},
 		optimization: {
 			minimize: true,
@@ -104,12 +104,12 @@ module.exports = [
 	},
 	{
 		entry: {
-			index: "./src/scripts/colorize.js",
+			index: './src/scripts/main.js',
 		},
-		mode: "production",
+		mode: 'production',
 		output: {
-			path: path.join(__dirname, "dist"),
-			filename: "colorize.js",
+			path: path.join(__dirname, 'dist'),
+			filename: 'main.js',
 		},
 		optimization: {
 			minimize: true,
@@ -127,11 +127,15 @@ module.exports = [
 	},
 ];
 
+/**
+ *
+ * @param chunks
+ */
 function getHtmlPlugins(chunks) {
 	return chunks.map(
 		(chunk) =>
 			new HTMLPlugin({
-				title: "AWS Cloudwatch Colorizer",
+				title: 'AWS Cloudwatch Colorizer',
 				filename: `${chunk}.html`,
 				chunks: [chunk],
 			}),

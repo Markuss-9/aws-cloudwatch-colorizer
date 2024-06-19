@@ -1,4 +1,5 @@
-import colorizeAll from "../colorizeAll";
+import { debounce } from 'lodash';
+import colorizeAll from '../colorizeAll';
 
 export var intervalIdDOM = null;
 
@@ -7,13 +8,13 @@ export const resetCheckIframe = () => {
 };
 
 export const getIframeElement = () => {
-	return new Promise((resolve, reject) => {
+	return new Promise((resolve) => {
 		resetCheckIframe();
 		intervalIdDOM = setInterval(() => {
-			const element = document.getElementById("microConsole-Logs");
-			console.log("checking for iframe");
+			const element = document.getElementById('microConsole-Logs');
+			console.debug('checking for iframe');
 			if (element) {
-				console.log("found iframe");
+				console.debug('found iframe');
 				clearInterval(intervalIdDOM);
 				resolve(element);
 			}
@@ -21,17 +22,7 @@ export const getIframeElement = () => {
 	});
 };
 
-export var isRunning = false;
-
-export var mutationObs = new MutationObserver(() => {
-	if (!isRunning) {
-		isRunning = true;
-		setTimeout(() => {
-			colorizeAll();
-			isRunning = false;
-		}, 50);
-	}
-});
+export var mutationObs = new MutationObserver(debounce(colorizeAll, 50));
 
 export const startObserve = () =>
 	getIframeElement()
@@ -43,5 +34,5 @@ export const startObserve = () =>
 			});
 		})
 		.catch((error) => {
-			console.error("Error:", error);
+			console.error('Error:', error);
 		});

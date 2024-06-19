@@ -1,23 +1,21 @@
-const fs = require("fs");
+const fs = require('fs').promises;
 
-fs.readFile("package.json", (error, packageJson) => {
-	if (error) {
+const updateManifestVersion = async () => {
+	try {
+		const packageJson = await fs.readFile('package.json', 'utf8');
+		const packageParsed = JSON.parse(packageJson);
+
+		const manifestJson = await fs.readFile('dist/manifest.json', 'utf8');
+		let manifest = JSON.parse(manifestJson);
+		manifest.version = packageParsed.version;
+
+		const manifestAligned = JSON.stringify(manifest, null, 2); // Pretty-print JSON
+		await fs.writeFile('dist/manifest.json', manifestAligned);
+
+		console.log('Manifest version updated successfully');
+	} catch (error) {
 		console.error(error);
-		throw err;
 	}
-	var package = JSON.parse(packageJson);
-	fs.readFile("dist/manifest.json", (error, manifestJson) => {
-		if (error) {
-			console.error(error);
-			throw err;
-		}
-		var manifest = JSON.parse(manifestJson);
-		manifest.version = package.version;
-		const manifestAligned = JSON.stringify(manifest);
-		fs.writeFile("dist/manifest.json", manifestAligned, (error) => {
-			if (error) {
-				throw error;
-			}
-		});
-	});
-});
+};
+
+updateManifestVersion();
