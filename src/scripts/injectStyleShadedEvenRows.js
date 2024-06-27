@@ -57,7 +57,7 @@ const injectStyleShadedEvenRows = () => {
 								.logs__log-events-table-v3 table:not(.awsui-cw-date-time-range-calendar-table) td[class*=awsui_body-cell-shaded] {
 									background-color: ${logsGroups_shadeColor} !important;
 								}
-								.logs__log-events-table-v3 table:not(.awsui-cw-date-time-range-calendar-table) td[class*=awsui_body-cell-selected][class*=awsui_body-cell-shaded] {
+								div .logs__log-events-table-v3 table:not(.awsui-cw-date-time-range-calendar-table) td[class*=awsui_body-cell-selected][class*=awsui_body-cell-shaded] {
 									background-color: ${logsGroups_shadeColor} !important;
 								}
 							`
