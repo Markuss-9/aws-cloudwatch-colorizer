@@ -47,7 +47,7 @@ const defaultSettings = {
 			switch: true,
 			isAvailable: true,
 			wantBackground: true,
-			evenRowsShadeColor: 'rgba(42, 42, 42, 0.4)',
+			// evenRowsShadeColor: 'rgba(42, 42, 42, 0.4)',
 		},
 		Log_Insights: {
 			title: 'Log Insights',
@@ -93,7 +93,7 @@ const defaultSettings = {
 			switch: true,
 			isAvailable: true,
 			wantBackground: true,
-			evenRowsShadeColor: 'rgba(42, 42, 42, 0.4)',
+			// evenRowsShadeColor: 'rgba(42, 42, 42, 0.4)',
 		},
 		Log_Tails: {
 			title: 'Log Tails',
@@ -139,7 +139,7 @@ const defaultSettings = {
 			switch: false,
 			isAvailable: false,
 			wantBackground: true,
-			evenRowsShadeColor: 'rgba(42, 42, 42, 0.4)',
+			// evenRowsShadeColor: 'rgba(42, 42, 42, 0.4)',
 		},
 	},
 };

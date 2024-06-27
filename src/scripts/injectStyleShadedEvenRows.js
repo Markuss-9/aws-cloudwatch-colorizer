@@ -7,14 +7,28 @@ const injectCSS = (css, iframe) => {
 	iframe.contentDocument.head.appendChild(style);
 };
 
-const DEFAULT_SHADE_COLOR = 'rgba(42, 42, 42, 0.4)';
+const DEFAULT_LIGHT_SHADE_COLOR = 'rgba(42, 42, 42, 0.1)';
+const DEFAULT_DARK_SHADE_COLOR = 'rgba(42, 42, 42, 0.4)';
+
+const getIsDarkMode = () => {
+	const bodyClassList = document.body.classList;
+	for (const bodyClass of bodyClassList) {
+		if (bodyClass.includes('dark')) return true;
+	}
+	return false;
+};
 
 const injectStyleShadedEvenRows = () => {
 	try {
 		const iframe = document.querySelector('iframe#microConsole-Logs');
 
 		if (iframe) {
+			const isDarkMode = getIsDarkMode();
 			const iframeDoc = iframe.contentDocument;
+
+			const defaultShadeColor = isDarkMode
+				? DEFAULT_DARK_SHADE_COLOR
+				: DEFAULT_LIGHT_SHADE_COLOR;
 
 			if (
 				settings.advancedSettings['Log_Groups'].switch ||
@@ -25,14 +39,14 @@ const injectStyleShadedEvenRows = () => {
 				const logsGroups_shadeColor = _get(
 					settings,
 					['advancedSettings', 'Log_Groups', 'evenRowsShadeColor'],
-					DEFAULT_SHADE_COLOR,
+					defaultShadeColor,
 				);
 				const logsInsights_needInject =
 					settings.advancedSettings['Log_Insights'].wantBackground;
 				const logsInsights_shadeColor = _get(
 					settings,
 					['advancedSettings', 'Log_Insights', 'evenRowsShadeColor'],
-					DEFAULT_SHADE_COLOR,
+					defaultShadeColor,
 				);
 
 				const css = `
