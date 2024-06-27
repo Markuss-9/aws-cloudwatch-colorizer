@@ -21,6 +21,7 @@ export interface accordionsIDType {
 }
 
 interface settingsType {
+	version: string;
 	master: boolean;
 	performance: string;
 	advancedSettings: accordionsIDType;

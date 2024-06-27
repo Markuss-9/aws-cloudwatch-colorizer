@@ -31,6 +31,14 @@ export const getSettings = () => {
 				if (!result.settings) {
 					return resolve(defaultSettings);
 				}
+				const version = result.settings.version;
+				if (!version || version !== defaultSettings.version) {
+					console.info(
+						`Your settings (v${version}) are outdated, forcing reset to default v${defaultSettings.version}`,
+					);
+					chrome.storage.local.set({ settings: defaultSettings });
+					return resolve(defaultSettings);
+				}
 				resolve(result.settings);
 			}
 		});

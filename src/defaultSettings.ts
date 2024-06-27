@@ -1,4 +1,5 @@
 const defaultSettings = {
+	version: '1.0.2',
 	master: true,
 	performance: 'dom',
 	advancedSettings: {
