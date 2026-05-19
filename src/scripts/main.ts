@@ -1,13 +1,13 @@
 import colorizeAll from './colorizeAll';
-import { settings, getSettings } from './utils';
+import * as utils from './utils';
 
 import { startInterval, resetInterval } from './performance/timer';
 import { resetCheckIframe, mutationObs, startObserve } from './performance/dom';
 
 const startAction = async () => {
-	settings = await getSettings();
-	if (settings.master) {
-		switch (settings.performance) {
+	utils.setSettings(await utils.getSettings());
+	if (utils.settings.master) {
+		switch (utils.settings.performance) {
 			case 'timer':
 				startInterval();
 				mutationObs.disconnect();

@@ -1,27 +1,26 @@
-import _get from 'lodash/get';
-import _findIndex from 'lodash/findIndex';
+import { get as _get, findIndex as _findIndex } from 'lodash-es';
 
 import colorizing from './colorizing';
-import { getListFromClass, getListFromTag, settings } from './utils';
+import * as utils from './utils';
 import injectStyleShadedEvenRows from './injectStyleShadedEvenRows';
 
 const logsGroupsFlow = () => {
 	try {
-		const tables = getListFromTag('table');
+		const tables = utils.getListFromTag('table');
 		if (!tables.length) return;
 
 		const table = tables.find(
 			(table) => table['data-testid'] !== 'relative-range-slow-picks',
 		);
 
-		const thElements = getListFromTag('th', table);
+		const thElements = utils.getListFromTag('th', table);
 
 		const messageColPos = thElements.findIndex(
 			(thEl) => _get(thEl, ['dataset', 'focusId']) === 'header-message',
 		);
 
-		const tbody = getListFromTag('tbody', table)[0];
-		const trElements = getListFromTag('tr', tbody);
+		const tbody = utils.getListFromTag('tbody', table)[0];
+		const trElements = utils.getListFromTag('tr', tbody);
 
 		for (const row of trElements) {
 			if (row.getElementsByTagName('td')) {
@@ -43,7 +42,7 @@ const logsGroupsFlow = () => {
 				console.assert(Object.keys(span).length, 'span cannot be empty');
 
 				const child = span[span.length - 1];
-				colorizing(child, row, settings.advancedSettings['Log_Groups']);
+				colorizing(child, row, utils.settings.advancedSettings['Log_Groups']);
 			}
 		}
 	} catch (error) {
@@ -53,19 +52,19 @@ const logsGroupsFlow = () => {
 
 const logsInsightsFlow = () => {
 	try {
-		const thElements = getListFromClass('logs-table__header-cell');
+		const thElements = utils.getListFromClass('logs-table__header-cell');
 
 		const messageColPos = _findIndex(thElements, {
 			innerText: '@message',
 		});
 
-		const elements = getListFromClass('logs-table__body-row');
+		const elements = utils.getListFromClass('logs-table__body-row');
 		for (let row of elements) {
 			if (row.getElementsByClassName('logs-table__body-cell').length) {
 				const child = row.getElementsByClassName('logs-table__body-cell')[
 					messageColPos
 				];
-				colorizing(child, row, settings.advancedSettings['Log_Insights']);
+				colorizing(child, row, utils.settings.advancedSettings['Log_Insights']);
 			}
 		}
 	} catch (error) {
@@ -75,7 +74,7 @@ const logsInsightsFlow = () => {
 
 const colorizeAll = () => {
 	try {
-		console.assert(settings !== undefined, 'Settings are not loaded');
+		console.assert(utils.settings !== undefined, 'Settings are not loaded');
 		const currentUrl = window.location.href;
 
 		const isLogsGroupsPage = currentUrl.includes('log-groups');
@@ -86,11 +85,11 @@ const colorizeAll = () => {
 		}
 
 		if (isLogsGroupsPage) {
-			if (settings.advancedSettings['Log_Groups'].switch) {
+			if (utils.settings.advancedSettings['Log_Groups'].switch) {
 				logsGroupsFlow();
 			}
 		} else if (isLogsInsightsPage) {
-			if (settings.advancedSettings['Log_Insights'].switch) {
+			if (utils.settings.advancedSettings['Log_Insights'].switch) {
 				logsInsightsFlow();
 			}
 		}

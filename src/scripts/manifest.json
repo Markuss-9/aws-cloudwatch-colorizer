@@ -6,7 +6,7 @@
 	"manifest_version": 3,
 	"icons": { "128": "img/aws_colorized.png" },
 	"action": {
-		"default_popup": "js/index.html",
+		"default_popup": "index.html",
 		"default_icon": { "128": "img/aws_colorized.png" }
 	},
 	"permissions": ["storage", "tabs"],
