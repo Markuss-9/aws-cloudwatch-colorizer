@@ -1,7 +1,7 @@
 import { Dispatch, useState } from 'react';
 import { ColorResult } from 'react-color';
 import { Box, Grid, Switch, Tooltip, Typography } from '@mui/material';
-import _ from 'lodash';
+import _ from 'lodash-es';
 
 import ColorPicker from '../ColorPicker';
 import info from '../Info';

@@ -15,3 +15,12 @@ AWS cli to insert some test cases
 ```shell
 aws logs put-log-events --log-group-name [myLogGroup] --log-stream-name [myLogSteam] --log-events file://d://myPath//tests//aws-cli-example1.json
 ```
+
+
+
+## For migrating to shadcn
+
+
+color picker
+
+https://www.shadcn.io/components/color-picker

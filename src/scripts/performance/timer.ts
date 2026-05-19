@@ -1,6 +1,6 @@
 import colorizeAll from '../colorizeAll';
 
-var intervalId = null;
+let intervalId: number | null = null;
 
 export const resetInterval = () => {
 	if (intervalId) {

@@ -1,14 +1,14 @@
 import defaultSettings from '../defaultSettings.ts';
 
-export const getListFromClass = (row) => {
-	let elements = [];
+export const getListFromClass = (row: string): Element[] => {
+	let elements: Element[] = [];
 	const iframe = document.querySelectorAll('iframe#microConsole-Logs')[0];
 	if (iframe) elements = iframe.contentDocument.getElementsByClassName(row);
 	return [].slice.call(elements);
 };
 
-export const getListFromTag = (row, container) => {
-	let elements = [];
+export const getListFromTag = (row: string, container?: Element): Element[] => {
+	let elements: Element[] = [];
 	const iframe = document.querySelectorAll('iframe#microConsole-Logs')[0];
 	if (iframe) {
 		if (container) {
@@ -20,9 +20,13 @@ export const getListFromTag = (row, container) => {
 	return [].slice.call(elements);
 };
 
-export var settings;
+export let settings: any = defaultSettings;
 
-export const getSettings = () => {
+export const setSettings = (newSettings: any) => {
+	settings = newSettings;
+};
+
+export const getSettings = (): Promise<any> => {
 	return new Promise((resolve, reject) => {
 		chrome.storage.local.get(['settings'], (result) => {
 			if (chrome.runtime.lastError) {

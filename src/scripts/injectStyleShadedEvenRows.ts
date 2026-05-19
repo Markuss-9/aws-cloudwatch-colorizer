@@ -1,7 +1,7 @@
 import { settings } from './utils';
 import _get from 'lodash/get';
 
-const injectCSS = (css, iframe) => {
+const injectCSS = (css: string, iframe: HTMLIFrameElement) => {
 	const style = iframe.contentDocument.createElement('style');
 	style.textContent = css;
 	iframe.contentDocument.head.appendChild(style);
@@ -10,7 +10,7 @@ const injectCSS = (css, iframe) => {
 const DEFAULT_LIGHT_SHADE_COLOR = 'rgba(42, 42, 42, 0.1)';
 const DEFAULT_DARK_SHADE_COLOR = 'rgba(42, 42, 42, 0.4)';
 
-const getIsDarkMode = () => {
+const getIsDarkMode = (): boolean => {
 	const bodyClassList = document.body.classList;
 	for (const bodyClass of bodyClassList) {
 		if (bodyClass.includes('dark')) return true;
