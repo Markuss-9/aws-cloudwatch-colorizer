@@ -1,4 +1,5 @@
-import _isEmpty from 'lodash/isEmpty';
+import { isEmpty as _isEmpty } from 'lodash-es';
+import type { PageSettings } from '../types';
 
 const changeWordColor = ({
   wordOptions,
@@ -28,12 +29,7 @@ const findWourd = ({
   wordsOptionsCurrentPage,
   elWithMessage,
 }: {
-  wordsOptionsCurrentPage: Array<{
-    word: string;
-    color: string;
-    emoji: string;
-    label: string;
-  }>;
+  wordsOptionsCurrentPage: PageSettings['words'];
   elWithMessage: HTMLElement;
 }) => {
   const wordsToFind = wordsOptionsCurrentPage.map((word) => word.word);
@@ -56,7 +52,7 @@ const findWourd = ({
 const colorizing = (
   elWithMessage: HTMLElement,
   parentElem: HTMLElement,
-  pageSettings: any,
+  pageSettings: PageSettings,
 ) => {
   const wordsOptionsCurrentPage = pageSettings.words;
   const foundWord = findWourd({ wordsOptionsCurrentPage, elWithMessage });

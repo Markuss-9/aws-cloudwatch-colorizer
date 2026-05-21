@@ -3,6 +3,7 @@ import * as utils from './utils';
 
 import { startInterval, resetInterval } from './performance/timer';
 import { resetCheckIframe, mutationObs, startObserve } from './performance/dom';
+import type { ExtensionMessage } from '../types';
 
 const startAction = async () => {
   utils.setSettings(await utils.getSettings());
@@ -37,7 +38,7 @@ const startAction = async () => {
 
 startAction();
 
-chrome.runtime.onMessage.addListener((message) => {
+chrome.runtime.onMessage.addListener((message: ExtensionMessage) => {
   switch (message.type) {
     case 'changeSettings':
       startAction();
