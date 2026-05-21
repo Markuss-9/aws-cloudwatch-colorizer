@@ -1,7 +1,10 @@
 import { settings } from './utils';
-import _get from 'lodash/get';
+import { get as _get } from 'lodash-es';
+import { log } from '../logger';
+import { assert } from '../assert';
 
 const injectCSS = (css: string, iframe: HTMLIFrameElement) => {
+  assert(iframe.contentDocument, 'contentDocument must exist');
   const style = iframe.contentDocument.createElement('style');
   style.textContent = css;
   iframe.contentDocument.head.appendChild(style);
@@ -20,36 +23,50 @@ const getIsDarkMode = (): boolean => {
 
 const injectStyleShadedEvenRows = () => {
   try {
-    const iframe = document.querySelector('iframe#microConsole-Logs');
+    const iframe = document.querySelector(
+      'iframe#microConsole-Logs',
+    ) as HTMLIFrameElement | null;
 
-    if (iframe) {
-      const isDarkMode = getIsDarkMode();
-      const iframeDoc = iframe.contentDocument;
+    if (!iframe) {
+      log.debug('iframe not found, skipping');
+      return;
+    }
 
-      const defaultShadeColor = isDarkMode
-        ? DEFAULT_DARK_SHADE_COLOR
-        : DEFAULT_LIGHT_SHADE_COLOR;
+    const isDarkMode = getIsDarkMode();
+    const iframeDoc = iframe.contentDocument;
 
-      if (
-        settings.advancedSettings['Log_Groups'].switch ||
-        settings.advancedSettings['Log_Insights'].switch
-      ) {
-        const logsGroups_needInject =
-          settings.advancedSettings['Log_Groups'].wantBackground;
-        const logsGroups_shadeColor = _get(
-          settings,
-          ['advancedSettings', 'Log_Groups', 'evenRowsShadeColor'],
-          defaultShadeColor,
-        );
-        const logsInsights_needInject =
-          settings.advancedSettings['Log_Insights'].wantBackground;
-        const logsInsights_shadeColor = _get(
-          settings,
-          ['advancedSettings', 'Log_Insights', 'evenRowsShadeColor'],
-          defaultShadeColor,
-        );
+    if (!iframeDoc) {
+      log.debug('iframe contentDocument not ready, skipping');
+      return;
+    }
 
-        const css = `
+    const defaultShadeColor = isDarkMode
+      ? DEFAULT_DARK_SHADE_COLOR
+      : DEFAULT_LIGHT_SHADE_COLOR;
+
+    if (
+      !settings.advancedSettings['Log_Groups'].switch &&
+      !settings.advancedSettings['Log_Insights'].switch
+    ) {
+      return;
+    }
+
+    const logsGroups_needInject =
+      settings.advancedSettings['Log_Groups'].wantBackground;
+    const logsGroups_shadeColor = _get(
+      settings,
+      ['advancedSettings', 'Log_Groups', 'evenRowsShadeColor'],
+      defaultShadeColor,
+    );
+    const logsInsights_needInject =
+      settings.advancedSettings['Log_Insights'].wantBackground;
+    const logsInsights_shadeColor = _get(
+      settings,
+      ['advancedSettings', 'Log_Insights', 'evenRowsShadeColor'],
+      defaultShadeColor,
+    );
+
+    const css = `
 					${
             logsInsights_needInject
               ? `
@@ -79,14 +96,13 @@ const injectStyleShadedEvenRows = () => {
           }
 				`;
 
-        if (!iframeDoc.querySelector('style[data-id="shaded-rows"]')) {
-          injectCSS(css, iframe);
-          //NOTE - add attribute so that the second time i call the func i can check if already injected
-          iframeDoc
-            .querySelector('style:last-of-type')
-            .setAttribute('data-id', 'shaded-rows');
-        }
-      }
+    if (!iframeDoc.querySelector('style[data-id="shaded-rows"]')) {
+      log.debug('injecting shaded rows CSS');
+      injectCSS(css, iframe);
+      //NOTE - add attribute so that the second time i call the func i can check if already injected
+      iframeDoc
+        .querySelector('style:last-of-type')
+        .setAttribute('data-id', 'shaded-rows');
     }
   } catch (error) {
     console.error(error);

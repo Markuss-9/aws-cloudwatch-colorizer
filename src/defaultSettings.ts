@@ -1,4 +1,6 @@
-const defaultSettings = {
+import type { Settings } from './types';
+
+const defaultSettings: Settings = {
   version: '1.0.2',
   master: true,
   performance: 'dom',

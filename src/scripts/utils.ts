@@ -1,4 +1,5 @@
-import defaultSettings from '../defaultSettings.ts';
+import defaultSettings from '../defaultSettings';
+import type { Settings } from '../types';
 
 export const getListFromClass = (row: string): Element[] => {
   let elements: Element[] = [];
@@ -20,17 +21,17 @@ export const getListFromTag = (row: string, container?: Element): Element[] => {
   return [].slice.call(elements);
 };
 
-export let settings: any = defaultSettings;
+export let settings: Settings = defaultSettings;
 
-export const setSettings = (newSettings: any) => {
+export const setSettings = (newSettings: Settings) => {
   settings = newSettings;
 };
 
-export const getSettings = (): Promise<any> => {
+export const getSettings = (): Promise<Settings> => {
   return new Promise((resolve, reject) => {
-    chrome.storage.local.get(['settings'], (result) => {
+    chrome.storage.local.get(['settings'], (result: { settings?: Settings }) => {
       if (chrome.runtime.lastError) {
-        reject(new Error(chrome.runtime.lastError));
+        reject(chrome.runtime.lastError);
       } else {
         if (!result.settings) {
           return resolve(defaultSettings);
