@@ -1,4 +1,5 @@
 import { debounce } from 'lodash-es';
+import { log } from '@/logger';
 import colorizeAll from '@/scripts/colorizeAll';
 import { assert } from '@/assert';
 
@@ -16,9 +17,9 @@ export const getIframeElement = (): Promise<HTMLIFrameElement> => {
       const element = document.getElementById(
         'microConsole-Logs',
       ) as HTMLIFrameElement | null;
-      console.debug('checking for iframe');
+      log.debug('checking for iframe');
       if (element) {
-        console.debug('found iframe');
+        log.debug('found iframe');
         clearInterval(intervalIdDOM);
         resolve(element);
       }
@@ -39,5 +40,5 @@ export const startObserve = () =>
       });
     })
     .catch((error) => {
-      console.error('Error:', error);
+      log.error('Error:', error);
     });

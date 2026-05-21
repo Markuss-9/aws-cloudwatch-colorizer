@@ -44,6 +44,8 @@ const injectStyleShadedEvenRows = () => {
       ? DEFAULT_DARK_SHADE_COLOR
       : DEFAULT_LIGHT_SHADE_COLOR;
 
+    assert(settings, 'settings must exist');
+
     if (
       !settings.advancedSettings['Log_Groups'].switch &&
       !settings.advancedSettings['Log_Insights'].switch
@@ -99,13 +101,17 @@ const injectStyleShadedEvenRows = () => {
     if (!iframeDoc.querySelector('style[data-id="shaded-rows"]')) {
       log.debug('injecting shaded rows CSS');
       injectCSS(css, iframe);
+
       //NOTE - add attribute so that the second time i call the func i can check if already injected
-      iframeDoc
-        .querySelector('style:last-of-type')
-        .setAttribute('data-id', 'shaded-rows');
+      const styleTag = iframeDoc.querySelector('style:last-of-type') as HTMLStyleElement | null;
+      if (!styleTag) {
+        log.warn('style tag with last-of-type not found');
+        return;
+      }
+      styleTag.setAttribute('data-id', 'shaded-rows');
     }
   } catch (error) {
-    console.error(error);
+    log.error(error);
   }
 };
 

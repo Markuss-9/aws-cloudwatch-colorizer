@@ -1,4 +1,5 @@
 import { assert } from '@/assert';
+import { log } from '@/logger';
 import defaultSettings from '@/defaultSettings';
 import type { Settings } from '@/types';
 
@@ -26,7 +27,7 @@ export const getListFromTag = (row: string, container?: Element): Element[] => {
   return [].slice.call(elements);
 };
 
-export let settings: Settings = defaultSettings;
+export let settings: Settings | undefined = defaultSettings;
 
 export const setSettings = (newSettings: Settings) => {
   settings = newSettings;
@@ -45,7 +46,7 @@ export const getSettings = (): Promise<Settings> => {
         }
         const version = result.settings.version;
         if (!version || version !== defaultSettings.version) {
-          console.info(
+          log.info(
             `Your settings (v${version}) are outdated, forcing reset to default v${defaultSettings.version}`,
           );
           chrome.storage.local.set({ settings: defaultSettings });
