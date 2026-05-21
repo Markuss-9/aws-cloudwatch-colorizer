@@ -2,7 +2,7 @@ import './style.css';
 
 import { Dispatch, useEffect, useState } from 'react';
 
-import settingsType, { accordionType } from '../../types/settingsType';
+import settingsType, { accordionType } from '@/types/settingsType';
 import CustomAccordion from './CustomAccordion';
 
 export default function ControlledAccordions({

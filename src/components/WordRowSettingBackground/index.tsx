@@ -6,7 +6,7 @@ import _ from 'lodash-es';
 import ColorPicker from '../ColorPicker';
 import info from '../Info';
 import CircleButtonColor from '../CircleButtonColor';
-import settingsType, { optionsType } from '../../types/settingsType';
+import settingsType, { optionsType } from '@/types/settingsType';
 
 const WordRowSettingBackground = ({
   settings,

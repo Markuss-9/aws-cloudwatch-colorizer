@@ -3,7 +3,7 @@ import * as utils from './utils';
 
 import { startInterval, resetInterval } from './performance/timer';
 import { resetCheckIframe, mutationObs, startObserve } from './performance/dom';
-import type { ExtensionMessage } from '../types';
+import type { ExtensionMessage } from '@/types';
 
 const startAction = async () => {
   utils.setSettings(await utils.getSettings());

@@ -1,7 +1,7 @@
 import { settings } from './utils';
 import { get as _get } from 'lodash-es';
-import { log } from '../logger';
-import { assert } from '../assert';
+import { log } from '@/logger';
+import { assert } from '@/assert';
 
 const injectCSS = (css: string, iframe: HTMLIFrameElement) => {
   assert(iframe.contentDocument, 'contentDocument must exist');
