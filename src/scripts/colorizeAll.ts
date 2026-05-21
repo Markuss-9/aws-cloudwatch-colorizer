@@ -1,8 +1,10 @@
 import { get as _get, findIndex as _findIndex } from 'lodash-es';
+import { log } from '@/logger';
 
 import colorizing from './colorizing';
 import * as utils from './utils';
 import injectStyleShadedEvenRows from './injectStyleShadedEvenRows';
+import { assert } from '@/assert';
 
 const logsGroupsFlow = () => {
   try {
@@ -32,21 +34,16 @@ const logsGroupsFlow = () => {
 
         const span = tdElements[messageColPos].getElementsByTagName('span');
 
-        console.assert(
-          span,
-          'span cannot be empty - type %s and value',
-          typeof span,
-          span,
-        );
-
-        console.assert(Object.keys(span).length, 'span cannot be empty');
+        assert(span, 'span cannot be empty');
+        assert(utils.settings, 'settings must exist');
+        assert(Object.keys(span).length, 'span cannot be empty');
 
         const child = span[span.length - 1];
         colorizing(child, row, utils.settings.advancedSettings['Log_Groups']);
       }
     }
   } catch (error) {
-    console.error(`LOGS_GROUPS_FLOW: `, error);
+    log.error(`LOGS_GROUPS_FLOW: `, error);
   }
 };
 
@@ -68,21 +65,22 @@ const logsInsightsFlow = () => {
       }
     }
   } catch (error) {
-    console.error(`LOGS_INSIGHTS_FLOW: `, error);
+    log.error(`LOGS_INSIGHTS_FLOW: `, error);
   }
 };
 
 const colorizeAll = () => {
   try {
-    console.assert(utils.settings !== undefined, 'Settings are not loaded');
     const currentUrl = window.location.href;
-
+    
     const isLogsGroupsPage = currentUrl.includes('log-groups');
     const isLogsInsightsPage = currentUrl.includes('logs-insights');
-
+    
     if (isLogsGroupsPage || isLogsInsightsPage) {
       injectStyleShadedEvenRows();
     }
+
+    assert(utils.settings, "Settings are not loaded");
 
     if (isLogsGroupsPage) {
       if (utils.settings.advancedSettings['Log_Groups'].switch) {
@@ -94,7 +92,7 @@ const colorizeAll = () => {
       }
     }
   } catch (error) {
-    console.error('COLORIZE_ALL: ', error);
+    log.error('COLORIZE_ALL: ', error);
   }
 };
 

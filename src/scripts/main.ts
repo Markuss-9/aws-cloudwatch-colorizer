@@ -1,12 +1,17 @@
+import { log } from '@/logger';
 import colorizeAll from './colorizeAll';
 import * as utils from './utils';
 
 import { startInterval, resetInterval } from './performance/timer';
 import { resetCheckIframe, mutationObs, startObserve } from './performance/dom';
 import type { ExtensionMessage } from '@/types';
+import { assert } from '@/assert';
 
 const startAction = async () => {
   utils.setSettings(await utils.getSettings());
+
+  assert(utils.settings, "settings must exist");
+
   if (utils.settings.master) {
     switch (utils.settings.performance) {
       case 'timer':
@@ -47,6 +52,6 @@ chrome.runtime.onMessage.addListener((message: ExtensionMessage) => {
       colorizeAll();
       break;
     default:
-      console.log(`no message.type matched`);
+      log.info(`no message.type matched`);
   }
 });
