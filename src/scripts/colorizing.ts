@@ -1,6 +1,10 @@
 import _isEmpty from 'lodash/isEmpty';
 
-const changeWordColor = ({ wordOptions, foundWord, elWithMessage }: {
+const changeWordColor = ({
+  wordOptions,
+  foundWord,
+  elWithMessage,
+}: {
   wordOptions: { color: string; emoji: string; label: string };
   foundWord: string;
   elWithMessage: HTMLElement;
@@ -20,8 +24,16 @@ const changeWordColor = ({ wordOptions, foundWord, elWithMessage }: {
   }
 };
 
-const findWourd = ({ wordsOptionsCurrentPage, elWithMessage }: {
-  wordsOptionsCurrentPage: Array<{ word: string; color: string; emoji: string; label: string; }>;
+const findWourd = ({
+  wordsOptionsCurrentPage,
+  elWithMessage,
+}: {
+  wordsOptionsCurrentPage: Array<{
+    word: string;
+    color: string;
+    emoji: string;
+    label: string;
+  }>;
   elWithMessage: HTMLElement;
 }) => {
   const wordsToFind = wordsOptionsCurrentPage.map((word) => word.word);
@@ -41,7 +53,11 @@ const findWourd = ({ wordsOptionsCurrentPage, elWithMessage }: {
   return null;
 };
 
-const colorizing = (elWithMessage: HTMLElement, parentElem: HTMLElement, pageSettings: any) => {
+const colorizing = (
+  elWithMessage: HTMLElement,
+  parentElem: HTMLElement,
+  pageSettings: any,
+) => {
   const wordsOptionsCurrentPage = pageSettings.words;
   const foundWord = findWourd({ wordsOptionsCurrentPage, elWithMessage });
 

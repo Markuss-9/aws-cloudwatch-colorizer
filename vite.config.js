@@ -11,36 +11,36 @@ export default defineConfig({
         {
           src: 'src/scripts/*.json',
           dest: '',
-          rename: { stripBase: true }
+          rename: { stripBase: true },
         },
         {
           src: 'src/scripts/*.css',
           dest: '',
-          rename: { stripBase: true }
+          rename: { stripBase: true },
         },
         {
           src: 'img/*.png',
           dest: 'img',
-          rename: { stripBase: true }
+          rename: { stripBase: true },
         },
         {
           src: 'LICENSE',
-          dest: ''
-        }
-      ]
-    })
+          dest: '',
+        },
+      ],
+    }),
   ],
   build: {
     outDir: 'dist',
     rollupOptions: {
       input: {
-        index: resolve(__dirname, 'index.html')
+        index: resolve(__dirname, 'index.html'),
       },
       output: {
         entryFileNames: 'js/[name].[hash].js',
         chunkFileNames: 'js/[name].[hash].js',
-        assetFileNames: 'js/[name].[hash].[ext]'
-      }
-    }
-  }
+        assetFileNames: 'js/[name].[hash].[ext]',
+      },
+    },
+  },
 });
