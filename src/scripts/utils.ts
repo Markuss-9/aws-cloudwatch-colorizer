@@ -4,9 +4,11 @@ import type { Settings } from '@/types';
 
 export const getListFromClass = (row: string): Element[] => {
   let elements: Element[] = [];
-  const iframe = document.querySelectorAll('iframe#microConsole-Logs')[0] as HTMLIFrameElement | null;
-  assert(iframe, "iframe must exist");
-  assert(iframe.contentDocument, "contentDocument must exist");
+  const iframe = document.querySelectorAll(
+    'iframe#microConsole-Logs',
+  )[0] as HTMLIFrameElement | null;
+  assert(iframe, 'iframe must exist');
+  assert(iframe.contentDocument, 'contentDocument must exist');
   if (iframe) elements = iframe.contentDocument.getElementsByClassName(row);
   return [].slice.call(elements);
 };
@@ -32,10 +34,12 @@ export const setSettings = (newSettings: Settings) => {
 
 export const getSettings = (): Promise<Settings> => {
   return new Promise((resolve, reject) => {
-    chrome.storage.local.get(['settings'], (result: { settings?: Settings }) => {
-      if (chrome.runtime.lastError) {
-        reject(chrome.runtime.lastError);
-      } else {
+    chrome.storage.local.get(
+      ['settings'],
+      (result: { settings?: Settings }) => {
+        if (chrome.runtime.lastError) {
+          return reject(chrome.runtime.lastError);
+        }
         if (!result.settings) {
           return resolve(defaultSettings);
         }
@@ -48,7 +52,7 @@ export const getSettings = (): Promise<Settings> => {
           return resolve(defaultSettings);
         }
         resolve(result.settings);
-      }
-    });
+      },
+    );
   });
 };

@@ -1,11 +1,11 @@
 import colorizeAll from '@/scripts/colorizeAll';
 
-let intervalId: number | null = null;
+let intervalId: NodeJS.Timeout | string | number | undefined = undefined;
 
 export const resetInterval = () => {
   if (intervalId) {
     clearInterval(intervalId);
-    intervalId = null;
+    intervalId = undefined;
   }
 };
 

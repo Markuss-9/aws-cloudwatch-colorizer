@@ -8,10 +8,7 @@ import { Grid, Switch, Tooltip } from '@mui/material';
 import { Dispatch, useState } from 'react';
 import WordRowSettingColor from '../WordRowSettingColor';
 import WordRowSettingBackground from '../WordRowSettingBackground';
-import settingsType, {
-  accordionType,
-  optionsType,
-} from '@/types/settingsType';
+import settingsType, { accordionType, optionsType } from '@/types/settingsType';
 
 const CustomAccordion = ({
   expanded,
