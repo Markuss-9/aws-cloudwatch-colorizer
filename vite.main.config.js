@@ -7,13 +7,13 @@ export default defineConfig({
     emptyOutDir: false,
     rollupOptions: {
       input: {
-        main: resolve(__dirname, 'src/scripts/main.ts')
+        main: resolve(__dirname, 'src/scripts/main.ts'),
       },
       output: {
         format: 'iife',
         entryFileNames: 'main.js',
-        inlineDynamicImports: true
-      }
-    }
-  }
+        inlineDynamicImports: true,
+      },
+    },
+  },
 });
