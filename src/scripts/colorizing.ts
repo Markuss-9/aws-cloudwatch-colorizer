@@ -1,5 +1,5 @@
 import { isEmpty as _isEmpty } from 'lodash-es';
-import type { PageSettings } from '../types';
+import type { PageSettings } from '@/types';
 
 const changeWordColor = ({
   wordOptions,

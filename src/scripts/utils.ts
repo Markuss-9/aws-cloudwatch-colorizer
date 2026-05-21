@@ -1,9 +1,12 @@
-import defaultSettings from '../defaultSettings';
-import type { Settings } from '../types';
+import { assert } from '@/assert';
+import defaultSettings from '@/defaultSettings';
+import type { Settings } from '@/types';
 
 export const getListFromClass = (row: string): Element[] => {
   let elements: Element[] = [];
-  const iframe = document.querySelectorAll('iframe#microConsole-Logs')[0];
+  const iframe = document.querySelectorAll('iframe#microConsole-Logs')[0] as HTMLIFrameElement | null;
+  assert(iframe, "iframe must exist");
+  assert(iframe.contentDocument, "contentDocument must exist");
   if (iframe) elements = iframe.contentDocument.getElementsByClassName(row);
   return [].slice.call(elements);
 };

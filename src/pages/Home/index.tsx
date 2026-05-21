@@ -11,10 +11,10 @@ import {
   Box,
 } from '@mui/material';
 
-import packageJson from '../../../package.json';
+import packageJson from '@/../package.json';
 import { Dispatch } from 'react';
-import settingsType from '../../types/settingsType';
-import ColorizeButton from '../../components/ColorizeButton';
+import settingsType from '@/types/settingsType';
+import ColorizeButton from '@/components/ColorizeButton';
 
 const Home = ({
   settings,

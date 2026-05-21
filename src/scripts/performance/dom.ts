@@ -1,5 +1,5 @@
 import { debounce } from 'lodash-es';
-import colorizeAll from '../colorizeAll';
+import colorizeAll from '@/scripts/colorizeAll';
 
 export let intervalIdDOM: number | null = null;
 

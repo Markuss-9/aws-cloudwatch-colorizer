@@ -1,8 +1,8 @@
 import { Button, Tooltip, Typography } from '@mui/material';
-import ControlledAccordions from '../../components/ControlledAccordions';
+import ControlledAccordions from '@/components/ControlledAccordions';
 import './style.css';
 import { Dispatch } from 'react';
-import settingsType from '../../types/settingsType';
+import settingsType from '@/types/settingsType';
 
 const Settings = ({
   settings,

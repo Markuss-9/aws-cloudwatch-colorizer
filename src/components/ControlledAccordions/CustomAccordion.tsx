@@ -11,7 +11,7 @@ import WordRowSettingBackground from '../WordRowSettingBackground';
 import settingsType, {
   accordionType,
   optionsType,
-} from '../../types/settingsType';
+} from '@/types/settingsType';
 
 const CustomAccordion = ({
   expanded,

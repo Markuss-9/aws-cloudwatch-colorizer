@@ -1,4 +1,4 @@
-import colorizeAll from '../colorizeAll';
+import colorizeAll from '@/scripts/colorizeAll';
 
 let intervalId: number | null = null;
 
