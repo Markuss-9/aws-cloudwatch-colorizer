@@ -18,7 +18,8 @@ export default function ControlledAccordions({
   const [disabledAccordions, setDisabledAccordions] = useState(['']);
 
   const handleChange =
-    (panel: SettingsPages) => (event: React.SyntheticEvent, isExpanded: boolean) => {
+    (panel: SettingsPages) =>
+    (event: React.SyntheticEvent, isExpanded: boolean) => {
       setExpanded(isExpanded ? panel : false);
       setShowColorPicker('');
     };
@@ -49,36 +50,41 @@ export default function ControlledAccordions({
   };
 
   useEffect(() => {
-    (Object.entries(settings.advancedSettings) as [SettingsPages, PageSettings][]).forEach(
-      ([key, section]) => {
-        if (!section.switch)
-          setDisabledAccordions([...disabledAccordions, key]);
-      },
-    );
+    (
+      Object.entries(settings.advancedSettings) as [
+        SettingsPages,
+        PageSettings,
+      ][]
+    ).forEach(([key, section]) => {
+      if (!section.switch) setDisabledAccordions([...disabledAccordions, key]);
+    });
   }, []);
 
   return (
     <div className="center">
-      {(Object.entries(settings.advancedSettings) as [SettingsPages, PageSettings][]).map(
-        ([keyAccordion, section], i) => {
-          return (
-            <CustomAccordion
-              expanded={expanded}
-              keyAccordion={keyAccordion}
-              disabledAccordions={disabledAccordions}
-              handleChange={handleChange}
-              section={section}
-              i={i}
-              key={`${keyAccordion}-CustomAccordion`}
-              handleSwitchClick={handleSwitchClick}
-              settings={settings}
-              setSettings={setSettings}
-              showColorPicker={showColorPicker}
-              setShowColorPicker={setShowColorPicker}
-            />
-          );
-        },
-      )}
+      {(
+        Object.entries(settings.advancedSettings) as [
+          SettingsPages,
+          PageSettings,
+        ][]
+      ).map(([keyAccordion, section], i) => {
+        return (
+          <CustomAccordion
+            expanded={expanded}
+            keyAccordion={keyAccordion}
+            disabledAccordions={disabledAccordions}
+            handleChange={handleChange}
+            section={section}
+            i={i}
+            key={`${keyAccordion}-CustomAccordion`}
+            handleSwitchClick={handleSwitchClick}
+            settings={settings}
+            setSettings={setSettings}
+            showColorPicker={showColorPicker}
+            setShowColorPicker={setShowColorPicker}
+          />
+        );
+      })}
     </div>
   );
 }

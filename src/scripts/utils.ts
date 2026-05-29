@@ -10,13 +10,16 @@ export const getListFromClass = (row: string): Element[] => {
   )[0] as HTMLIFrameElement | null;
   assert(iframe, 'iframe must exist');
   assert(iframe.contentDocument, 'contentDocument must exist');
-  if (iframe) elements = Array.from(iframe.contentDocument.getElementsByClassName(row));
+  if (iframe)
+    elements = Array.from(iframe.contentDocument.getElementsByClassName(row));
   return elements;
 };
 
 export const getListFromTag = (row: string, container?: Element): Element[] => {
   let elements: Element[] = [];
-  const iframe = document.querySelectorAll('iframe#microConsole-Logs')[0] as HTMLIFrameElement | null;
+  const iframe = document.querySelectorAll(
+    'iframe#microConsole-Logs',
+  )[0] as HTMLIFrameElement | null;
   if (iframe) {
     if (container) {
       elements = Array.from(container.getElementsByTagName(row));

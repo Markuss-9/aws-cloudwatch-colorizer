@@ -18,7 +18,7 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
-    "types": ["chrome", "node", "jest"]
+    "types": ["chrome", "node", "vitest/globals"]
   },
   "include": ["src", "src/types/declarations.d.ts"]
 }

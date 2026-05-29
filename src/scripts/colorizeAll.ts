@@ -12,7 +12,8 @@ const logsGroupsFlow = () => {
     if (!tables.length) return;
 
     const table = tables.find(
-      (table) => table.getAttribute('data-testid') !== 'relative-range-slow-picks',
+      (table) =>
+        table.getAttribute('data-testid') !== 'relative-range-slow-picks',
     );
 
     const thElements = utils.getListFromTag('th', table);
@@ -40,7 +41,11 @@ const logsGroupsFlow = () => {
 
         const settings = utils.settings;
         const child = span[span.length - 1] as HTMLElement;
-        colorizing(child, row as HTMLElement, settings.advancedSettings['Log_Groups']);
+        colorizing(
+          child,
+          row as HTMLElement,
+          settings.advancedSettings['Log_Groups'],
+        );
       }
     }
   } catch (error) {
@@ -64,7 +69,11 @@ const logsInsightsFlow = () => {
         const child = row.getElementsByClassName('logs-table__body-cell')[
           messageColPos
         ] as HTMLElement;
-        colorizing(child, row as HTMLElement, settings.advancedSettings['Log_Insights']);
+        colorizing(
+          child,
+          row as HTMLElement,
+          settings.advancedSettings['Log_Insights'],
+        );
       }
     }
   } catch (error) {

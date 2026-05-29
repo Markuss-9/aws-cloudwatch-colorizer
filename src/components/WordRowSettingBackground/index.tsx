@@ -51,9 +51,9 @@ const WordRowSettingBackground = ({
 
   const switchWordAction = () => {
     let tempSettings = settings;
-      let pos = findIndex(tempSettings.advancedSettings[keyAccordion].words, {
-        word: options.word,
-      });
+    let pos = findIndex(tempSettings.advancedSettings[keyAccordion].words, {
+      word: options.word,
+    });
     tempSettings.advancedSettings[keyAccordion].words[pos] = {
       ...options,
       enabled: !switchWordEnabled,
