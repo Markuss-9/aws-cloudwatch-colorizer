@@ -1,4 +1,4 @@
-import { get as _get, findIndex as _findIndex } from 'lodash-es';
+import { get as _get } from 'lodash-es';
 import { log } from '@/logger';
 
 import colorizing from './colorizing';
@@ -12,7 +12,7 @@ const logsGroupsFlow = () => {
     if (!tables.length) return;
 
     const table = tables.find(
-      (table) => table['data-testid'] !== 'relative-range-slow-picks',
+      (table) => table.getAttribute('data-testid') !== 'relative-range-slow-picks',
     );
 
     const thElements = utils.getListFromTag('th', table);
@@ -38,8 +38,9 @@ const logsGroupsFlow = () => {
         assert(utils.settings, 'settings must exist');
         assert(Object.keys(span).length, 'span cannot be empty');
 
-        const child = span[span.length - 1];
-        colorizing(child, row, utils.settings.advancedSettings['Log_Groups']);
+        const settings = utils.settings;
+        const child = span[span.length - 1] as HTMLElement;
+        colorizing(child, row as HTMLElement, settings.advancedSettings['Log_Groups']);
       }
     }
   } catch (error) {
@@ -51,17 +52,19 @@ const logsInsightsFlow = () => {
   try {
     const thElements = utils.getListFromClass('logs-table__header-cell');
 
-    const messageColPos = _findIndex(thElements, {
-      innerText: '@message',
-    });
+    const messageColPos = (thElements as HTMLElement[]).findIndex(
+      (el) => el.innerText === '@message',
+    );
 
+    assert(utils.settings, 'settings must exist');
+    const settings = utils.settings;
     const elements = utils.getListFromClass('logs-table__body-row');
     for (let row of elements) {
       if (row.getElementsByClassName('logs-table__body-cell').length) {
         const child = row.getElementsByClassName('logs-table__body-cell')[
           messageColPos
-        ];
-        colorizing(child, row, utils.settings.advancedSettings['Log_Insights']);
+        ] as HTMLElement;
+        colorizing(child, row as HTMLElement, settings.advancedSettings['Log_Insights']);
       }
     }
   } catch (error) {

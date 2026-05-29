@@ -15,8 +15,8 @@ import 'simplebar/dist/simplebar.min.css';
 
 import manifest from './scripts/manifest.json';
 
+import type { Settings as AppSettings } from './types';
 import defaultSettings from './defaultSettings';
-import settingsType from './types/settingsType';
 
 declare module '@mui/material/styles' {
   interface Palette {
@@ -62,7 +62,7 @@ const theme = createTheme({
 });
 
 function App() {
-  const [settings, setSettings] = useState<settingsType | undefined>();
+  const [settings, setSettings] = useState<AppSettings | undefined>();
 
   if (process.env.NODE_ENV === 'production') {
     const getSettings = () => {

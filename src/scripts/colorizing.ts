@@ -62,18 +62,20 @@ const colorizing = (
       (wordSettings) => wordSettings.word === foundWord,
     );
 
-    if (pageSettings.wantBackground) {
-      if (parentElem.style.backgroundColor !== wordOptions.backgroundColor) {
-        parentElem.style.backgroundColor = wordOptions.backgroundColor;
+    if (wordOptions) {
+      if (pageSettings.wantBackground) {
+        if (parentElem.style.backgroundColor !== wordOptions.backgroundColor) {
+          parentElem.style.backgroundColor = wordOptions.backgroundColor;
+        }
+      } else {
+        changeWordColor({
+          wordOptions,
+          foundWord,
+          elWithMessage,
+        });
       }
-    } else {
-      changeWordColor({
-        wordOptions,
-        foundWord,
-        elWithMessage,
-      });
+      return wordOptions;
     }
-    return wordOptions;
   } else parentElem.attributeStyleMap.delete('background-color');
 };
 

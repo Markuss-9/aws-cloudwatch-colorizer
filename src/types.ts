@@ -18,13 +18,15 @@ export interface PageSettings {
   evenRowsShadeColor?: string;
 }
 
-export type PerformanceMode = 'timer' | 'dom' | 'net';
+export type PerformanceMode = 'timer' | 'dom' | 'net' | 'manual';
 
 export interface AdvancedSettings {
   Log_Groups: PageSettings;
   Log_Insights: PageSettings;
   Log_Tails: PageSettings;
 }
+
+export type SettingsPages = keyof AdvancedSettings & (string & {});
 
 export interface Settings {
   version: string;

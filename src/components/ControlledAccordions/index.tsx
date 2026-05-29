@@ -2,34 +2,34 @@ import './style.css';
 
 import { Dispatch, useEffect, useState } from 'react';
 
-import settingsType, { accordionType } from '@/types/settingsType';
+import type { Settings, PageSettings, SettingsPages } from '@/types';
 import CustomAccordion from './CustomAccordion';
 
 export default function ControlledAccordions({
   settings,
   setSettings,
 }: {
-  settings: settingsType;
-  setSettings: Dispatch<settingsType>;
+  settings: Settings;
+  setSettings: Dispatch<Settings>;
 }) {
-  const [expanded, setExpanded] = useState<string | false>(false);
+  const [expanded, setExpanded] = useState<SettingsPages | false>(false);
   const [showColorPicker, setShowColorPicker] = useState<string>('');
 
   const [disabledAccordions, setDisabledAccordions] = useState(['']);
 
   const handleChange =
-    (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
+    (panel: SettingsPages) => (event: React.SyntheticEvent, isExpanded: boolean) => {
       setExpanded(isExpanded ? panel : false);
       setShowColorPicker('');
     };
 
   const handleSwitchClick = (
     event: { stopPropagation: () => void },
-    panel: string,
+    panel: SettingsPages,
   ) => {
     event.stopPropagation();
 
-    let currentAccordion: accordionType = settings.advancedSettings[panel];
+    let currentAccordion: PageSettings = settings.advancedSettings[panel];
     if (currentAccordion.switch) {
       setTimeout(() => {
         setExpanded(false);
@@ -49,8 +49,8 @@ export default function ControlledAccordions({
   };
 
   useEffect(() => {
-    Object.entries(settings.advancedSettings).forEach(
-      ([key, section]: [string, accordionType]) => {
+    (Object.entries(settings.advancedSettings) as [SettingsPages, PageSettings][]).forEach(
+      ([key, section]) => {
         if (!section.switch)
           setDisabledAccordions([...disabledAccordions, key]);
       },
@@ -59,8 +59,8 @@ export default function ControlledAccordions({
 
   return (
     <div className="center">
-      {Object.entries(settings.advancedSettings).map(
-        ([keyAccordion, section]: [string, accordionType], i) => {
+      {(Object.entries(settings.advancedSettings) as [SettingsPages, PageSettings][]).map(
+        ([keyAccordion, section], i) => {
           return (
             <CustomAccordion
               expanded={expanded}

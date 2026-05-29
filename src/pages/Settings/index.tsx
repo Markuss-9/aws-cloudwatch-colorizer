@@ -2,15 +2,15 @@ import { Button, Tooltip, Typography } from '@mui/material';
 import ControlledAccordions from '@/components/ControlledAccordions';
 import './style.css';
 import { Dispatch } from 'react';
-import settingsType from '@/types/settingsType';
+import type { Settings } from '@/types';
 
 const Settings = ({
   settings,
   setSettings,
   resetSettings,
 }: {
-  settings: settingsType;
-  setSettings: Dispatch<settingsType>;
+  settings: Settings;
+  setSettings: Dispatch<Settings>;
   resetSettings: VoidFunction;
 }) => {
   return (

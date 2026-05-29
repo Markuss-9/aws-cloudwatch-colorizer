@@ -13,22 +13,22 @@ import {
 
 import packageJson from '@/../package.json';
 import { Dispatch } from 'react';
-import settingsType from '@/types/settingsType';
+import type { Settings, PerformanceMode } from '@/types';
 import ColorizeButton from '@/components/ColorizeButton';
 
 const Home = ({
   settings,
   setSettings,
 }: {
-  settings: settingsType;
-  setSettings: Dispatch<settingsType>;
+  settings: Settings;
+  setSettings: Dispatch<Settings>;
 }) => {
   const handleToggle = () =>
     setSettings({ ...settings, ...{ master: !settings.master } });
 
   const handleChange = (
     event: React.MouseEvent<HTMLElement>,
-    newPerf: string,
+    newPerf: PerformanceMode,
   ) => setSettings({ ...settings, ...{ performance: newPerf } });
 
   const handleAutoMode = () =>

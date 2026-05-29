@@ -8,7 +8,12 @@ import { Grid, Switch, Tooltip } from '@mui/material';
 import { Dispatch, useState } from 'react';
 import WordRowSettingColor from '../WordRowSettingColor';
 import WordRowSettingBackground from '../WordRowSettingBackground';
-import settingsType, { accordionType, optionsType } from '@/types/settingsType';
+import type {
+  Settings,
+  PageSettings,
+  WordOption,
+  SettingsPages,
+} from '@/types';
 
 const CustomAccordion = ({
   expanded,
@@ -24,14 +29,14 @@ const CustomAccordion = ({
   setShowColorPicker,
 }: {
   expanded: string | boolean;
-  keyAccordion: string;
+  keyAccordion: SettingsPages;
   disabledAccordions: string[];
   handleChange: Function;
-  section: accordionType;
+  section: PageSettings;
   i: number;
   handleSwitchClick: Function;
-  settings: settingsType;
-  setSettings: Dispatch<settingsType>;
+  settings: Settings;
+  setSettings: Dispatch<Settings>;
   showColorPicker: string;
   setShowColorPicker: Dispatch<string>;
 }) => {
@@ -82,15 +87,14 @@ const CustomAccordion = ({
           <Grid
             container
             direction="row"
-            justifyContent="center"
-            alignItems="center"
+            sx={{ justifyContent: 'center', alignItems: 'center' }}
           >
             <Tooltip title={`The words are replaced with the colorized label`}>
-              <Grid item>
+              <Grid>
                 <Typography>Color</Typography>
               </Grid>
             </Tooltip>
-            <Grid item xs={4}>
+            <Grid size={4}>
               <Switch
                 checked={wantBackground}
                 onClick={() => {
@@ -104,13 +108,13 @@ const CustomAccordion = ({
               />
             </Grid>
             <Tooltip title={`The rows are colorized`}>
-              <Grid item>
+              <Grid>
                 <Typography>Background</Typography>
               </Grid>
             </Tooltip>
           </Grid>
 
-          {section.words.map((options: optionsType, i: number) => {
+          {section.words.map((options: WordOption, i: number) => {
             return wantBackground ? (
               <>
                 <WordRowSettingBackground

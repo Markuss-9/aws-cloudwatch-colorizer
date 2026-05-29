@@ -1,12 +1,12 @@
 import { Dispatch, useState } from 'react';
 import { ColorResult } from 'react-color';
 import { Box, Grid, Switch, Tooltip, Typography } from '@mui/material';
-import _ from 'lodash-es';
+import { findIndex } from 'lodash-es';
 
 import ColorPicker from '../ColorPicker';
 import info from '../Info';
 import CircleButtonColor from '../CircleButtonColor';
-import settingsType, { optionsType } from '@/types/settingsType';
+import type { Settings, WordOption, SettingsPages } from '@/types';
 
 const WordRowSettingBackground = ({
   settings,
@@ -16,12 +16,12 @@ const WordRowSettingBackground = ({
   setShowColorPicker,
   keyAccordion,
 }: {
-  settings: settingsType;
-  setSettings: Dispatch<settingsType>;
-  options: optionsType;
+  settings: Settings;
+  setSettings: Dispatch<Settings>;
+  options: WordOption;
   showColorPicker: string;
   setShowColorPicker: Dispatch<string>;
-  keyAccordion: string;
+  keyAccordion: SettingsPages;
 }) => {
   const [currentColor, setCurrentColor] = useState(options.backgroundColor);
   const [switchWordEnabled, setSwitchWordEnabled] = useState<boolean>(
@@ -31,7 +31,7 @@ const WordRowSettingBackground = ({
   const toggleColorPicker = () => {
     if (showColorPicker) {
       let tempSettings = settings;
-      let pos = _.findIndex(tempSettings.advancedSettings[keyAccordion].words, {
+      let pos = findIndex(tempSettings.advancedSettings[keyAccordion].words, {
         word: options.word,
       });
       tempSettings.advancedSettings[keyAccordion].words[pos] = {
@@ -51,9 +51,9 @@ const WordRowSettingBackground = ({
 
   const switchWordAction = () => {
     let tempSettings = settings;
-    let pos = _.findIndex(tempSettings.advancedSettings[keyAccordion].words, {
-      word: options.word,
-    });
+      let pos = findIndex(tempSettings.advancedSettings[keyAccordion].words, {
+        word: options.word,
+      });
     tempSettings.advancedSettings[keyAccordion].words[pos] = {
       ...options,
       enabled: !switchWordEnabled,
@@ -68,19 +68,18 @@ const WordRowSettingBackground = ({
         <Grid
           container
           direction="row"
-          justifyContent="center"
-          alignItems="center"
+          sx={{ justifyContent: 'center', alignItems: 'center' }}
         >
-          <Grid item>
+          <Grid>
             <CircleButtonColor
               savedColor={options.backgroundColor}
               toggleColorPicker={toggleColorPicker}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid size={4}>
             <Typography>{options.word}</Typography>
           </Grid>
-          <Grid item>
+          <Grid>
             <Tooltip
               title={
                 switchWordEnabled ? info('Disable word') : info('Enable word')
