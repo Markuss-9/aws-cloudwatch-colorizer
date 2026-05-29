@@ -39,8 +39,26 @@ describe('utils', () => {
       expect(result).toEqual(defaultSettings);
     });
 
+    it('returns default settings when version mismatches (old version with string)', async () => {
+      const oldSettings = { ...defaultSettings, version: '1.0.2' };
+      vi.mocked(chrome.storage.local.get).mockImplementation(
+        (
+          _keys: string | string[] | Record<string, unknown> | null | undefined,
+          callback?: (items: Record<string, unknown>) => void,
+        ) => {
+          callback?.({ settings: oldSettings });
+        },
+      );
+
+      const result = await getSettings();
+      expect(result).toEqual(defaultSettings);
+      expect(chrome.storage.local.set).toHaveBeenCalledWith({
+        settings: defaultSettings,
+      });
+    });
+
     it('returns default settings when version mismatches', async () => {
-      const oldSettings = { ...defaultSettings, version: '0.0.1' };
+      const oldSettings = { ...defaultSettings, version: 1 };
       vi.mocked(chrome.storage.local.get).mockImplementation(
         (
           _keys: string | string[] | Record<string, unknown> | null | undefined,

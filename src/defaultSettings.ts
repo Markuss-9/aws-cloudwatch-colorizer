@@ -1,7 +1,7 @@
 import type { Settings } from './types';
 
 const defaultSettings: Settings = {
-  version: '1.0.2',
+  version: 2,
   master: true,
   performance: 'dom',
   advancedSettings: {
@@ -11,7 +11,7 @@ const defaultSettings: Settings = {
         {
           enabled: true,
           code: 31,
-          word: 'error',
+          patterns: ['error', 'err'],
           color: 'rgba(255, 0, 0, 1)',
           backgroundColor: 'rgba(155, 0, 0, 0.44)',
           emoji: '❌',
@@ -20,7 +20,7 @@ const defaultSettings: Settings = {
         {
           enabled: true,
           code: 33,
-          word: 'warn',
+          patterns: ['warn', 'warning'],
           color: 'rgba(255, 242, 0, 1)',
           backgroundColor: 'rgba(227, 217, 0, 0.4)',
           emoji: '⚠️',
@@ -29,7 +29,7 @@ const defaultSettings: Settings = {
         {
           enabled: true,
           code: 32,
-          word: 'info',
+          patterns: ['info', 'information'],
           color: 'rgba(0, 200, 0, 1)',
           backgroundColor: 'rgba(0, 155, 10, 0.16)',
           emoji: 'ℹ️',
@@ -38,7 +38,7 @@ const defaultSettings: Settings = {
         {
           enabled: true,
           code: 34,
-          word: 'debug',
+          patterns: ['debug', 'dbg'],
           color: 'rgba(0, 125, 255, 1)',
           backgroundColor: 'rgba(0, 78, 155, 0.16)',
           emoji: '🐛',
@@ -57,7 +57,7 @@ const defaultSettings: Settings = {
         {
           enabled: true,
           code: 31,
-          word: 'error',
+          patterns: ['error', 'err'],
           color: 'rgba(255, 0, 0, 1)',
           backgroundColor: 'rgba(155, 0, 0, 0.44)',
           emoji: '❌',
@@ -66,7 +66,7 @@ const defaultSettings: Settings = {
         {
           enabled: true,
           code: 33,
-          word: 'warn',
+          patterns: ['warn', 'warning'],
           color: 'rgba(255, 242, 0, 1)',
           backgroundColor: 'rgba(227, 217, 0, 0.4)',
           emoji: '⚠️',
@@ -75,7 +75,7 @@ const defaultSettings: Settings = {
         {
           enabled: true,
           code: 32,
-          word: 'info',
+          patterns: ['info', 'information'],
           color: 'rgba(0, 200, 0, 1)',
           backgroundColor: 'rgba(0, 155, 10, 0.16)',
           emoji: 'ℹ️',
@@ -84,7 +84,7 @@ const defaultSettings: Settings = {
         {
           enabled: true,
           code: 34,
-          word: 'debug',
+          patterns: ['debug', 'dbg'],
           color: 'rgba(0, 125, 255, 1)',
           backgroundColor: 'rgba(0, 78, 155, 0.16)',
           emoji: '🐛',
@@ -103,7 +103,7 @@ const defaultSettings: Settings = {
         {
           enabled: true,
           code: 31,
-          word: 'error',
+          patterns: ['error', 'err'],
           color: 'rgba(255, 0, 0, 1)',
           backgroundColor: 'rgba(155, 0, 0, 0.44)',
           emoji: '❌',
@@ -112,7 +112,7 @@ const defaultSettings: Settings = {
         {
           enabled: true,
           code: 33,
-          word: 'warn',
+          patterns: ['warn', 'warning'],
           color: 'rgba(255, 242, 0, 1)',
           backgroundColor: 'rgba(227, 217, 0, 0.4)',
           emoji: '⚠️',
@@ -121,7 +121,7 @@ const defaultSettings: Settings = {
         {
           enabled: true,
           code: 32,
-          word: 'info',
+          patterns: ['info', 'information'],
           color: 'rgba(0, 200, 0, 1)',
           backgroundColor: 'rgba(0, 155, 10, 0.16)',
           emoji: 'ℹ️',
@@ -130,7 +130,7 @@ const defaultSettings: Settings = {
         {
           enabled: true,
           code: 34,
-          word: 'debug',
+          patterns: ['debug', 'dbg'],
           color: 'rgba(0, 125, 255, 1)',
           backgroundColor: 'rgba(0, 78, 155, 0.16)',
           emoji: '🐛',
