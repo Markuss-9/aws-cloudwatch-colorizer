@@ -72,15 +72,15 @@ const logsInsightsFlow = () => {
 const colorizeAll = () => {
   try {
     const currentUrl = window.location.href;
-    
+
     const isLogsGroupsPage = currentUrl.includes('log-groups');
     const isLogsInsightsPage = currentUrl.includes('logs-insights');
-    
+
     if (isLogsGroupsPage || isLogsInsightsPage) {
       injectStyleShadedEvenRows();
     }
 
-    assert(utils.settings, "Settings are not loaded");
+    assert(utils.settings, 'Settings are not loaded');
 
     if (isLogsGroupsPage) {
       if (utils.settings.advancedSettings['Log_Groups'].switch) {

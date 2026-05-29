@@ -10,7 +10,7 @@ import { assert } from '@/assert';
 const startAction = async () => {
   utils.setSettings(await utils.getSettings());
 
-  assert(utils.settings, "settings must exist");
+  assert(utils.settings, 'settings must exist');
 
   if (utils.settings.master) {
     switch (utils.settings.performance) {
