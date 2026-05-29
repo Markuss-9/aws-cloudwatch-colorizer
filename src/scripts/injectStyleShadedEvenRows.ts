@@ -103,7 +103,9 @@ const injectStyleShadedEvenRows = () => {
       injectCSS(css, iframe);
 
       //NOTE - add attribute so that the second time i call the func i can check if already injected
-      const styleTag = iframeDoc.querySelector('style:last-of-type') as HTMLStyleElement | null;
+      const styleTag = iframeDoc.querySelector(
+        'style:last-of-type',
+      ) as HTMLStyleElement | null;
       if (!styleTag) {
         log.warn('style tag with last-of-type not found');
         return;
