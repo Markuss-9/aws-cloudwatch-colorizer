@@ -8,7 +8,7 @@ const mockSettings: PageSettings = {
     {
       enabled: true,
       code: 31,
-      word: 'error',
+      patterns: ['error'],
       color: 'rgba(255,0,0,1)',
       backgroundColor: 'rgba(155,0,0,0.44)',
       emoji: '❌',
@@ -17,7 +17,7 @@ const mockSettings: PageSettings = {
     {
       enabled: true,
       code: 33,
-      word: 'warn',
+      patterns: ['warn'],
       color: 'rgba(255,242,0,1)',
       backgroundColor: 'rgba(227,217,0,0.4)',
       emoji: '⚠️',
@@ -26,7 +26,7 @@ const mockSettings: PageSettings = {
     {
       enabled: true,
       code: 32,
-      word: 'info',
+      patterns: ['info'],
       color: 'rgba(0,200,0,1)',
       backgroundColor: 'rgba(0,155,10,0.16)',
       emoji: 'ℹ️',
@@ -63,8 +63,11 @@ describe('colorizing', () => {
       wantBackground: false,
     });
 
-    expect(result).toEqual(mockSettings.words[0]);
-    expect(elWithMessage.innerHTML).toContain('<label');
+    expect(result).toEqual({
+      word: 'error',
+      wordSetting: mockSettings.words[0],
+    });
+    expect(elWithMessage.innerHTML).toContain('log-with-label-tag');
     expect(elWithMessage.innerHTML).toContain('❌');
     expect(elWithMessage.innerHTML).toContain('Error');
   });
@@ -80,7 +83,10 @@ describe('colorizing', () => {
       wantBackground: true,
     });
 
-    expect(result).toEqual(mockSettings.words[1]);
+    expect(result).toEqual({
+      word: 'warn',
+      wordSetting: mockSettings.words[1],
+    });
     expect(parentElem.style.backgroundColor).toBe('rgba(227, 217, 0, 0.4)');
   });
 
@@ -94,12 +100,16 @@ describe('colorizing', () => {
       ...mockSettings,
       wantBackground: false,
     });
-    expect(result).toEqual(mockSettings.words[2]);
+    expect(result).toEqual({
+      word: 'info',
+      wordSetting: mockSettings.words[2],
+    });
   });
 
   it('does not inject label if element already has a label tag', () => {
     const elWithMessage = document.createElement('span');
-    elWithMessage.innerHTML = '<label>Existing</label> error happened';
+    elWithMessage.innerHTML =
+      '<span class="log-with-label-tag">Existing</span> error happened';
     const parentElem = createParentElem();
     parentElem.appendChild(elWithMessage);
 
@@ -108,9 +118,12 @@ describe('colorizing', () => {
       wantBackground: false,
     });
 
-    expect(result).toEqual(mockSettings.words[0]);
+    expect(result).toEqual({
+      word: 'error',
+      wordSetting: mockSettings.words[0],
+    });
     expect(elWithMessage.innerHTML).toBe(
-      '<label>Existing</label> error happened',
+      '<span class="log-with-label-tag">Existing</span> error happened',
     );
   });
 

@@ -1,7 +1,9 @@
+type Patterns = string[];
+
 export interface WordOption {
   enabled: boolean;
   code: number;
-  word: string;
+  patterns: Patterns;
   color: string;
   backgroundColor: string;
   emoji: string;
@@ -29,7 +31,7 @@ export interface AdvancedSettings {
 export type SettingsPages = keyof AdvancedSettings & (string & {});
 
 export interface Settings {
-  version: string;
+  version: number;
   master: boolean;
   performance: PerformanceMode;
   advancedSettings: AdvancedSettings;

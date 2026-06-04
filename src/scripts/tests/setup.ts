@@ -35,17 +35,12 @@ const chromeMock = {
           callback?.(result);
         },
       ),
-      set: vi.fn(
-        (
-          items: Record<string, unknown>,
-          callback?: () => void,
-        ) => {
-          for (const [key, value] of Object.entries(items)) {
-            chromeStorage.set(key, value);
-          }
-          callback?.();
-        },
-      ),
+      set: vi.fn((items: Record<string, unknown>, callback?: () => void) => {
+        for (const [key, value] of Object.entries(items)) {
+          chromeStorage.set(key, value);
+        }
+        callback?.();
+      }),
     },
   },
 };

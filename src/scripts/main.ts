@@ -8,36 +8,40 @@ import type { ExtensionMessage } from '@/types';
 import { assert } from '@/assert';
 
 const startAction = async () => {
-  utils.setSettings(await utils.getSettings());
+  try {
+    utils.setSettings(await utils.getSettings());
 
-  assert(utils.settings, 'settings must exist');
+    assert(utils.settings, 'settings must exist');
 
-  if (utils.settings.master) {
-    switch (utils.settings.performance) {
-      case 'timer':
-        startInterval();
-        mutationObs.disconnect();
-        resetCheckIframe();
-        break;
-      case 'dom':
-        resetInterval();
-        startObserve();
-        break;
-      case 'net':
-        resetInterval();
-        mutationObs.disconnect();
-        resetCheckIframe();
-        break;
-      default:
-        resetInterval();
-        mutationObs.disconnect();
-        resetCheckIframe();
-        break;
+    if (utils.settings.master) {
+      switch (utils.settings.performance) {
+        case 'timer':
+          startInterval();
+          mutationObs.disconnect();
+          resetCheckIframe();
+          break;
+        case 'dom':
+          resetInterval();
+          startObserve();
+          break;
+        case 'net':
+          resetInterval();
+          mutationObs.disconnect();
+          resetCheckIframe();
+          break;
+        default:
+          resetInterval();
+          mutationObs.disconnect();
+          resetCheckIframe();
+          break;
+      }
+    } else {
+      resetInterval();
+      mutationObs.disconnect();
+      resetCheckIframe();
     }
-  } else {
-    resetInterval();
-    mutationObs.disconnect();
-    resetCheckIframe();
+  } catch (error) {
+    log.error('Error in startAction:', error);
   }
 };
 
