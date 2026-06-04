@@ -26,27 +26,25 @@ const logsGroupsFlow = () => {
     const trElements = utils.getListFromTag('tr', tbody);
 
     for (const row of trElements) {
-      if (row.getElementsByTagName('td')) {
-        const tdElements = row.getElementsByTagName('td');
+      const tdElements = row.getElementsByTagName('td');
 
-        if (Object.keys(tdElements).length - 1 < messageColPos) {
-          continue;
-        }
-
-        const span = tdElements[messageColPos].getElementsByTagName('span');
-
-        assert(span, 'span cannot be empty');
-        assert(utils.settings, 'settings must exist');
-        assert(Object.keys(span).length, 'span cannot be empty');
-
-        const settings = utils.settings;
-        const child = span[span.length - 1] as HTMLElement;
-        colorizing(
-          child,
-          row as HTMLElement,
-          settings.advancedSettings['Log_Groups'],
-        );
+      if (tdElements.length <= messageColPos) {
+        continue;
       }
+
+      const span = tdElements[messageColPos].getElementsByTagName('span');
+
+      assert(span, 'span cannot be empty');
+      assert(utils.settings, 'settings must exist');
+      assert(Object.keys(span).length, 'span cannot be empty');
+
+      const settings = utils.settings;
+      const child = span[span.length - 1] as HTMLElement;
+      colorizing(
+        child,
+        row as HTMLElement,
+        settings.advancedSettings['Log_Groups'],
+      );
     }
   } catch (error) {
     log.error(`LOGS_GROUPS_FLOW: `, error);

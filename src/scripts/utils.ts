@@ -3,32 +3,27 @@ import { log } from '@/logger';
 import defaultSettings from '@/defaultSettings';
 import type { Settings } from '@/types';
 
-export const getListFromClass = (row: string): Element[] => {
-  let elements: Element[] = [];
-  const iframe = document.querySelectorAll(
+const getIframe = (): HTMLIFrameElement => {
+  const iframe = document.querySelector(
     'iframe#microConsole-Logs',
-  )[0] as HTMLIFrameElement | null;
+  ) as HTMLIFrameElement | null;
   assert(iframe, 'iframe must exist');
+  return iframe;
+};
+
+export const getListFromClass = (row: string): Element[] => {
+  const iframe = getIframe();
   assert(iframe.contentDocument, 'contentDocument must exist');
-  if (iframe)
-    elements = Array.from(iframe.contentDocument.getElementsByClassName(row));
-  return elements;
+  return Array.from(iframe.contentDocument.getElementsByClassName(row));
 };
 
 export const getListFromTag = (row: string, container?: Element): Element[] => {
-  let elements: Element[] = [];
-  const iframe = document.querySelectorAll(
-    'iframe#microConsole-Logs',
-  )[0] as HTMLIFrameElement | null;
-  if (iframe) {
-    if (container) {
-      elements = Array.from(container.getElementsByTagName(row));
-      return elements;
-    }
-    assert(iframe.contentDocument, 'contentDocument must exist');
-    elements = Array.from(iframe.contentDocument.getElementsByTagName(row));
+  const iframe = getIframe();
+  if (container) {
+    return Array.from(container.getElementsByTagName(row));
   }
-  return elements;
+  assert(iframe.contentDocument, 'contentDocument must exist');
+  return Array.from(iframe.contentDocument.getElementsByTagName(row));
 };
 
 export let settings: Settings | undefined = defaultSettings;

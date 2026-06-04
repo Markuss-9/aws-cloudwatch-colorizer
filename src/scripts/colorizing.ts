@@ -119,7 +119,7 @@ const colorizing = (
       return found;
     }
 
-    parentElem.attributeStyleMap.delete('background-color');
+    parentElem.style.removeProperty('background-color');
   } catch (error) {
     if (error instanceof UnreachableError) {
       throw error;
