@@ -10,10 +10,23 @@ Published on [Chrome Web Store](https://chromewebstore.google.com/detail/aws-clo
 
 ## DEV
 
-AWS cli to insert some test cases
+Generate test data with current timestamps and pipe it directly to AWS CLI
 
 ```shell
-aws logs put-log-events --log-group-name [myLogGroup] --log-stream-name [myLogSteam] --log-events file://d://myPath//tests//aws-cli-example1.json
+node generate-test-data.js | aws logs put-log-events \
+  --log-group-name my-log-group \
+  --log-stream-name my-log-stream \
+  --log-events file:///dev/stdin
+```
+
+If your shell doesn't support `/dev/stdin`, save to a file first:
+
+```shell
+node generate-test-data.js > /tmp/test-events.json
+aws logs put-log-events \
+  --log-group-name my-log-group \
+  --log-stream-name my-log-stream \
+  --log-events file:///tmp/test-events.json
 ```
 
 
