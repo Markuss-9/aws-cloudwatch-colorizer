@@ -1,40 +1,44 @@
 on:
-    push:
-        tags:
-            - "*"
+  push:
+    tags:
+      - '*'
 
 name: Auto-release pipeline
 
 jobs:
-    build:
-        name: build-prod-pipeline
-        runs-on: ubuntu-latest
-        steps:
-            - name: Clone repository
-              uses: actions/checkout@v4
-            - name: Getting Node.js version from .nvmrc
-              id: nvm
-              run: echo "NVMRC=$(cat .nvmrc)" >> $GITHUB_OUTPUT
-            - name: Get the tag version and set file name
-              id: set_file_version
-              run: |
-                  TAG_VERSION=$(echo $GITHUB_REF | cut -d / -f 3)
-                  MODIFIED_VERSION="aws-cloudwatch-colorize-${TAG_VERSION}"
-                  echo "FILE_NAME=${MODIFIED_VERSION}" >> $GITHUB_OUTPUT
-            - name: Use Node.js
-              uses: actions/setup-node@v4
-              with:
-                  node-version: "${{ steps.nvm.outputs.NVMRC }}"
-            - name: Install dependencies
-              run: npm install
-            - name: Build project
-              run: npm run build
-            - name: Renaming folder with version
-              run: mv dist ${{ steps.set_file_version.outputs.FILE_NAME }}
-            - name: Zip distribution folder
-              run: zip ${{ steps.set_file_version.outputs.FILE_NAME }}.zip ${{ steps.set_file_version.outputs.FILE_NAME }} -r
-            - uses: "marvinpinto/action-automatic-releases@latest"
-              with:
-                  repo_token: "${{ secrets.GITHUB_TOKEN }}"
-                  prerelease: false
-                  files: ${{ steps.set_file_version.outputs.FILE_NAME }}.zip
+  build:
+    name: build-prod-pipeline
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v4
+
+      - name: Get the tag version and set file name
+        id: set_file_version
+        run: |
+          TAG_VERSION=$(echo $GITHUB_REF | cut -d / -f 3)
+          MODIFIED_VERSION="aws-cloudwatch-colorize-${TAG_VERSION}"
+          echo "FILE_NAME=${MODIFIED_VERSION}" >> $GITHUB_OUTPUT
+
+      - name: Setup node
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build project
+        run: npm run build
+
+      - name: Renaming folder with version
+        run: mv dist ${{ steps.set_file_version.outputs.FILE_NAME }}
+
+      - name: Zip distribution folder
+        run: zip ${{ steps.set_file_version.outputs.FILE_NAME }}.zip ${{ steps.set_file_version.outputs.FILE_NAME }} -r
+
+      - uses: 'marvinpinto/action-automatic-releases@latest'
+        with:
+          repo_token: '${{ secrets.GITHUB_TOKEN }}'
+          prerelease: false
+          files: ${{ steps.set_file_version.outputs.FILE_NAME }}.zip

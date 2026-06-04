@@ -21,8 +21,7 @@
   "scripts": {
     "start": "vite",
     "alignVersion": "node ./alignVersion.js",
-    "dist": "vite build && vite build --config vite.main.config.js",
-    "build": "npm-run-all dist alignVersion",
+    "build": "make build",
     "watch": "vite build --watch",
     "pretty": "prettier -w '**/*.{js,jsx,ts,tsx}'",
     "test": "vitest run",
@@ -45,7 +44,6 @@
     "eslint-plugin-jsdoc": "^48.2.12",
     "eslint-plugin-prettier": "^5.1.3",
     "jsdom": "^29.1.1",
-    "npm-run-all": "^4.1.5",
     "prettier": "3.1.0",
     "vite": "^8.0.13",
     "vite-plugin-static-copy": "^4.1.0",
