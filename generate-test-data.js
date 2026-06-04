@@ -45,5 +45,9 @@ const messages = [
 ];
 
 process.stdout.write(
-  JSON.stringify(messages.map(msg => ({ timestamp: now, message: msg })), null, '\t') + '\n',
+  JSON.stringify(
+    messages.map((msg) => ({ timestamp: now, message: msg })),
+    null,
+    '\t',
+  ) + '\n',
 );

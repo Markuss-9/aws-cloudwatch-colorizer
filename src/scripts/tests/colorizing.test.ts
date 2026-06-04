@@ -63,7 +63,10 @@ describe('colorizing', () => {
       wantBackground: false,
     });
 
-    expect(result).toEqual({ word: 'error', wordSetting: mockSettings.words[0] });
+    expect(result).toEqual({
+      word: 'error',
+      wordSetting: mockSettings.words[0],
+    });
     expect(elWithMessage.innerHTML).toContain('log-with-label-tag');
     expect(elWithMessage.innerHTML).toContain('❌');
     expect(elWithMessage.innerHTML).toContain('Error');
@@ -80,7 +83,10 @@ describe('colorizing', () => {
       wantBackground: true,
     });
 
-    expect(result).toEqual({ word: 'warn', wordSetting: mockSettings.words[1] });
+    expect(result).toEqual({
+      word: 'warn',
+      wordSetting: mockSettings.words[1],
+    });
     expect(parentElem.style.backgroundColor).toBe('rgba(227, 217, 0, 0.4)');
   });
 
@@ -94,7 +100,10 @@ describe('colorizing', () => {
       ...mockSettings,
       wantBackground: false,
     });
-    expect(result).toEqual({ word: 'info', wordSetting: mockSettings.words[2] });
+    expect(result).toEqual({
+      word: 'info',
+      wordSetting: mockSettings.words[2],
+    });
   });
 
   it('does not inject label if element already has a label tag', () => {
@@ -109,7 +118,10 @@ describe('colorizing', () => {
       wantBackground: false,
     });
 
-    expect(result).toEqual({ word: 'error', wordSetting: mockSettings.words[0] });
+    expect(result).toEqual({
+      word: 'error',
+      wordSetting: mockSettings.words[0],
+    });
     expect(elWithMessage.innerHTML).toBe(
       '<span class="log-with-label-tag">Existing</span> error happened',
     );
