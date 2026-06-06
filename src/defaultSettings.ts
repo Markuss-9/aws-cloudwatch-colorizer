@@ -9,8 +9,12 @@ export const WORD_PRESETS: Record<PresetName, WordOption> = {
     patterns: ['error', 'err'],
     color: 'rgba(255, 0, 0, 1)',
     backgroundColor: 'rgba(155, 0, 0, 0.44)',
+    // TODO: instead of two separate props just put one, this is used only for when i replace a pattern
     emoji: '❌',
     label: 'Error',
+
+    // for now i inserted the feature but in future i think it needs to be for pattern
+    regex: false,
   },
   warn: {
     enabled: true,

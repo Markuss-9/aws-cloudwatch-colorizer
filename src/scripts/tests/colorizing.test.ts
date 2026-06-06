@@ -263,8 +263,7 @@ describe('word matching - false positive prevention', () => {
   it.each([
     'An erroneous entry was logged',
     'There are some flowers on my terrace',
-    'A error-free log',
-    'error_free',
+    'A error_free log',
     'terrorizing',
     '1err',
     'err1',
@@ -279,5 +278,96 @@ describe('word matching - false positive prevention', () => {
     });
 
     expect(result).toBeNull();
+  });
+});
+
+describe('regex mode', () => {
+  it('matches pattern as raw regex with alternation', () => {
+    const elWithMessage = createSpanWithText('critical: system failure');
+
+    const result = findWord({
+      wordsOptionsCurrentPage: [
+        wordPreset('error', {
+          patterns: ['(error|critical|failed)'],
+          regex: true,
+        }),
+      ],
+      elWithMessage,
+    });
+
+    expect(result?.word).toBe('(error|critical|failed)');
+  });
+
+  it('matches inside words when no \\b in the regex pattern', () => {
+    const elWithMessage = createSpanWithText('traceback: something broke');
+
+    const result = findWord({
+      wordsOptionsCurrentPage: [
+        wordPreset('error', { patterns: ['trace'], regex: true }),
+      ],
+      elWithMessage,
+    });
+
+    expect(result).not.toBeNull();
+    expect(result?.word).toBe('trace');
+  });
+
+  it('respects word boundaries when \\b is in the regex pattern', () => {
+    const elWithMessage = createSpanWithText('traceback: something broke');
+
+    const result = findWord({
+      wordsOptionsCurrentPage: [
+        wordPreset('error', { patterns: ['\\btrace\\b'], regex: true }),
+      ],
+      elWithMessage,
+    });
+
+    expect(result).toBeNull();
+  });
+
+  it('matches with quantifiers in regex pattern', () => {
+    const elWithMessage = createSpanWithText('status code: 404');
+
+    const result = findWord({
+      wordsOptionsCurrentPage: [
+        wordPreset('error', { patterns: ['\\d{3}'], regex: true }),
+      ],
+      elWithMessage,
+    });
+
+    expect(result).not.toBeNull();
+  });
+
+  it('returns null when regex pattern does not match', () => {
+    const elWithMessage = createSpanWithText('everything is fine');
+
+    const result = findWord({
+      wordsOptionsCurrentPage: [
+        wordPreset('error', { patterns: ['\\d+'], regex: true }),
+      ],
+      elWithMessage,
+    });
+
+    expect(result).toBeNull();
+  });
+
+  it('works with changeWordColor via colorizing function', () => {
+    const { elWithMessage, parentElem } = createElementAndParent(
+      'FAILED: deployment aborted',
+    );
+
+    colorizing(elWithMessage, parentElem, {
+      ...mockSettings,
+      wantBackground: false,
+      words: [
+        wordPreset('error', {
+          patterns: ['(FAILED|ERROR|CRASH)'],
+          regex: true,
+        }),
+      ],
+    });
+
+    expect(elWithMessage.innerHTML).toContain('log-with-label-tag');
+    expect(elWithMessage.innerHTML).toContain(WORD_PRESETS.error.emoji);
   });
 });

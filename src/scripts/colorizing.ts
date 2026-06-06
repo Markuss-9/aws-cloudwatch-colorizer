@@ -5,6 +5,12 @@ import { log } from '@/logger';
 
 const CLASS_NAME_TAG = 'log-with-label-tag';
 
+const sanitizeAnsi = (text: string) =>
+  text.replace(/(?:\x1b)?\[\d+(?:;\d+)*m/g, (m) => ' '.repeat(m.length));
+
+const buildRegex = (pattern: string, isRegex: boolean) =>
+  isRegex ? new RegExp(pattern, 'i') : new RegExp(`\\b${pattern}\\b`, 'i');
+
 // I create a label instead of a span because when i search the most child element i take the last one
 // and if the span is the most child element i cannot find it and i create infinite spans inside spans
 // and to avoid it the if statement has classList.contains(CLASS_NAME_TAG) and querySelector with the same class to be sure that i don't create infinite spans inside spans
@@ -26,10 +32,11 @@ const changeWordColor = ({
     return;
   }
 
-  const regex = new RegExp(foundWord, 'i');
   const content = elWithMessage.textContent;
+  const searchText = sanitizeAnsi(content);
+  const regex = buildRegex(foundWord, wordOptions.regex ?? false);
 
-  const match = content.match(regex);
+  const match = searchText.match(regex);
 
   if (!match || match.index === undefined) return;
 
@@ -51,6 +58,18 @@ const changeWordColor = ({
   );
 };
 
+const regexCache = new Map<string, RegExp>();
+
+const getCachedRegex = (pattern: string, isRegex: boolean): RegExp => {
+  const key = `${isRegex ? 'r' : 'w'}\0${pattern}`;
+  let re = regexCache.get(key);
+  if (!re) {
+    re = buildRegex(pattern, isRegex);
+    regexCache.set(key, re);
+  }
+  return re;
+};
+
 export const findWord = ({
   wordsOptionsCurrentPage,
   elWithMessage,
@@ -58,12 +77,17 @@ export const findWord = ({
   wordsOptionsCurrentPage: PageSettings['words'];
   elWithMessage: HTMLElement;
 }): { word: string; wordSetting: WordOption } | null => {
-  const textToSearch = (elWithMessage.textContent ?? '')
-    .slice(0, 50)
-    .toLowerCase();
+  const textToSearch = sanitizeAnsi(elWithMessage.textContent ?? '').slice(
+    0,
+    50,
+  );
+
+  if (!textToSearch) return null;
+
   let bestIndex = Infinity;
   let bestWordSetting: WordOption | null = null;
   let bestPattern: string | null = null;
+  let bestMatchLen = 0;
 
   for (const wordSetting of wordsOptionsCurrentPage) {
     if (!wordSetting.patterns) {
@@ -72,19 +96,29 @@ export const findWord = ({
       );
     }
 
-    let minIndexForThisSetting = Infinity;
-    let patternForThisSetting: string | null = null;
+    const isRegex = wordSetting.regex ?? false;
+
     for (const pattern of wordSetting.patterns) {
-      const index = textToSearch.indexOf(pattern.toLowerCase());
-      if (index !== -1 && index < minIndexForThisSetting) {
-        minIndexForThisSetting = index;
-        patternForThisSetting = pattern;
+      const match = textToSearch.match(getCachedRegex(pattern, isRegex));
+      if (!match || match.index === undefined) continue;
+
+      const { index } = match;
+      const matchLen = match[0].length;
+
+      if (
+        index < bestIndex ||
+        (index === bestIndex && matchLen > bestMatchLen)
+      ) {
+        bestIndex = index;
+        bestWordSetting = wordSetting;
+        bestPattern = pattern;
+        bestMatchLen = matchLen;
+
+        // pattern is at the start of the text, no need to check for priority
+        if (bestIndex === 0) {
+          return { word: bestPattern!, wordSetting: bestWordSetting! };
+        }
       }
-    }
-    if (minIndexForThisSetting < bestIndex) {
-      bestIndex = minIndexForThisSetting;
-      bestWordSetting = wordSetting;
-      bestPattern = patternForThisSetting;
     }
   }
 
@@ -93,11 +127,11 @@ export const findWord = ({
     : { word: bestPattern!, wordSetting: bestWordSetting! };
 };
 
-const colorizing = (
+export default function colorizing(
   elWithMessage: HTMLElement,
   parentElem: HTMLElement,
   pageSettings: PageSettings,
-) => {
+) {
   try {
     const wordsOptionsCurrentPage = pageSettings.words;
     const found = findWord({ wordsOptionsCurrentPage, elWithMessage });
@@ -127,6 +161,4 @@ const colorizing = (
     log.error('colorizing for element', { elWithMessage, parentElem }, error);
     return;
   }
-};
-
-export default colorizing;
+}

@@ -8,6 +8,7 @@ export interface WordOption {
   backgroundColor: string;
   emoji: string;
   label: string;
+  regex?: boolean;
 }
 
 export interface PageSettings {
