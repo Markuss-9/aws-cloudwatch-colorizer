@@ -1,18 +1,18 @@
-type Patterns = string[];
-
-export interface WordOption {
+export interface LevelPreset {
   enabled: boolean;
   code: number;
-  patterns: Patterns;
+  level: string;
+  patterns: string[];
   color: string;
   backgroundColor: string;
   emoji: string;
   label: string;
+  regex?: boolean;
 }
 
 export interface PageSettings {
   title: string;
-  words: WordOption[];
+  levels: LevelPreset[];
   id: string;
   switch: boolean;
   isAvailable: boolean;

@@ -1,16 +1,26 @@
-import type { Settings, WordOption } from './types';
+import type { Settings, LevelPreset } from './types';
 
-export type PresetName = 'error' | 'warn' | 'info' | 'debug';
+function presets<T extends Record<string, Omit<LevelPreset, 'level'>>>(
+  obj: T,
+): { [K in keyof T]: LevelPreset & { level: K } } {
+  return Object.fromEntries(
+    Object.entries(obj).map(([key, val]) => [key, { ...val, level: key }]),
+  ) as { [K in keyof T]: LevelPreset & { level: K } };
+}
 
-export const WORD_PRESETS: Record<PresetName, WordOption> = {
+export const LEVEL_PRESETS = presets({
   error: {
     enabled: true,
     code: 31,
     patterns: ['error', 'err'],
     color: 'rgba(255, 0, 0, 1)',
     backgroundColor: 'rgba(155, 0, 0, 0.44)',
+    // TODO: instead of two separate props just put one, this is used only for when i replace a pattern
     emoji: '❌',
     label: 'Error',
+
+    // for now i inserted the feature but in future i think it needs to be for pattern
+    regex: false,
   },
   warn: {
     enabled: true,
@@ -39,7 +49,9 @@ export const WORD_PRESETS: Record<PresetName, WordOption> = {
     emoji: '🐛',
     label: 'Debug',
   },
-};
+});
+
+export type PresetName = keyof typeof LEVEL_PRESETS;
 
 const defaultSettings: Settings = {
   version: 2,
@@ -48,11 +60,11 @@ const defaultSettings: Settings = {
   advancedSettings: {
     Log_Groups: {
       title: 'Log groups',
-      words: [
-        WORD_PRESETS.error,
-        WORD_PRESETS.warn,
-        WORD_PRESETS.info,
-        WORD_PRESETS.debug,
+      levels: [
+        LEVEL_PRESETS.error,
+        LEVEL_PRESETS.warn,
+        LEVEL_PRESETS.info,
+        LEVEL_PRESETS.debug,
       ],
       id: 'Log_Groups',
       switch: true,
@@ -62,11 +74,11 @@ const defaultSettings: Settings = {
     },
     Log_Insights: {
       title: 'Log Insights',
-      words: [
-        WORD_PRESETS.error,
-        WORD_PRESETS.warn,
-        WORD_PRESETS.info,
-        WORD_PRESETS.debug,
+      levels: [
+        LEVEL_PRESETS.error,
+        LEVEL_PRESETS.warn,
+        LEVEL_PRESETS.info,
+        LEVEL_PRESETS.debug,
       ],
       id: 'Log_Insights',
       switch: true,
@@ -76,11 +88,11 @@ const defaultSettings: Settings = {
     },
     Log_Tails: {
       title: 'Log Tails',
-      words: [
-        WORD_PRESETS.error,
-        WORD_PRESETS.warn,
-        WORD_PRESETS.info,
-        WORD_PRESETS.debug,
+      levels: [
+        LEVEL_PRESETS.error,
+        LEVEL_PRESETS.warn,
+        LEVEL_PRESETS.info,
+        LEVEL_PRESETS.debug,
       ],
       id: 'Log_Tails',
       switch: false,

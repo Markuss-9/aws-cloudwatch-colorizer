@@ -1,22 +1,32 @@
-import { isEmpty as _isEmpty } from 'lodash-es';
-import type { PageSettings, WordOption } from '@/types';
+import type { PageSettings, LevelPreset } from '@/types';
 import { UnreachableError } from '@/errors';
 import { log } from '@/logger';
 
 const CLASS_NAME_TAG = 'log-with-label-tag';
+
+interface FoundPattern {
+  pattern: string;
+  levelPreset: LevelPreset;
+  matchIndex: number;
+  matchText: string;
+}
+
+const stripAnsi = (text: string) =>
+  text.replace(/(?:\x1b)?\[\d+(?:;\d+)*m/g, '');
+
+const buildRegex = (pattern: string, isRegex: boolean) =>
+  isRegex ? new RegExp(pattern, 'i') : new RegExp(`\\b${pattern}\\b`, 'i');
 
 // I create a label instead of a span because when i search the most child element i take the last one
 // and if the span is the most child element i cannot find it and i create infinite spans inside spans
 // and to avoid it the if statement has classList.contains(CLASS_NAME_TAG) and querySelector with the same class to be sure that i don't create infinite spans inside spans
 
 // TODO: Fix the search in the pages to take the last element without the CLASS_NAME_TAG class
-const changeWordColor = ({
-  wordOptions,
-  foundWord,
+const replaceWithLabel = ({
+  foundPattern,
   elWithMessage,
 }: {
-  wordOptions: WordOption;
-  foundWord: string;
+  foundPattern: FoundPattern;
   elWithMessage: HTMLElement;
 }) => {
   if (
@@ -26,21 +36,17 @@ const changeWordColor = ({
     return;
   }
 
-  const regex = new RegExp(foundWord, 'i');
-  const content = elWithMessage.textContent;
-
-  const match = content.match(regex);
-
-  if (!match || match.index === undefined) return;
+  const content = stripAnsi(elWithMessage.textContent ?? '');
+  const { matchIndex, matchText, levelPreset } = foundPattern;
 
   const label = document.createElement('label');
 
   label.className = CLASS_NAME_TAG;
-  label.style.color = wordOptions.color;
-  label.textContent = `${wordOptions.emoji} ${wordOptions.label}`;
+  label.style.color = levelPreset.color;
+  label.textContent = `${levelPreset.emoji} ${levelPreset.label}`;
 
-  const beforeText = content.slice(0, match.index);
-  const afterText = content.slice(match.index + match[0].length);
+  const beforeText = content.slice(0, matchIndex);
+  const afterText = content.slice(matchIndex + matchText.length);
 
   elWithMessage.textContent = '';
 
@@ -51,70 +57,102 @@ const changeWordColor = ({
   );
 };
 
-export const findWord = ({
-  wordsOptionsCurrentPage,
+const regexCache = new Map<string, RegExp>();
+
+const getCachedRegex = (pattern: string, isRegex: boolean): RegExp => {
+  const key = `${isRegex ? 'r' : 'w'}\0${pattern}`;
+  let re = regexCache.get(key);
+  if (!re) {
+    re = buildRegex(pattern, isRegex);
+    regexCache.set(key, re);
+  }
+  return re;
+};
+
+export const findPattern = ({
+  levels,
   elWithMessage,
 }: {
-  wordsOptionsCurrentPage: PageSettings['words'];
+  levels: PageSettings['levels'];
   elWithMessage: HTMLElement;
-}): { word: string; wordSetting: WordOption } | null => {
-  const textToSearch = (elWithMessage.textContent ?? '')
-    .slice(0, 50)
-    .toLowerCase();
-  let bestIndex = Infinity;
-  let bestWordSetting: WordOption | null = null;
-  let bestPattern: string | null = null;
+}): FoundPattern | null => {
+  const textToSearch = stripAnsi(elWithMessage.textContent ?? '').slice(0, 50);
 
-  for (const wordSetting of wordsOptionsCurrentPage) {
-    if (!wordSetting.patterns) {
+  if (!textToSearch) return null;
+
+  let bestIndex = Infinity;
+  let bestPreset: LevelPreset | null = null;
+  let bestPattern: string | null = null;
+  let bestMatchLen = 0;
+  let bestMatchText: string | null = null;
+
+  for (const levelPreset of levels) {
+    if (!levelPreset.patterns) {
       throw new UnreachableError(
-        `Patterns not found, invalid configuration for word ${wordSetting.label}`,
+        `Patterns not found, invalid configuration for level ${levelPreset.label}`,
       );
     }
 
-    let minIndexForThisSetting = Infinity;
-    let patternForThisSetting: string | null = null;
-    for (const pattern of wordSetting.patterns) {
-      const index = textToSearch.indexOf(pattern.toLowerCase());
-      if (index !== -1 && index < minIndexForThisSetting) {
-        minIndexForThisSetting = index;
-        patternForThisSetting = pattern;
+    const isRegex = levelPreset.regex ?? false;
+
+    for (const pattern of levelPreset.patterns) {
+      const match = textToSearch.match(getCachedRegex(pattern, isRegex));
+      if (!match || match.index === undefined) continue;
+
+      const { index } = match;
+      const matchLen = match[0].length;
+
+      if (
+        index < bestIndex ||
+        (index === bestIndex && matchLen > bestMatchLen)
+      ) {
+        bestIndex = index;
+        bestPreset = levelPreset;
+        bestPattern = pattern;
+        bestMatchLen = matchLen;
+        bestMatchText = match[0];
+
+        // pattern is at the start of the text, no need to check for priority
+        if (bestIndex === 0) {
+          return {
+            pattern: bestPattern!,
+            levelPreset: bestPreset!,
+            matchIndex: bestIndex,
+            matchText: bestMatchText!,
+          };
+        }
       }
-    }
-    if (minIndexForThisSetting < bestIndex) {
-      bestIndex = minIndexForThisSetting;
-      bestWordSetting = wordSetting;
-      bestPattern = patternForThisSetting;
     }
   }
 
   return bestIndex === Infinity
     ? null
-    : { word: bestPattern!, wordSetting: bestWordSetting! };
+    : {
+        pattern: bestPattern!,
+        levelPreset: bestPreset!,
+        matchIndex: bestIndex,
+        matchText: bestMatchText!,
+      };
 };
 
-const colorizing = (
+export default function colorizing(
   elWithMessage: HTMLElement,
   parentElem: HTMLElement,
   pageSettings: PageSettings,
-) => {
+) {
   try {
-    const wordsOptionsCurrentPage = pageSettings.words;
-    const found = findWord({ wordsOptionsCurrentPage, elWithMessage });
+    const levels = pageSettings.levels;
+    const found = findPattern({ levels, elWithMessage });
 
     if (found !== null) {
-      const { word, wordSetting: wordOptions } = found;
-
       if (pageSettings.wantBackground) {
-        if (parentElem.style.backgroundColor !== wordOptions.backgroundColor) {
-          parentElem.style.backgroundColor = wordOptions.backgroundColor;
+        if (
+          parentElem.style.backgroundColor !== found.levelPreset.backgroundColor
+        ) {
+          parentElem.style.backgroundColor = found.levelPreset.backgroundColor;
         }
       } else {
-        changeWordColor({
-          wordOptions,
-          foundWord: word,
-          elWithMessage,
-        });
+        replaceWithLabel({ foundPattern: found, elWithMessage });
       }
       return found;
     }
@@ -127,6 +165,4 @@ const colorizing = (
     log.error('colorizing for element', { elWithMessage, parentElem }, error);
     return;
   }
-};
-
-export default colorizing;
+}

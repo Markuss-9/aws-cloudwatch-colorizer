@@ -6,7 +6,7 @@ import { findIndex } from 'lodash-es';
 import ColorPicker from '../ColorPicker';
 import info from '../Info';
 import CircleButtonColor from '../CircleButtonColor';
-import type { Settings, WordOption, SettingsPages } from '@/types';
+import type { Settings, LevelPreset, SettingsPages } from '@/types';
 
 const WordRowSettingBackground = ({
   settings,
@@ -18,7 +18,7 @@ const WordRowSettingBackground = ({
 }: {
   settings: Settings;
   setSettings: Dispatch<Settings>;
-  options: WordOption;
+  options: LevelPreset;
   showColorPicker: string;
   setShowColorPicker: Dispatch<string>;
   keyAccordion: SettingsPages;
@@ -31,16 +31,16 @@ const WordRowSettingBackground = ({
   const toggleColorPicker = () => {
     if (showColorPicker) {
       let tempSettings = settings;
-      let pos = findIndex(tempSettings.advancedSettings[keyAccordion].words, {
-        word: options.word,
+      let pos = findIndex(tempSettings.advancedSettings[keyAccordion].levels, {
+        level: options.level,
       });
-      tempSettings.advancedSettings[keyAccordion].words[pos] = {
+      tempSettings.advancedSettings[keyAccordion].levels[pos] = {
         ...options,
         color: currentColor,
       };
       setSettings({ ...tempSettings });
       setShowColorPicker('');
-    } else setShowColorPicker(options.word);
+    } else setShowColorPicker(options.level);
   };
 
   const handleColorChange = (color: ColorResult) => {
@@ -51,10 +51,10 @@ const WordRowSettingBackground = ({
 
   const switchWordAction = () => {
     let tempSettings = settings;
-    let pos = findIndex(tempSettings.advancedSettings[keyAccordion].words, {
-      word: options.word,
+    let pos = findIndex(tempSettings.advancedSettings[keyAccordion].levels, {
+      level: options.level,
     });
-    tempSettings.advancedSettings[keyAccordion].words[pos] = {
+    tempSettings.advancedSettings[keyAccordion].levels[pos] = {
       ...options,
       enabled: !switchWordEnabled,
     };
@@ -99,7 +99,7 @@ const WordRowSettingBackground = ({
         </Grid>
       </Box>
 
-      {showColorPicker === options.word && (
+      {showColorPicker === options.level && (
         <ColorPicker
           currentColor={currentColor}
           handleColorChange={handleColorChange}
