@@ -1,12 +1,18 @@
-import { isEmpty as _isEmpty } from 'lodash-es';
 import type { PageSettings, WordOption } from '@/types';
 import { UnreachableError } from '@/errors';
 import { log } from '@/logger';
 
 const CLASS_NAME_TAG = 'log-with-label-tag';
 
-const sanitizeAnsi = (text: string) =>
-  text.replace(/(?:\x1b)?\[\d+(?:;\d+)*m/g, (m) => ' '.repeat(m.length));
+interface FoundPattern {
+  pattern: string;
+  wordSetting: WordOption;
+  matchIndex: number;
+  matchText: string;
+}
+
+const stripAnsi = (text: string) =>
+  text.replace(/(?:\x1b)?\[\d+(?:;\d+)*m/g, '');
 
 const buildRegex = (pattern: string, isRegex: boolean) =>
   isRegex ? new RegExp(pattern, 'i') : new RegExp(`\\b${pattern}\\b`, 'i');
@@ -16,13 +22,11 @@ const buildRegex = (pattern: string, isRegex: boolean) =>
 // and to avoid it the if statement has classList.contains(CLASS_NAME_TAG) and querySelector with the same class to be sure that i don't create infinite spans inside spans
 
 // TODO: Fix the search in the pages to take the last element without the CLASS_NAME_TAG class
-const changeWordColor = ({
-  wordOptions,
-  foundWord,
+const replaceWithLabel = ({
+  foundPattern,
   elWithMessage,
 }: {
-  wordOptions: WordOption;
-  foundWord: string;
+  foundPattern: FoundPattern;
   elWithMessage: HTMLElement;
 }) => {
   if (
@@ -32,22 +36,17 @@ const changeWordColor = ({
     return;
   }
 
-  const content = elWithMessage.textContent;
-  const searchText = sanitizeAnsi(content);
-  const regex = buildRegex(foundWord, wordOptions.regex ?? false);
-
-  const match = searchText.match(regex);
-
-  if (!match || match.index === undefined) return;
+  const content = stripAnsi(elWithMessage.textContent ?? '');
+  const { matchIndex, matchText, wordSetting } = foundPattern;
 
   const label = document.createElement('label');
 
   label.className = CLASS_NAME_TAG;
-  label.style.color = wordOptions.color;
-  label.textContent = `${wordOptions.emoji} ${wordOptions.label}`;
+  label.style.color = wordSetting.color;
+  label.textContent = `${wordSetting.emoji} ${wordSetting.label}`;
 
-  const beforeText = content.slice(0, match.index);
-  const afterText = content.slice(match.index + match[0].length);
+  const beforeText = content.slice(0, matchIndex);
+  const afterText = content.slice(matchIndex + matchText.length);
 
   elWithMessage.textContent = '';
 
@@ -70,17 +69,14 @@ const getCachedRegex = (pattern: string, isRegex: boolean): RegExp => {
   return re;
 };
 
-export const findWord = ({
+export const findPattern = ({
   wordsOptionsCurrentPage,
   elWithMessage,
 }: {
   wordsOptionsCurrentPage: PageSettings['words'];
   elWithMessage: HTMLElement;
-}): { word: string; wordSetting: WordOption } | null => {
-  const textToSearch = sanitizeAnsi(elWithMessage.textContent ?? '').slice(
-    0,
-    50,
-  );
+}): FoundPattern | null => {
+  const textToSearch = stripAnsi(elWithMessage.textContent ?? '').slice(0, 50);
 
   if (!textToSearch) return null;
 
@@ -88,6 +84,7 @@ export const findWord = ({
   let bestWordSetting: WordOption | null = null;
   let bestPattern: string | null = null;
   let bestMatchLen = 0;
+  let bestMatchText: string | null = null;
 
   for (const wordSetting of wordsOptionsCurrentPage) {
     if (!wordSetting.patterns) {
@@ -113,10 +110,16 @@ export const findWord = ({
         bestWordSetting = wordSetting;
         bestPattern = pattern;
         bestMatchLen = matchLen;
+        bestMatchText = match[0];
 
         // pattern is at the start of the text, no need to check for priority
         if (bestIndex === 0) {
-          return { word: bestPattern!, wordSetting: bestWordSetting! };
+          return {
+            pattern: bestPattern!,
+            wordSetting: bestWordSetting!,
+            matchIndex: bestIndex,
+            matchText: bestMatchText!,
+          };
         }
       }
     }
@@ -124,7 +127,12 @@ export const findWord = ({
 
   return bestIndex === Infinity
     ? null
-    : { word: bestPattern!, wordSetting: bestWordSetting! };
+    : {
+        pattern: bestPattern!,
+        wordSetting: bestWordSetting!,
+        matchIndex: bestIndex,
+        matchText: bestMatchText!,
+      };
 };
 
 export default function colorizing(
@@ -134,21 +142,17 @@ export default function colorizing(
 ) {
   try {
     const wordsOptionsCurrentPage = pageSettings.words;
-    const found = findWord({ wordsOptionsCurrentPage, elWithMessage });
+    const found = findPattern({ wordsOptionsCurrentPage, elWithMessage });
 
     if (found !== null) {
-      const { word, wordSetting: wordOptions } = found;
-
       if (pageSettings.wantBackground) {
-        if (parentElem.style.backgroundColor !== wordOptions.backgroundColor) {
-          parentElem.style.backgroundColor = wordOptions.backgroundColor;
+        if (
+          parentElem.style.backgroundColor !== found.wordSetting.backgroundColor
+        ) {
+          parentElem.style.backgroundColor = found.wordSetting.backgroundColor;
         }
       } else {
-        changeWordColor({
-          wordOptions,
-          foundWord: word,
-          elWithMessage,
-        });
+        replaceWithLabel({ foundPattern: found, elWithMessage });
       }
       return found;
     }

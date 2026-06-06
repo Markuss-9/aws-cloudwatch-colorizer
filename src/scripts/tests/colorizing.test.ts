@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import colorizing, { findWord } from '../colorizing';
+import colorizing, { findPattern } from '../colorizing';
 import type { PageSettings, WordOption } from '@/types';
 import { PresetName, WORD_PRESETS } from '@/defaultSettings';
 
@@ -109,25 +109,27 @@ describe('colorizing - integration', () => {
   });
 });
 
-describe('findWord', () => {
+describe('findPattern', () => {
   it('returns the found word option', () => {
     const elWithMessage = createSpanWithText('info: system running');
 
-    const result = findWord({
+    const result = findPattern({
       wordsOptionsCurrentPage: mockSettings.words,
       elWithMessage,
     });
 
     expect(result).toEqual({
-      word: 'info',
+      pattern: 'info',
       wordSetting: mockSettings.words[2],
+      matchIndex: 0,
+      matchText: 'info',
     });
   });
 
   it('returns null when no words configured', () => {
     const elWithMessage = createSpanWithText('error in system');
 
-    const result = findWord({
+    const result = findPattern({
       wordsOptionsCurrentPage: [],
       elWithMessage,
     });
@@ -146,12 +148,12 @@ describe('findWord', () => {
     ])('matches pattern in "%s"', (message, expectedWord) => {
       const elWithMessage = createSpanWithText(message);
 
-      const result = findWord({
+      const result = findPattern({
         wordsOptionsCurrentPage: [wordPreset('error')],
         elWithMessage,
       });
 
-      expect(result?.word).toBe(expectedWord);
+      expect(result?.pattern).toBe(expectedWord);
     });
   });
 
@@ -162,12 +164,12 @@ describe('findWord', () => {
     ])('matches pattern in "%s"', (message, expectedWord) => {
       const elWithMessage = createSpanWithText(message);
 
-      const result = findWord({
+      const result = findPattern({
         wordsOptionsCurrentPage: [wordPreset('error')],
         elWithMessage,
       });
 
-      expect(result?.word).toBe(expectedWord);
+      expect(result?.pattern).toBe(expectedWord);
     });
   });
 
@@ -182,12 +184,12 @@ describe('findWord', () => {
     ])('matches "%s"', (message, expectedWord) => {
       const elWithMessage = createSpanWithText(message);
 
-      const result = findWord({
+      const result = findPattern({
         wordsOptionsCurrentPage: [wordPreset('error'), wordPreset('warn')],
         elWithMessage,
       });
 
-      expect(result?.word).toBe(expectedWord);
+      expect(result?.pattern).toBe(expectedWord);
     });
   });
 
@@ -198,7 +200,7 @@ describe('findWord', () => {
     ])('earliest pattern wins in "%s"', (message, expectedWord) => {
       const elWithMessage = createSpanWithText(message);
 
-      const result = findWord({
+      const result = findPattern({
         wordsOptionsCurrentPage: [
           wordPreset('error'),
           wordPreset('warn'),
@@ -207,7 +209,7 @@ describe('findWord', () => {
         elWithMessage,
       });
 
-      expect(result?.word).toBe(expectedWord);
+      expect(result?.pattern).toBe(expectedWord);
     });
   });
 
@@ -221,12 +223,12 @@ describe('findWord', () => {
     ])('matches "%s"', (message, expectedWord) => {
       const elWithMessage = createSpanWithText(message);
 
-      const result = findWord({
+      const result = findPattern({
         wordsOptionsCurrentPage: [wordPreset('error'), wordPreset('debug')],
         elWithMessage,
       });
 
-      expect(result?.word).toBe(expectedWord);
+      expect(result?.pattern).toBe(expectedWord);
     });
   });
 
@@ -236,7 +238,7 @@ describe('findWord', () => {
         'just some random log line with no matching keywords whatsoever',
       );
 
-      const result = findWord({
+      const result = findPattern({
         wordsOptionsCurrentPage: mockSettings.words,
         elWithMessage,
       });
@@ -249,7 +251,7 @@ describe('findWord', () => {
         'A very long prefix text that pushes the keyword error way past the fifty char check limit',
       );
 
-      const result = findWord({
+      const result = findPattern({
         wordsOptionsCurrentPage: [wordPreset('error')],
         elWithMessage,
       });
@@ -272,7 +274,7 @@ describe('word matching - false positive prevention', () => {
   ])('does NOT match internal occurrence: "%s"', (message) => {
     const elWithMessage = createSpanWithText(message);
 
-    const result = findWord({
+    const result = findPattern({
       wordsOptionsCurrentPage: [wordPreset('error')],
       elWithMessage,
     });
@@ -285,7 +287,7 @@ describe('regex mode', () => {
   it('matches pattern as raw regex with alternation', () => {
     const elWithMessage = createSpanWithText('critical: system failure');
 
-    const result = findWord({
+    const result = findPattern({
       wordsOptionsCurrentPage: [
         wordPreset('error', {
           patterns: ['(error|critical|failed)'],
@@ -295,13 +297,13 @@ describe('regex mode', () => {
       elWithMessage,
     });
 
-    expect(result?.word).toBe('(error|critical|failed)');
+    expect(result?.pattern).toBe('(error|critical|failed)');
   });
 
   it('matches inside words when no \\b in the regex pattern', () => {
     const elWithMessage = createSpanWithText('traceback: something broke');
 
-    const result = findWord({
+    const result = findPattern({
       wordsOptionsCurrentPage: [
         wordPreset('error', { patterns: ['trace'], regex: true }),
       ],
@@ -309,13 +311,13 @@ describe('regex mode', () => {
     });
 
     expect(result).not.toBeNull();
-    expect(result?.word).toBe('trace');
+    expect(result?.pattern).toBe('trace');
   });
 
   it('respects word boundaries when \\b is in the regex pattern', () => {
     const elWithMessage = createSpanWithText('traceback: something broke');
 
-    const result = findWord({
+    const result = findPattern({
       wordsOptionsCurrentPage: [
         wordPreset('error', { patterns: ['\\btrace\\b'], regex: true }),
       ],
@@ -328,7 +330,7 @@ describe('regex mode', () => {
   it('matches with quantifiers in regex pattern', () => {
     const elWithMessage = createSpanWithText('status code: 404');
 
-    const result = findWord({
+    const result = findPattern({
       wordsOptionsCurrentPage: [
         wordPreset('error', { patterns: ['\\d{3}'], regex: true }),
       ],
@@ -341,7 +343,7 @@ describe('regex mode', () => {
   it('returns null when regex pattern does not match', () => {
     const elWithMessage = createSpanWithText('everything is fine');
 
-    const result = findWord({
+    const result = findPattern({
       wordsOptionsCurrentPage: [
         wordPreset('error', { patterns: ['\\d+'], regex: true }),
       ],
@@ -351,7 +353,7 @@ describe('regex mode', () => {
     expect(result).toBeNull();
   });
 
-  it('works with changeWordColor via colorizing function', () => {
+  it('works with replaceWithLabel via colorizing function', () => {
     const { elWithMessage, parentElem } = createElementAndParent(
       'FAILED: deployment aborted',
     );
