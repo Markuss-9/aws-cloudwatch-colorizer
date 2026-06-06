@@ -1,13 +1,7 @@
-import Box from '@mui/material/Box';
-import BottomNavigation from '@mui/material/BottomNavigation';
-import BottomNavigationAction from '@mui/material/BottomNavigationAction';
 import { useNavigate } from 'react-router-dom';
-
-import SettingsIcon from '@mui/icons-material/Settings';
-import HomeIcon from '@mui/icons-material/Home';
-import LightbulbIcon from '@mui/icons-material/Lightbulb';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { useState } from 'react';
+
+import { Home, Lightbulb, Settings, ChevronUp } from 'lucide-react';
 
 export default function SimpleBottomNavigation() {
   const [value, setValue] = useState(1);
@@ -15,77 +9,53 @@ export default function SimpleBottomNavigation() {
 
   const navigate = useNavigate();
 
+  const items = [
+    { label: 'Settings', icon: Settings, onClick: () => navigate('settings') },
+    { label: 'Home', icon: Home, onClick: () => navigate('') },
+    { label: 'Tutorial', icon: Lightbulb, onClick: () => navigate('tutorial') },
+  ];
+
   return (
     <>
-      <Box
+      <div
         onMouseLeave={() => setTimeout(() => setIsHovered(false), 1500)}
-        sx={{
-          // position: "sticky",
-          // bottom: 0,
-
-          width: '80%',
-          mx: 'auto',
-          position: 'absolute',
-          bottom: 5,
-          left: 0,
-          right: 0,
+        className="w-4/5 mx-auto absolute bottom-[5px] left-0 right-0"
+        style={{
           opacity: isHovered ? 1 : 0,
           transition: 'opacity 1.25s ease',
         }}
       >
-        <BottomNavigation
-          showLabels
-          value={value}
-          onChange={(event, newValue) => {
-            setValue(newValue);
-          }}
-          sx={{
-            backgroundColor: '#9b9b9b',
-            border: '1px solid black',
-            borderRadius: '10px',
-          }}
-        >
-          <BottomNavigationAction
-            label="Settings"
-            icon={<SettingsIcon />}
-            onClick={() => {
-              navigate('settings');
-            }}
-            sx={{ fontWeight: 'bold' }}
-          />
-          <BottomNavigationAction
-            label="Home"
-            icon={<HomeIcon />}
-            onClick={() => {
-              navigate('');
-            }}
-            sx={{ fontWeight: 'bold' }}
-          />
-          <BottomNavigationAction
-            label="Tutorial"
-            icon={<LightbulbIcon />}
-            onClick={() => {
-              navigate('tutorial');
-            }}
-            sx={{ fontWeight: 'bold' }}
-          />
-        </BottomNavigation>
-      </Box>
+        <nav className="flex justify-around bg-[#9b9b9b] border border-black rounded-lg p-1">
+          {items.map((item, index) => (
+            <button
+              key={item.label}
+              onClick={() => {
+                setValue(index);
+                item.onClick();
+              }}
+              className={`flex flex-col items-center gap-0.5 px-3 py-1 rounded border-none cursor-pointer font-bold transition-colors ${
+                value === index
+                  ? 'bg-[#1976d2] text-white'
+                  : 'bg-transparent text-black hover:bg-[#888]'
+              }`}
+            >
+              <item.icon size={20} />
+              <span className="text-[10px]">{item.label}</span>
+            </button>
+          ))}
+        </nav>
+      </div>
       {!isHovered && (
-        <Box
+        <div
           onMouseEnter={() => setIsHovered(true)}
-          sx={{
-            position: 'absolute',
-            bottom: 0,
-            left: 0,
-            right: 0,
+          className="absolute bottom-0 left-0 right-0 flex justify-center h-[35px] cursor-pointer"
+          style={{
             opacity: isHovered ? 0 : 1,
             transition: 'opacity 1.25s ease',
-            height: 35,
           }}
         >
-          <KeyboardArrowUpIcon />
-        </Box>
+          <ChevronUp size={24} />
+        </div>
       )}
     </>
   );

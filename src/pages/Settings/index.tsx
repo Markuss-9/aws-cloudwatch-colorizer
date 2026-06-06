@@ -1,8 +1,12 @@
-import { Button, Tooltip, Typography } from '@mui/material';
 import ControlledAccordions from '@/components/ControlledAccordions';
-import './style.css';
 import { Dispatch } from 'react';
 import type { Settings } from '@/types';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
+import { Button } from '@/components/ui/button';
 
 const Settings = ({
   settings,
@@ -15,18 +19,19 @@ const Settings = ({
 }) => {
   return (
     <>
-      <Typography variant="h3" sx={{ margin: 1 }}>
-        Settings
-      </Typography>
+      <h3 className="text-2xl font-cursive m-1">Settings</h3>
       <br />
       <ControlledAccordions settings={settings} setSettings={setSettings} />
       <br />
       <br />
       <br />
-      <Tooltip title={`Reset all settings to default`}>
-        <Button variant="outlined" color="warning" onClick={resetSettings}>
-          RESET
-        </Button>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button variant="outline" color="warning" onClick={resetSettings}>
+            RESET
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent>Reset all settings to default</TooltipContent>
       </Tooltip>
       <br />
       <br />

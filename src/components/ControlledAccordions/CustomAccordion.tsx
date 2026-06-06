@@ -1,9 +1,15 @@
-import Accordion from '@mui/material/Accordion';
-import AccordionDetails from '@mui/material/AccordionDetails';
-import AccordionSummary from '@mui/material/AccordionSummary';
-import Typography from '@mui/material/Typography';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { Grid, Switch, Tooltip } from '@mui/material';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
+import { Switch } from '@/components/ui/switch';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 import { Dispatch, useState } from 'react';
 import WordRowSettingColor from '../WordRowSettingColor';
@@ -47,57 +53,59 @@ const CustomAccordion = ({
     section.wantBackground,
   );
 
+  const isExpanded =
+    expanded === keyAccordion && !disabledAccordions.includes(keyAccordion);
+
   return (
-    <>
-      <Accordion
-        expanded={
-          expanded === keyAccordion &&
-          !disabledAccordions.includes(keyAccordion)
-        }
-        sx={{ width: '90%' }}
-        onChange={handleChange(keyAccordion)}
-        disabled={!section.isAvailable}
-        // disabled={disabledAccordions.includes(keyAccordion)}
-        className="Accordion"
+    <Accordion
+      type="single"
+      collapsible
+      value={isExpanded ? keyAccordion : ''}
+      onValueChange={(val: string) =>
+        handleChange(keyAccordion)(null, val === keyAccordion)
+      }
+    >
+      <AccordionItem
+        value={keyAccordion}
+        className={!section.isAvailable ? 'pointer-events-none opacity-60' : ''}
         key={`${keyAccordion}-Accordion-${i}`}
       >
-        <AccordionSummary
-          expandIcon={
-            !disabledAccordions.includes(keyAccordion) && <ExpandMoreIcon />
-          }
-          aria-controls="panel2bh-content"
-          id="panel2bh-header"
-          key={`${keyAccordion}-AccordionSummary-${i}`}
-        >
-          <Tooltip title={`Show logs for the ${section.title} pages`}>
-            <Switch
-              checked={accordionEnabled}
-              // defaultChecked={section.switch}
-              onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-                handleSwitchClick(e, keyAccordion);
-                setAccordionEnabled(!accordionEnabled);
-              }}
-            />
-          </Tooltip>
-          <Typography sx={{ flexShrink: 0, marginLeft: '40px' }}>
-            {section.title}
-          </Typography>
-        </AccordionSummary>
-        <AccordionDetails key={`${keyAccordion}-AccordionDetails-${i}`}>
-          <Grid
-            container
-            direction="row"
-            sx={{ justifyContent: 'center', alignItems: 'center' }}
-          >
-            <Tooltip title={`The words are replaced with the colorized label`}>
-              <Grid>
-                <Typography>Color</Typography>
-              </Grid>
+        <AccordionTrigger key={`${keyAccordion}-AccordionSummary-${i}`}>
+          <div className="flex items-center gap-1">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div onClick={(e) => e.stopPropagation()}>
+                  <Switch
+                    checked={accordionEnabled}
+                    onCheckedChange={() => {
+                      handleSwitchClick(
+                        { stopPropagation: () => {} },
+                        keyAccordion,
+                      );
+                      setAccordionEnabled(!accordionEnabled);
+                    }}
+                  />
+                </div>
+              </TooltipTrigger>
+              <TooltipContent>
+                Show logs for the {section.title} pages
+              </TooltipContent>
             </Tooltip>
-            <Grid size={4}>
+            <span className="ml-10">{section.title}</span>
+          </div>
+        </AccordionTrigger>
+        <AccordionContent key={`${keyAccordion}-AccordionDetails-${i}`}>
+          <div className="flex items-center justify-center gap-2 mb-2">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span>The words are replaced with the colorized label</span>
+              </TooltipTrigger>
+              <TooltipContent>Color</TooltipContent>
+            </Tooltip>
+            <div onClick={(e) => e.stopPropagation()}>
               <Switch
                 checked={wantBackground}
-                onClick={() => {
+                onCheckedChange={() => {
                   let tempSettings = settings;
                   tempSettings.advancedSettings[keyAccordion].wantBackground =
                     !tempSettings.advancedSettings[keyAccordion].wantBackground;
@@ -106,44 +114,41 @@ const CustomAccordion = ({
                   setWantBackground(!wantBackground);
                 }}
               />
-            </Grid>
-            <Tooltip title={`The rows are colorized`}>
-              <Grid>
-                <Typography>Background</Typography>
-              </Grid>
+            </div>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span>Background</span>
+              </TooltipTrigger>
+              <TooltipContent>The rows are colorized</TooltipContent>
             </Tooltip>
-          </Grid>
+          </div>
 
           {section.levels.map((options: LevelPreset) => {
             return wantBackground ? (
-              <>
-                <WordRowSettingBackground
-                  settings={settings}
-                  setSettings={setSettings}
-                  key={`${keyAccordion}-bg-${options.level}`}
-                  options={options}
-                  showColorPicker={showColorPicker}
-                  setShowColorPicker={setShowColorPicker}
-                  keyAccordion={keyAccordion}
-                />
-              </>
+              <WordRowSettingBackground
+                settings={settings}
+                setSettings={setSettings}
+                key={`${keyAccordion}-bg-${options.level}`}
+                options={options}
+                showColorPicker={showColorPicker}
+                setShowColorPicker={setShowColorPicker}
+                keyAccordion={keyAccordion}
+              />
             ) : (
-              <>
-                <WordRowSettingColor
-                  settings={settings}
-                  setSettings={setSettings}
-                  key={`${keyAccordion}-color-${options.level}`}
-                  options={options}
-                  showColorPicker={showColorPicker}
-                  setShowColorPicker={setShowColorPicker}
-                  keyAccordion={keyAccordion}
-                />
-              </>
+              <WordRowSettingColor
+                settings={settings}
+                setSettings={setSettings}
+                key={`${keyAccordion}-color-${options.level}`}
+                options={options}
+                showColorPicker={showColorPicker}
+                setShowColorPicker={setShowColorPicker}
+                keyAccordion={keyAccordion}
+              />
             );
           })}
-        </AccordionDetails>
-      </Accordion>
-    </>
+        </AccordionContent>
+      </AccordionItem>
+    </Accordion>
   );
 };
 

@@ -1,17 +1,10 @@
-import { Info } from '@mui/icons-material';
-import { Box } from '@mui/material';
+import { Info } from 'lucide-react';
 
-const info = (msg: string) => (
-  <Box
-    sx={{
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-    }}
-  >
-    <Info sx={{ width: 16 }} />
-    <Box sx={{ marginLeft: 1 }}>{msg}</Box>
-  </Box>
+const InfoTooltip = ({ msg }: { msg: string }) => (
+  <span className="flex items-center justify-center gap-1">
+    <Info size={16} />
+    <span>{msg}</span>
+  </span>
 );
 
-export default info;
+export default InfoTooltip;

@@ -19,7 +19,7 @@ export default function ControlledAccordions({
 
   const handleChange =
     (panel: SettingsPages) =>
-    (event: React.SyntheticEvent, isExpanded: boolean) => {
+    (event: React.SyntheticEvent | null, isExpanded: boolean) => {
       setExpanded(isExpanded ? panel : false);
       setShowColorPicker('');
     };
@@ -61,7 +61,7 @@ export default function ControlledAccordions({
   }, []);
 
   return (
-    <div className="center">
+    <div className="text-center">
       {(
         Object.entries(settings.advancedSettings) as [
           SettingsPages,

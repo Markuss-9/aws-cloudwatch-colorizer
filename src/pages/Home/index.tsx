@@ -1,15 +1,12 @@
-import GitHubIcon from '@mui/icons-material/GitHub';
-import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
-import FlashOnIcon from '@mui/icons-material/FlashOn';
+import { ExternalLink, Power, Zap } from 'lucide-react';
 
+import { Button } from '@/components/ui/button';
 import {
-  ToggleButtonGroup,
-  Button,
-  ToggleButton,
-  Typography,
   Tooltip,
-  Box,
-} from '@mui/material';
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 
 import packageJson from '@/../package.json';
 import { Dispatch } from 'react';
@@ -26,10 +23,9 @@ const Home = ({
   const handleToggle = () =>
     setSettings({ ...settings, ...{ master: !settings.master } });
 
-  const handleChange = (
-    event: React.MouseEvent<HTMLElement>,
-    newPerf: PerformanceMode,
-  ) => setSettings({ ...settings, ...{ performance: newPerf } });
+  const handleChange = (newPerf: PerformanceMode) => {
+    if (newPerf) setSettings({ ...settings, ...{ performance: newPerf } });
+  };
 
   const handleAutoMode = () =>
     setSettings({
@@ -41,115 +37,95 @@ const Home = ({
 
   return (
     <>
-      <Typography
-        sx={{
-          width: 'fit-content',
-          height: 'fit-content',
-          padding: 1,
-          right: 0,
-          position: 'absolute',
-          fontSize: 12,
-          lineHeight: 1,
-        }}
-      >
+      <span className="absolute right-0 p-1 text-xs leading-none w-fit h-fit">
         {packageJson.version}
-      </Typography>
-      <Typography variant="h3" sx={{ margin: 1 }}>
-        Home
-      </Typography>
+      </span>
+
+      <h3 className="text-2xl font-cursive m-1">Home</h3>
+
       <Button
-        variant="contained"
         color={settings.master ? 'on' : 'off'}
         onClick={handleToggle}
-        sx={{
-          borderRadius: '50%',
-          width: '130px',
-          height: '130px',
-        }}
+        className="rounded-full w-[130px] h-[130px]"
       >
-        {settings.master ? (
-          <FlashOnIcon sx={{ fontSize: 60 }} />
-        ) : (
-          <PowerSettingsNewIcon sx={{ fontSize: 60 }} />
-        )}
+        {settings.master ? <Zap size={60} /> : <Power size={60} />}
       </Button>
-      <ToggleButton
-        color="primary"
-        value={'AUTO'}
-        selected={settings.performance !== 'manual'}
-        onChange={handleAutoMode}
-        sx={{
-          position: 'absolute',
-          top: 120,
-          right: 15,
-        }}
-      >
-        <Tooltip title="Auto mode">
-          <span>AUTO</span>
-        </Tooltip>
-      </ToggleButton>
-      <Box
-        sx={{
-          margin: 3,
-          height: 50,
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-      >
+
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <button
+            onClick={handleAutoMode}
+            className={`absolute top-[120px] right-[15px] px-2 py-1 text-sm rounded border-none cursor-pointer ${
+              settings.performance !== 'manual'
+                ? 'bg-[#1976d2] text-white'
+                : 'bg-[#444] text-gray-300'
+            }`}
+          >
+            AUTO
+          </button>
+        </TooltipTrigger>
+        <TooltipContent>Auto mode</TooltipContent>
+      </Tooltip>
+
+      <div className="m-3 h-[50px] flex justify-center items-center">
         {settings.performance === 'manual' ? (
           <ColorizeButton master={settings.master} />
         ) : (
-          <ToggleButtonGroup
-            color="secondary"
+          <ToggleGroup
+            type="single"
             value={settings.performance}
-            exclusive
-            onChange={handleChange}
+            onValueChange={(val: PerformanceMode) => {
+              if (val) handleChange(val);
+            }}
             aria-label="performance"
           >
-            <ToggleButton value="timer">
-              <Tooltip title="Every 3 seconds it updates">
-                <span>TIMER</span>
+            <ToggleGroupItem value="timer">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span>TIMER</span>
+                </TooltipTrigger>
+                <TooltipContent>Every 3 seconds it updates</TooltipContent>
               </Tooltip>
-            </ToggleButton>
-            <ToggleButton value="dom">
-              <Tooltip title="It updates when the DOM is changed">
-                <span>DOM</span>
+            </ToggleGroupItem>
+            <ToggleGroupItem value="dom">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span>DOM</span>
+                </TooltipTrigger>
+                <TooltipContent>
+                  It updates when the DOM is changed
+                </TooltipContent>
               </Tooltip>
-            </ToggleButton>
-            {/* <ToggleButton disabled value="net"> */}
-            <Tooltip title="[WIP] It updates when the a network request has finished, maybe it will never come out">
-              <span>
-                <Button disabled sx={{ padding: '11px' }}>
-                  NET
-                </Button>
-              </span>
-            </Tooltip>
-            {/* </ToggleButton> */}
-          </ToggleButtonGroup>
+            </ToggleGroupItem>
+            <ToggleGroupItem value="net" disabled>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span>NET</span>
+                </TooltipTrigger>
+                <TooltipContent>
+                  [WIP] It updates when a network request has finished, maybe it
+                  will never come out
+                </TooltipContent>
+              </Tooltip>
+            </ToggleGroupItem>
+          </ToggleGroup>
         )}
-      </Box>
+      </div>
 
-      <Box sx={{ display: 'inline-flex', alignItems: 'center' }}>
-        <Typography
-          sx={{
-            width: 165,
-            fontSize: '0.9rem',
-            display: 'inline-flex',
-            alignItems: 'center',
-          }}
-        >
+      <div className="inline-flex items-center">
+        <span className="w-[165px] text-sm inline-flex items-center">
           Give a star at the repo
-        </Typography>
-        <GitHubIcon
-          sx={{ fontSize: 30 }}
+        </span>
+        <ExternalLink
+          size={30}
+          className="cursor-pointer"
           onClick={() => {
             window.open(
               'https://github.com/Markuss-9/aws-cloudwatch-colorizer',
             );
           }}
         />
-      </Box>
+      </div>
     </>
   );
 };

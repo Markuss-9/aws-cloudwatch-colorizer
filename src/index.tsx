@@ -6,7 +6,7 @@ import { BrowserRouter } from 'react-router-dom';
 import './index.css';
 
 const root = document.createElement('div');
-root.className = 'container';
+root.className = 'w-[350px] h-[400px] bg-[#363636]';
 document.body.appendChild(root);
 const rootDiv = ReactDOM.createRoot(root);
 rootDiv.render(

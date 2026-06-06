@@ -1,12 +1,9 @@
-import { Typography } from '@mui/material';
 const Tutorial = () => {
   return (
     <>
-      <Typography variant="h3" sx={{ margin: 1 }}>
-        Tutorial
-      </Typography>
+      <h3 className="text-2xl font-cursive m-1">Tutorial</h3>
       <br />
-      <Typography>You can figure it out 🙂</Typography>
+      <p>You can figure it out 🙂</p>
     </>
   );
 };

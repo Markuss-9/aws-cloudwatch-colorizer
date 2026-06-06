@@ -1,4 +1,3 @@
-import { Button } from '@mui/material';
 import chroma from 'chroma-js';
 
 const CircleButtonColor = ({
@@ -8,52 +7,29 @@ const CircleButtonColor = ({
   savedColor: string;
   toggleColorPicker: VoidFunction;
 }) => {
-  const lightenColor = (rgbaColor: string | number | chroma.Color) => {
-    return chroma(rgbaColor).brighten(0.5).css();
-  };
-
   const darkenColor = (rgbaColor: string | number | chroma.Color) => {
     return chroma(rgbaColor).darken(0.1).css();
   };
 
   return (
-    <Button
-      sx={{
-        minWidth: 0,
-        width: 25,
-        height: 25,
-        padding: 0,
-        borderRadius: '50%',
-        backgroundColor: savedColor,
-        '&:hover': {
-          backgroundColor: darkenColor(savedColor),
-        },
-        '&:before': {
-          content: '""',
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          border: `1px solid black`,
-          zIndex: 1,
-          borderRadius: '50%',
-        },
-        '&:after': {
-          content: '""',
-          position: 'absolute',
-          top: 1,
-          left: 1,
-          right: 1,
-          bottom: 1,
-          border: `1px solid white`,
-          zIndex: 0,
-          borderRadius: '50%',
-        },
-        color: lightenColor(savedColor),
-      }}
+    <button
+      className="min-w-0 w-[25px] h-[25px] p-0 rounded-full relative cursor-pointer border-none"
+      style={{ backgroundColor: savedColor }}
       onClick={toggleColorPicker}
-    />
+    >
+      <span
+        className="absolute inset-0 rounded-full z-[1]"
+        style={{ border: '1px solid black' }}
+      />
+      <span
+        className="absolute inset-[1px] rounded-full z-0"
+        style={{ border: '1px solid white' }}
+      />
+      <span
+        className="absolute inset-0 rounded-full opacity-0 hover:opacity-100 transition-opacity"
+        style={{ backgroundColor: darkenColor(savedColor) }}
+      />
+    </button>
   );
 };
 

@@ -1,14 +1,18 @@
 import { Dispatch, useState } from 'react';
-import { ColorResult } from 'react-color';
-import { Box, Grid, Switch, Tooltip, Typography } from '@mui/material';
 import { findIndex } from 'lodash-es';
 
 import ColorPicker from '../ColorPicker';
-import info from '../Info';
+import InfoTooltip from '../Info';
 import CircleButtonColor from '../CircleButtonColor';
 import type { Settings, LevelPreset, SettingsPages } from '@/types';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
+import { Switch } from '@/components/ui/switch';
 
-const WordRowSettingBackground = ({
+const WordRowSettingColor = ({
   settings,
   setSettings,
   options,
@@ -43,10 +47,8 @@ const WordRowSettingBackground = ({
     } else setShowColorPicker(options.level);
   };
 
-  const handleColorChange = (color: ColorResult) => {
-    setCurrentColor(
-      `rgba(${color.rgb.r}, ${color.rgb.g}, ${color.rgb.b}, ${color.rgb.a})`,
-    );
+  const handleColorChange = (color: string) => {
+    setCurrentColor(color);
   };
 
   const switchWordAction = () => {
@@ -64,40 +66,39 @@ const WordRowSettingBackground = ({
 
   return (
     <>
-      <Box>
-        <Grid
-          container
-          direction="row"
-          sx={{ justifyContent: 'center', alignItems: 'center' }}
-        >
-          <Grid size={4}>
+      <div>
+        <div className="grid grid-cols-[4fr_2fr_2fr_4fr] items-center justify-items-center">
+          <div>
             <CircleButtonColor
               savedColor={options.color}
               toggleColorPicker={toggleColorPicker}
             />
-          </Grid>
-          <Grid size={2}>
-            <Typography color={options.color}>{options.emoji}</Typography>
-          </Grid>
-          <Grid size={2}>
-            <Typography color={options.color}>{options.label}</Typography>
-          </Grid>
-          <Grid size={4}>
-            <Tooltip
-              title={
-                switchWordEnabled ? info('Disable word') : info('Enable word')
-              }
-            >
-              <Switch
-                checked={switchWordEnabled}
-                onClick={() => {
-                  switchWordAction();
-                }}
-              />
+          </div>
+          <div>
+            <span style={{ color: options.color }}>{options.emoji}</span>
+          </div>
+          <div>
+            <span style={{ color: options.color }}>{options.label}</span>
+          </div>
+          <div>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div onClick={(e) => e.stopPropagation()}>
+                  <Switch
+                    checked={switchWordEnabled}
+                    onCheckedChange={() => switchWordAction()}
+                  />
+                </div>
+              </TooltipTrigger>
+              <TooltipContent>
+                <InfoTooltip
+                  msg={switchWordEnabled ? 'Disable word' : 'Enable word'}
+                />
+              </TooltipContent>
             </Tooltip>
-          </Grid>
-        </Grid>
-      </Box>
+          </div>
+        </div>
+      </div>
 
       {showColorPicker === options.level && (
         <ColorPicker
@@ -109,4 +110,4 @@ const WordRowSettingBackground = ({
   );
 };
 
-export default WordRowSettingBackground;
+export default WordRowSettingColor;
