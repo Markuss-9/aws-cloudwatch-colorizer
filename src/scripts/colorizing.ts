@@ -1,4 +1,4 @@
-import type { PageSettings, WordOption } from '@/types';
+import type { PageSettings, LevelPreset } from '@/types';
 import { UnreachableError } from '@/errors';
 import { log } from '@/logger';
 
@@ -6,7 +6,7 @@ const CLASS_NAME_TAG = 'log-with-label-tag';
 
 interface FoundPattern {
   pattern: string;
-  wordSetting: WordOption;
+  levelPreset: LevelPreset;
   matchIndex: number;
   matchText: string;
 }
@@ -37,13 +37,13 @@ const replaceWithLabel = ({
   }
 
   const content = stripAnsi(elWithMessage.textContent ?? '');
-  const { matchIndex, matchText, wordSetting } = foundPattern;
+  const { matchIndex, matchText, levelPreset } = foundPattern;
 
   const label = document.createElement('label');
 
   label.className = CLASS_NAME_TAG;
-  label.style.color = wordSetting.color;
-  label.textContent = `${wordSetting.emoji} ${wordSetting.label}`;
+  label.style.color = levelPreset.color;
+  label.textContent = `${levelPreset.emoji} ${levelPreset.label}`;
 
   const beforeText = content.slice(0, matchIndex);
   const afterText = content.slice(matchIndex + matchText.length);
@@ -70,10 +70,10 @@ const getCachedRegex = (pattern: string, isRegex: boolean): RegExp => {
 };
 
 export const findPattern = ({
-  wordsOptionsCurrentPage,
+  levels,
   elWithMessage,
 }: {
-  wordsOptionsCurrentPage: PageSettings['words'];
+  levels: PageSettings['levels'];
   elWithMessage: HTMLElement;
 }): FoundPattern | null => {
   const textToSearch = stripAnsi(elWithMessage.textContent ?? '').slice(0, 50);
@@ -81,21 +81,21 @@ export const findPattern = ({
   if (!textToSearch) return null;
 
   let bestIndex = Infinity;
-  let bestWordSetting: WordOption | null = null;
+  let bestPreset: LevelPreset | null = null;
   let bestPattern: string | null = null;
   let bestMatchLen = 0;
   let bestMatchText: string | null = null;
 
-  for (const wordSetting of wordsOptionsCurrentPage) {
-    if (!wordSetting.patterns) {
+  for (const levelPreset of levels) {
+    if (!levelPreset.patterns) {
       throw new UnreachableError(
-        `Patterns not found, invalid configuration for word ${wordSetting.label}`,
+        `Patterns not found, invalid configuration for level ${levelPreset.label}`,
       );
     }
 
-    const isRegex = wordSetting.regex ?? false;
+    const isRegex = levelPreset.regex ?? false;
 
-    for (const pattern of wordSetting.patterns) {
+    for (const pattern of levelPreset.patterns) {
       const match = textToSearch.match(getCachedRegex(pattern, isRegex));
       if (!match || match.index === undefined) continue;
 
@@ -107,7 +107,7 @@ export const findPattern = ({
         (index === bestIndex && matchLen > bestMatchLen)
       ) {
         bestIndex = index;
-        bestWordSetting = wordSetting;
+        bestPreset = levelPreset;
         bestPattern = pattern;
         bestMatchLen = matchLen;
         bestMatchText = match[0];
@@ -116,7 +116,7 @@ export const findPattern = ({
         if (bestIndex === 0) {
           return {
             pattern: bestPattern!,
-            wordSetting: bestWordSetting!,
+            levelPreset: bestPreset!,
             matchIndex: bestIndex,
             matchText: bestMatchText!,
           };
@@ -129,7 +129,7 @@ export const findPattern = ({
     ? null
     : {
         pattern: bestPattern!,
-        wordSetting: bestWordSetting!,
+        levelPreset: bestPreset!,
         matchIndex: bestIndex,
         matchText: bestMatchText!,
       };
@@ -141,15 +141,15 @@ export default function colorizing(
   pageSettings: PageSettings,
 ) {
   try {
-    const wordsOptionsCurrentPage = pageSettings.words;
-    const found = findPattern({ wordsOptionsCurrentPage, elWithMessage });
+    const levels = pageSettings.levels;
+    const found = findPattern({ levels, elWithMessage });
 
     if (found !== null) {
       if (pageSettings.wantBackground) {
         if (
-          parentElem.style.backgroundColor !== found.wordSetting.backgroundColor
+          parentElem.style.backgroundColor !== found.levelPreset.backgroundColor
         ) {
-          parentElem.style.backgroundColor = found.wordSetting.backgroundColor;
+          parentElem.style.backgroundColor = found.levelPreset.backgroundColor;
         }
       } else {
         replaceWithLabel({ foundPattern: found, elWithMessage });

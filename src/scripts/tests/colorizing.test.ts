@@ -1,14 +1,14 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import colorizing, { findPattern } from '../colorizing';
-import type { PageSettings, WordOption } from '@/types';
-import { PresetName, WORD_PRESETS } from '@/defaultSettings';
+import type { PageSettings, LevelPreset } from '@/types';
+import { PresetName, LEVEL_PRESETS } from '@/defaultSettings';
 
 function wordPreset(
   preset: PresetName,
-  overrides?: Partial<WordOption> & { patterns?: WordOption['patterns'] },
-): WordOption {
+  overrides?: Partial<LevelPreset> & { patterns?: LevelPreset['patterns'] },
+): LevelPreset {
   return {
-    ...WORD_PRESETS[preset],
+    ...LEVEL_PRESETS[preset],
     ...overrides,
   };
 }
@@ -21,7 +21,7 @@ function createSpanWithText(text: string): HTMLSpanElement {
 
 const mockSettings: PageSettings = {
   title: 'Test',
-  words: [wordPreset('error'), wordPreset('warn'), wordPreset('info')],
+  levels: [wordPreset('error'), wordPreset('warn'), wordPreset('info')],
   id: 'Test',
   switch: true,
   isAvailable: true,
@@ -62,8 +62,8 @@ describe('colorizing - integration', () => {
     });
 
     expect(elWithMessage.innerHTML).toContain('log-with-label-tag');
-    expect(elWithMessage.innerHTML).toContain(WORD_PRESETS.error.emoji);
-    expect(elWithMessage.innerHTML).toContain(WORD_PRESETS.error.label);
+    expect(elWithMessage.innerHTML).toContain(LEVEL_PRESETS.error.emoji);
+    expect(elWithMessage.innerHTML).toContain(LEVEL_PRESETS.error.label);
   });
 
   it('sets background color on parent when wantBackground is true', () => {
@@ -77,7 +77,7 @@ describe('colorizing - integration', () => {
     });
 
     expect(parentElem.style.backgroundColor).toBe(
-      WORD_PRESETS.warn.backgroundColor,
+      LEVEL_PRESETS.warn.backgroundColor,
     );
   });
 
@@ -114,13 +114,13 @@ describe('findPattern', () => {
     const elWithMessage = createSpanWithText('info: system running');
 
     const result = findPattern({
-      wordsOptionsCurrentPage: mockSettings.words,
+      levels: mockSettings.levels,
       elWithMessage,
     });
 
     expect(result).toEqual({
       pattern: 'info',
-      wordSetting: mockSettings.words[2],
+      levelPreset: mockSettings.levels[2],
       matchIndex: 0,
       matchText: 'info',
     });
@@ -130,7 +130,7 @@ describe('findPattern', () => {
     const elWithMessage = createSpanWithText('error in system');
 
     const result = findPattern({
-      wordsOptionsCurrentPage: [],
+      levels: [],
       elWithMessage,
     });
 
@@ -149,7 +149,7 @@ describe('findPattern', () => {
       const elWithMessage = createSpanWithText(message);
 
       const result = findPattern({
-        wordsOptionsCurrentPage: [wordPreset('error')],
+        levels: [wordPreset('error')],
         elWithMessage,
       });
 
@@ -165,7 +165,7 @@ describe('findPattern', () => {
       const elWithMessage = createSpanWithText(message);
 
       const result = findPattern({
-        wordsOptionsCurrentPage: [wordPreset('error')],
+        levels: [wordPreset('error')],
         elWithMessage,
       });
 
@@ -185,7 +185,7 @@ describe('findPattern', () => {
       const elWithMessage = createSpanWithText(message);
 
       const result = findPattern({
-        wordsOptionsCurrentPage: [wordPreset('error'), wordPreset('warn')],
+        levels: [wordPreset('error'), wordPreset('warn')],
         elWithMessage,
       });
 
@@ -201,7 +201,7 @@ describe('findPattern', () => {
       const elWithMessage = createSpanWithText(message);
 
       const result = findPattern({
-        wordsOptionsCurrentPage: [
+        levels: [
           wordPreset('error'),
           wordPreset('warn'),
           wordPreset('info'),
@@ -224,7 +224,7 @@ describe('findPattern', () => {
       const elWithMessage = createSpanWithText(message);
 
       const result = findPattern({
-        wordsOptionsCurrentPage: [wordPreset('error'), wordPreset('debug')],
+        levels: [wordPreset('error'), wordPreset('debug')],
         elWithMessage,
       });
 
@@ -239,7 +239,7 @@ describe('findPattern', () => {
       );
 
       const result = findPattern({
-        wordsOptionsCurrentPage: mockSettings.words,
+        levels: mockSettings.levels,
         elWithMessage,
       });
 
@@ -252,7 +252,7 @@ describe('findPattern', () => {
       );
 
       const result = findPattern({
-        wordsOptionsCurrentPage: [wordPreset('error')],
+        levels: [wordPreset('error')],
         elWithMessage,
       });
 
@@ -275,7 +275,7 @@ describe('word matching - false positive prevention', () => {
     const elWithMessage = createSpanWithText(message);
 
     const result = findPattern({
-      wordsOptionsCurrentPage: [wordPreset('error')],
+      levels: [wordPreset('error')],
       elWithMessage,
     });
 
@@ -288,7 +288,7 @@ describe('regex mode', () => {
     const elWithMessage = createSpanWithText('critical: system failure');
 
     const result = findPattern({
-      wordsOptionsCurrentPage: [
+      levels: [
         wordPreset('error', {
           patterns: ['(error|critical|failed)'],
           regex: true,
@@ -304,7 +304,7 @@ describe('regex mode', () => {
     const elWithMessage = createSpanWithText('traceback: something broke');
 
     const result = findPattern({
-      wordsOptionsCurrentPage: [
+      levels: [
         wordPreset('error', { patterns: ['trace'], regex: true }),
       ],
       elWithMessage,
@@ -318,7 +318,7 @@ describe('regex mode', () => {
     const elWithMessage = createSpanWithText('traceback: something broke');
 
     const result = findPattern({
-      wordsOptionsCurrentPage: [
+      levels: [
         wordPreset('error', { patterns: ['\\btrace\\b'], regex: true }),
       ],
       elWithMessage,
@@ -331,7 +331,7 @@ describe('regex mode', () => {
     const elWithMessage = createSpanWithText('status code: 404');
 
     const result = findPattern({
-      wordsOptionsCurrentPage: [
+      levels: [
         wordPreset('error', { patterns: ['\\d{3}'], regex: true }),
       ],
       elWithMessage,
@@ -344,7 +344,7 @@ describe('regex mode', () => {
     const elWithMessage = createSpanWithText('everything is fine');
 
     const result = findPattern({
-      wordsOptionsCurrentPage: [
+      levels: [
         wordPreset('error', { patterns: ['\\d+'], regex: true }),
       ],
       elWithMessage,
@@ -361,7 +361,7 @@ describe('regex mode', () => {
     colorizing(elWithMessage, parentElem, {
       ...mockSettings,
       wantBackground: false,
-      words: [
+      levels: [
         wordPreset('error', {
           patterns: ['(FAILED|ERROR|CRASH)'],
           regex: true,
@@ -370,6 +370,6 @@ describe('regex mode', () => {
     });
 
     expect(elWithMessage.innerHTML).toContain('log-with-label-tag');
-    expect(elWithMessage.innerHTML).toContain(WORD_PRESETS.error.emoji);
+    expect(elWithMessage.innerHTML).toContain(LEVEL_PRESETS.error.emoji);
   });
 });

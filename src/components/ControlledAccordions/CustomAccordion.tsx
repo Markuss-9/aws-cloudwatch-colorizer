@@ -11,7 +11,7 @@ import WordRowSettingBackground from '../WordRowSettingBackground';
 import type {
   Settings,
   PageSettings,
-  WordOption,
+  LevelPreset,
   SettingsPages,
 } from '@/types';
 
@@ -114,13 +114,13 @@ const CustomAccordion = ({
             </Tooltip>
           </Grid>
 
-          {section.words.map((options: WordOption, i: number) => {
+          {section.levels.map((options: LevelPreset) => {
             return wantBackground ? (
               <>
                 <WordRowSettingBackground
                   settings={settings}
                   setSettings={setSettings}
-                  key={`${keyAccordion}-bg-${options.word}-${i}`}
+                  key={`${keyAccordion}-bg-${options.level}`}
                   options={options}
                   showColorPicker={showColorPicker}
                   setShowColorPicker={setShowColorPicker}
@@ -132,7 +132,7 @@ const CustomAccordion = ({
                 <WordRowSettingColor
                   settings={settings}
                   setSettings={setSettings}
-                  key={`${keyAccordion}-color-${options.word}-${i}`}
+                  key={`${keyAccordion}-color-${options.level}`}
                   options={options}
                   showColorPicker={showColorPicker}
                   setShowColorPicker={setShowColorPicker}
