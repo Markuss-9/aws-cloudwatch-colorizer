@@ -25,7 +25,8 @@
     "watch": "vite build --watch",
     "pretty": "prettier -w '**/*.{js,jsx,ts,tsx}'",
     "test": "vitest run --silent",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "test:ui": "vitest --ui"
   },
   "type": "module",
   "devDependencies": {
@@ -39,7 +40,7 @@
     "@types/react-color": "^3.0.10",
     "@types/react-dom": "^18.0.10",
     "@vitejs/plugin-react": "^6.0.2",
-    "@vitest/ui": "^4.1.7",
+    "@vitest/ui": "^4.1.8",
     "eslint": "^9.5.0",
     "eslint-plugin-jsdoc": "^48.2.12",
     "eslint-plugin-prettier": "^5.1.3",

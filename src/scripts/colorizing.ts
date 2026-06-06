@@ -51,7 +51,7 @@ const changeWordColor = ({
   );
 };
 
-const findWord = ({
+export const findWord = ({
   wordsOptionsCurrentPage,
   elWithMessage,
 }: {
