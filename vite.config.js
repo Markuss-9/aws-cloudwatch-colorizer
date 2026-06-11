@@ -24,7 +24,7 @@ export default defineConfig({
           rename: { stripBase: true },
         },
         {
-          src: 'img/*.png',
+          src: 'img/aws_colorized_128x128.png',
           dest: 'img',
           rename: { stripBase: true },
         },
@@ -52,5 +52,6 @@ export default defineConfig({
     environment: 'jsdom',
     globals: true,
     setupFiles: ['./src/scripts/tests/setup.ts'],
+    silent: 'passed-only',
   },
 });

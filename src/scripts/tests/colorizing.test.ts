@@ -201,11 +201,7 @@ describe('findPattern', () => {
       const elWithMessage = createSpanWithText(message);
 
       const result = findPattern({
-        levels: [
-          wordPreset('error'),
-          wordPreset('warn'),
-          wordPreset('info'),
-        ],
+        levels: [wordPreset('error'), wordPreset('warn'), wordPreset('info')],
         elWithMessage,
       });
 
@@ -304,9 +300,7 @@ describe('regex mode', () => {
     const elWithMessage = createSpanWithText('traceback: something broke');
 
     const result = findPattern({
-      levels: [
-        wordPreset('error', { patterns: ['trace'], regex: true }),
-      ],
+      levels: [wordPreset('error', { patterns: ['trace'], regex: true })],
       elWithMessage,
     });
 
@@ -318,9 +312,7 @@ describe('regex mode', () => {
     const elWithMessage = createSpanWithText('traceback: something broke');
 
     const result = findPattern({
-      levels: [
-        wordPreset('error', { patterns: ['\\btrace\\b'], regex: true }),
-      ],
+      levels: [wordPreset('error', { patterns: ['\\btrace\\b'], regex: true })],
       elWithMessage,
     });
 
@@ -331,9 +323,7 @@ describe('regex mode', () => {
     const elWithMessage = createSpanWithText('status code: 404');
 
     const result = findPattern({
-      levels: [
-        wordPreset('error', { patterns: ['\\d{3}'], regex: true }),
-      ],
+      levels: [wordPreset('error', { patterns: ['\\d{3}'], regex: true })],
       elWithMessage,
     });
 
@@ -344,9 +334,7 @@ describe('regex mode', () => {
     const elWithMessage = createSpanWithText('everything is fine');
 
     const result = findPattern({
-      levels: [
-        wordPreset('error', { patterns: ['\\d+'], regex: true }),
-      ],
+      levels: [wordPreset('error', { patterns: ['\\d+'], regex: true })],
       elWithMessage,
     });
 

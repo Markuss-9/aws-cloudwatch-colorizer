@@ -23,7 +23,7 @@
     "build": "make build",
     "watch": "vite build --watch",
     "pretty": "prettier -w '**/*.{js,jsx,ts,tsx}'",
-    "test": "vitest run --silent",
+    "test": "vitest run",
     "test:watch": "vitest",
     "test:ui": "vitest --ui",
     "typecheck": "tsc --noEmit"

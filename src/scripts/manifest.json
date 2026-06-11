@@ -1,20 +1,24 @@
 {
-	"name": "AWS CloudWatch Colorizer",
-	"description": "Enhance log interpretation with colorization for easy identification, streamlining workflow and debugging efficiency",
-	"homepage_url": "https://github.com/Markuss-9/aws-cloudwatch-colorizer",
-	"version": "",
-	"manifest_version": 3,
-	"icons": { "128": "img/aws_colorized.png" },
-	"action": {
-		"default_popup": "index.html",
-		"default_icon": { "128": "img/aws_colorized.png" }
-	},
-	"permissions": ["storage", "tabs"],
-	"content_scripts": [
-		{
-			"matches": ["https://*.console.aws.amazon.com/cloudwatch/home*"],
-			"js": ["main.js"],
-			"run_at": "document_idle"
-		}
-	]
+  "name": "AWS CloudWatch Colorizer",
+  "description": "Enhance log interpretation with colorization for easy identification, streamlining workflow and debugging efficiency",
+  "homepage_url": "https://github.com/Markuss-9/aws-cloudwatch-colorizer",
+  "version": "",
+  "manifest_version": 3,
+  "icons": {
+    "128": "img/aws_colorized_128x128.png"
+  },
+  "action": {
+    "default_popup": "index.html",
+    "default_icon": {
+      "128": "img/aws_colorized_128x128.png"
+    }
+  },
+  "permissions": ["storage", "tabs"],
+  "content_scripts": [
+    {
+      "matches": ["https://*.console.aws.amazon.com/cloudwatch/home*"],
+      "js": ["main.js"],
+      "run_at": "document_idle"
+    }
+  ]
 }
