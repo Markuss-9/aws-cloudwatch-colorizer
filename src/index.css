@@ -54,8 +54,13 @@
   --color-rainbow-btn: #ffffff00;
   --color-rainbow-btn-light: #dbdbdb69;
   --color-rainbow-btn-dark: #a5a5a57a;
+  --color-brand: #1976d2;
+  --color-brand-hover: #1565c0;
+  --color-brand-active: #0d47a1;
   --color-surface: #363636;
   --color-surface-dark: #000000;
+  --color-surface-hover: #444;
+  --color-surface-elevated: #555;
 
   --font-cursive: cursive;
 

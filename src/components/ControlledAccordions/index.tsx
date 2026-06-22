@@ -30,34 +30,31 @@ export default function ControlledAccordions({
   ) => {
     event.stopPropagation();
 
-    let currentAccordion: PageSettings = settings.advancedSettings[panel];
+    const currentAccordion: PageSettings = settings.advancedSettings[panel];
     if (currentAccordion.switch) {
-      setTimeout(() => {
-        setExpanded(false);
-        setDisabledAccordions([...disabledAccordions, panel]);
-      }, 100);
+      setExpanded(false);
+      setDisabledAccordions(prev => [...prev, panel]);
     } else {
-      let tempDis = disabledAccordions;
-      tempDis = tempDis.filter(function (s) {
-        return s !== panel;
-      });
-      setDisabledAccordions([...tempDis]);
+      setDisabledAccordions(prev => prev.filter(s => s !== panel));
     }
-    let tempSettings = settings;
-    tempSettings.advancedSettings[panel].switch =
-      !tempSettings.advancedSettings[panel].switch;
-    setSettings({ ...tempSettings });
+
+    const updated = structuredClone(settings);
+    updated.advancedSettings[panel].switch =
+      !updated.advancedSettings[panel].switch;
+    setSettings(updated);
   };
 
   useEffect(() => {
-    (
+    const disabled = (
       Object.entries(settings.advancedSettings) as [
         SettingsPages,
         PageSettings,
       ][]
-    ).forEach(([key, section]) => {
-      if (!section.switch) setDisabledAccordions([...disabledAccordions, key]);
-    });
+    )
+      .filter(([, section]) => !section.switch)
+      .map(([key]) => key);
+    setDisabledAccordions(disabled);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

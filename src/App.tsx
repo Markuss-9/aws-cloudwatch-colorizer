@@ -5,8 +5,8 @@ import SimpleBottomNavigation from './components/SimpleBottomNavigation';
 import { Route, Routes } from 'react-router-dom';
 import Settings from './pages/Settings';
 import Tutorial from './pages/Tutorial';
-
 import Home from './pages/Home';
+import JsonConfig from './pages/JsonConfig';
 
 import { TooltipProvider } from '@/components/ui/tooltip';
 import SimpleBar from 'simplebar-react';
@@ -104,6 +104,15 @@ function App() {
               }
             />
             <Route path="/tutorial" element={<Tutorial />} />
+            <Route
+              path="/config"
+              element={
+                <JsonConfig
+                  settings={settings || defaultSettings}
+                  setSettings={setSettings}
+                />
+              }
+            />
           </Routes>
         </SimpleBar>
         <SimpleBottomNavigation />

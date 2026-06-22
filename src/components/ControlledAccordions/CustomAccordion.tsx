@@ -4,6 +4,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
+import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import {
   Tooltip,
@@ -52,6 +53,46 @@ const CustomAccordion = ({
   const [wantBackground, setWantBackground] = useState<boolean>(
     section.wantBackground,
   );
+
+  const [showAddLevel, setShowAddLevel] = useState(false);
+  const [newLevelName, setNewLevelName] = useState('');
+  const [newLevelPatterns, setNewLevelPatterns] = useState('');
+  const [newLevelEmoji, setNewLevelEmoji] = useState('');
+
+  const addLevel = () => {
+    if (!newLevelName.trim()) return;
+    const updated = structuredClone(settings);
+    const patterns = newLevelPatterns
+      .split(',')
+      .map(s => s.trim())
+      .filter(Boolean);
+    const currentLevels =
+      updated.advancedSettings[keyAccordion]?.levels ?? [];
+    const maxCode =
+      currentLevels.length > 0
+        ? Math.max(...currentLevels.map(l => l.code), 30)
+        : 30;
+    const newLevel: LevelPreset = {
+      enabled: true,
+      code: maxCode + 1,
+      level: newLevelName.trim().toLowerCase().replace(/\s+/g, '_'),
+      patterns:
+        patterns.length > 0
+          ? patterns
+          : [newLevelName.trim().toLowerCase()],
+      color: 'rgba(255, 255, 255, 1)',
+      backgroundColor: 'rgba(100, 100, 100, 0.3)',
+      emoji: newLevelEmoji || '📋',
+      label: newLevelName.trim(),
+    };
+    currentLevels.push(newLevel);
+    updated.advancedSettings[keyAccordion].levels = currentLevels;
+    setSettings(updated);
+    setShowAddLevel(false);
+    setNewLevelName('');
+    setNewLevelPatterns('');
+    setNewLevelEmoji('');
+  };
 
   const isExpanded =
     expanded === keyAccordion && !disabledAccordions.includes(keyAccordion);
@@ -106,10 +147,10 @@ const CustomAccordion = ({
               <Switch
                 checked={wantBackground}
                 onCheckedChange={() => {
-                  let tempSettings = settings;
-                  tempSettings.advancedSettings[keyAccordion].wantBackground =
-                    !tempSettings.advancedSettings[keyAccordion].wantBackground;
-                  setSettings({ ...tempSettings });
+                  const updated = structuredClone(settings);
+                  updated.advancedSettings[keyAccordion].wantBackground =
+                    !updated.advancedSettings[keyAccordion].wantBackground;
+                  setSettings(updated);
                   setShowColorPicker('');
                   setWantBackground(!wantBackground);
                 }}
@@ -146,6 +187,51 @@ const CustomAccordion = ({
               />
             );
           })}
+          <div className="mt-2 pt-2 border-t border-[#555] px-2">
+            {showAddLevel ? (
+              <div className="flex flex-col gap-1.5">
+                <input
+                  value={newLevelName}
+                  onChange={e => setNewLevelName(e.target.value)}
+                  placeholder="Level name"
+                  className="bg-[#444] text-white text-xs px-2 py-1 border border-[#666] rounded"
+                />
+                <div className="flex gap-1">
+                  <input
+                    value={newLevelPatterns}
+                    onChange={e => setNewLevelPatterns(e.target.value)}
+                    placeholder="patterns (comma sep.)"
+                    className="flex-1 bg-[#444] text-white text-xs px-2 py-1 border border-[#666] rounded"
+                  />
+                  <input
+                    value={newLevelEmoji}
+                    onChange={e => setNewLevelEmoji(e.target.value)}
+                    placeholder="emoji"
+                    className="w-12 bg-[#444] text-white text-xs px-2 py-1 border border-[#666] rounded text-center"
+                  />
+                </div>
+                <div className="flex justify-center gap-2 mt-1">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setShowAddLevel(false)}
+                  >
+                    Cancel
+                  </Button>
+                  <Button size="sm" onClick={addLevel}>
+                    Add
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <button
+                onClick={() => setShowAddLevel(true)}
+                className="w-full text-xs text-blue-300 hover:text-blue-100 cursor-pointer bg-transparent border-none py-1"
+              >
+                + Add Level
+              </button>
+            )}
+          </div>
         </AccordionContent>
       </AccordionItem>
     </Accordion>
