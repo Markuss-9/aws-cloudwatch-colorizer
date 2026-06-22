@@ -1,13 +1,8 @@
-import ControlledAccordions from '@/components/ControlledAccordions';
+import TabSettings from '@/components/TabSettings';
 import { Dispatch } from 'react';
-import { useNavigate } from 'react-router-dom';
-import type { Settings } from '@/types';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { Button } from '@/components/ui/button';
+import type { Settings } from '@/types';
 
 const Settings = ({
   settings,
@@ -18,13 +13,11 @@ const Settings = ({
   setSettings: Dispatch<Settings>;
   resetSettings: VoidFunction;
 }) => {
-  const navigate = useNavigate();
-
   return (
-    <div className="flex flex-col gap-4 p-3">
+    <div className="flex flex-col gap-3 p-3">
       <h3 className="text-2xl font-cursive">Settings</h3>
-      <ControlledAccordions settings={settings} setSettings={setSettings} />
-      <div className="flex justify-center gap-2">
+      <TabSettings settings={settings} setSettings={setSettings} />
+      <div className="flex justify-center">
         <Tooltip>
           <TooltipTrigger asChild>
             <Button variant="outline" color="warning" onClick={resetSettings}>
@@ -32,14 +25,6 @@ const Settings = ({
             </Button>
           </TooltipTrigger>
           <TooltipContent>Reset all settings to default</TooltipContent>
-        </Tooltip>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button variant="outline" onClick={() => navigate('/config')}>
-              JSON Config
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>View and edit raw JSON config</TooltipContent>
         </Tooltip>
       </div>
     </div>

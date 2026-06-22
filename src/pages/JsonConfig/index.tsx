@@ -16,7 +16,6 @@ const JsonConfig = ({
     JSON.stringify(settings, null, 2),
   );
   const [copied, setCopied] = useState(false);
-  const [error, setError] = useState('');
 
   const handleCopy = useCallback(() => {
     navigator.clipboard.writeText(jsonText).then(() => {
@@ -25,28 +24,31 @@ const JsonConfig = ({
     });
   }, [jsonText]);
 
-  const handleApply = () => {
+  const handlePaste = useCallback(async () => {
+    try {
+      const text = await navigator.clipboard.readText();
+      setJsonText(text);
+    } catch {
+      // clipboard read failed
+    }
+  }, []);
+
+  const handleSave = () => {
     try {
       const parsed = JSON.parse(jsonText);
-      if (typeof parsed !== 'object' || parsed === null)
-        throw new Error('Invalid JSON object');
-      if (!parsed.advancedSettings)
-        throw new Error('Missing advancedSettings');
       setSettings(parsed as Settings);
       navigate('/settings');
-    } catch (e) {
-      setError(e instanceof Error ? e.message : 'Invalid JSON');
+    } catch {
+      // silently ignore invalid JSON
     }
   };
 
   const handleReset = () => {
     setJsonText(JSON.stringify(defaultSettings, null, 2));
-    setError('');
   };
 
   const handleReload = () => {
     setJsonText(JSON.stringify(settings, null, 2));
-    setError('');
   };
 
   return (
@@ -59,12 +61,10 @@ const JsonConfig = ({
         value={jsonText}
         onChange={(e) => {
           setJsonText(e.target.value);
-          setError('');
         }}
         className="w-full h-[220px] bg-[#1e1e1e] text-green-400 text-xs font-mono p-2 border border-[#444] rounded resize-none"
         spellCheck={false}
       />
-      {error && <p className="text-red-400 text-xs text-center">{error}</p>}
       <div className="flex gap-2">
         <Button
           variant="outline"
@@ -85,8 +85,13 @@ const JsonConfig = ({
         <Button onClick={handleCopy} className="flex-1">
           {copied ? 'Copied!' : 'Copy JSON'}
         </Button>
-        <Button onClick={handleApply} className="flex-1">
-          Apply Config
+        <Button onClick={handlePaste} className="flex-1">
+          Paste
+        </Button>
+      </div>
+      <div className="flex gap-2">
+        <Button onClick={handleSave} className="flex-1">
+          Save &amp; Apply
         </Button>
       </div>
       <Button

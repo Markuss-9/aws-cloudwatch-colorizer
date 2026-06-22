@@ -32,22 +32,39 @@ const Home = ({
   };
 
   return (
-    <div className="flex flex-col items-center gap-4 py-4 px-3">
+    <div className="flex flex-col items-center gap-3 py-3 px-3">
       {/* Header */}
       <div className="flex justify-between w-full items-center">
         <h3 className="text-lg font-cursive">Home</h3>
-        <span className="text-[10px] text-gray-500">
-          v{packageJson.version}
-        </span>
+        <div className="flex items-center gap-2">
+          <span className="text-[10px] text-gray-500">
+            v{packageJson.version}
+          </span>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={() =>
+                  window.open(
+                    'https://github.com/Markuss-9/aws-cloudwatch-colorizer',
+                  )
+                }
+                className="text-gray-500 hover:text-white cursor-pointer bg-transparent border-none p-0 leading-none"
+              >
+                <ExternalLink size={14} />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>Star on GitHub</TooltipContent>
+          </Tooltip>
+        </div>
       </div>
 
       {/* Master toggle */}
       <Button
         color={master ? 'on' : 'off'}
         onClick={handleToggle}
-        className="rounded-full w-[100px] h-[100px]"
+        className="rounded-full w-[80px] h-[80px]"
       >
-        {master ? <Zap size={48} /> : <Power size={48} />}
+        {master ? <Zap size={36} /> : <Power size={36} />}
       </Button>
 
       {/* Status */}
@@ -63,7 +80,7 @@ const Home = ({
       </span>
 
       {/* Performance mode selector */}
-      <div className="flex flex-col items-center gap-1.5">
+      <div className="flex flex-col items-center gap-1">
         <span className="text-[10px] text-gray-500 uppercase tracking-widest">
           Mode
         </span>
@@ -99,33 +116,11 @@ const Home = ({
               <TooltipContent>Updates on DOM changes</TooltipContent>
             </Tooltip>
           </ToggleGroupItem>
-          <ToggleGroupItem value="net" disabled>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <span>NET</span>
-              </TooltipTrigger>
-              <TooltipContent>[WIP] Network-based updates</TooltipContent>
-            </Tooltip>
-          </ToggleGroupItem>
         </ToggleGroup>
       </div>
 
       {/* Manual colorize button */}
       {isManual && <ColorizeButton master={master} />}
-
-      {/* GitHub link */}
-      <button
-        onClick={() =>
-          window.open(
-            'https://github.com/Markuss-9/aws-cloudwatch-colorizer',
-          )
-        }
-        className="inline-flex items-center gap-1.5 text-xs text-gray-500 hover:text-white cursor-pointer bg-transparent border-none transition-colors mt-auto"
-      >
-        <span>★</span>
-        <span>Star on GitHub</span>
-        <ExternalLink size={10} />
-      </button>
     </div>
   );
 };
