@@ -1,84 +1,96 @@
 import { settings } from './utils';
-import { get as _get } from 'lodash-es';
 import { log } from '@/logger';
 import { assert } from '@/assert';
-
-const injectCSS = (css: string, iframe: HTMLIFrameElement) => {
-  assert(iframe.contentDocument, 'contentDocument must exist');
-  const style = iframe.contentDocument.createElement('style');
-  style.textContent = css;
-  iframe.contentDocument.head.appendChild(style);
-};
-
-const injectCSSDirect = (css: string) => {
-  const style = document.createElement('style');
-  style.textContent = css;
-  document.head.appendChild(style);
-};
 
 const DEFAULT_LIGHT_SHADE_COLOR = 'rgba(42, 42, 42, 0.1)';
 const DEFAULT_DARK_SHADE_COLOR = 'rgba(42, 42, 42, 0.4)';
 
-const getIsDarkMode = (): boolean => {
-  const bodyClassList = document.body.classList;
-  for (const bodyClass of bodyClassList) {
-    if (bodyClass.includes('dark')) return true;
-  }
-  return false;
+const STYLE_DATA_ID = 'shaded-rows';
+const STYLE_SELECTOR = `style[data-id="${STYLE_DATA_ID}"]`;
+
+const getIsDarkMode = (): boolean =>
+  Array.from(document.body.classList).some(c => c.includes('dark'));
+
+const getDefaultShadeColor = (): string =>
+  getIsDarkMode() ? DEFAULT_DARK_SHADE_COLOR : DEFAULT_LIGHT_SHADE_COLOR;
+
+const getSectionConfig = (section: 'Log_Groups' | 'Log_Insights') => {
+  assert(settings, 'settings must exist');
+  const s = settings.advancedSettings[section];
+  return {
+    needInject: s.wantBackground,
+    shadeColor: s.evenRowsShadeColor ?? getDefaultShadeColor(),
+  };
+};
+
+const areSwitchesOff = (): boolean => {
+  assert(settings, 'settings must exist');
+  return (
+    !settings.advancedSettings['Log_Groups'].switch &&
+    !settings.advancedSettings['Log_Insights'].switch
+  );
+};
+
+const injectAndTag = (css: string, doc: Document) => {
+  const style = doc.createElement('style');
+  style.textContent = css;
+  style.setAttribute('data-id', STYLE_DATA_ID);
+  doc.head.appendChild(style);
+  log.debug('injecting shaded rows CSS');
+};
+
+const cssForInsightsShade = (shadeColor: string) => `
+.logs-table__body-row:nth-child(2n) {
+  border: unset !important;
+}
+.logs-table__body-row:nth-child(2n) .logs-table__body-cell {
+  background-color: unset !important;
+}
+.logs-table__body-row:nth-child(2n) > * {
+  background-color: ${shadeColor} !important;
+}
+`;
+
+const cssForGroupsShade = (shadeColor: string) => `
+.logs__log-events-table-v3 table:not(.awsui-cw-date-time-range-calendar-table) td[class*=awsui_body-cell-shaded] {
+  background-color: ${shadeColor} !important;
+}
+div .logs__log-events-table-v3 table:not(.awsui-cw-date-time-range-calendar-table) td[class*=awsui_body-cell-selected][class*=awsui_body-cell-shaded] {
+  background-color: ${shadeColor} !important;
+}
+`;
+
+const cssForAnalyticsInsights = (shadeColor: string) => `
+#result-table-body > table:nth-child(2n) tr[data-slot="table-row"] > td {
+  background-color: ${shadeColor} !important;
+}
+`;
+
+const buildLogAnalyticsCSS = (): string => {
+  const { needInject, shadeColor } = getSectionConfig('Log_Insights');
+  return needInject ? cssForAnalyticsInsights(shadeColor) : '';
+};
+
+const buildIframeCSS = (): string => {
+  const insights = getSectionConfig('Log_Insights');
+  const groups = getSectionConfig('Log_Groups');
+
+  return [
+    insights.needInject && cssForInsightsShade(insights.shadeColor),
+    groups.needInject && cssForGroupsShade(groups.shadeColor),
+  ]
+    .filter(Boolean)
+    .join('\n');
 };
 
 const injectStyleShadedEvenRows = () => {
   try {
-    const isLogAnalytics = window.location.href.includes('#log-analytics');
+    if (areSwitchesOff()) return;
 
-    if (isLogAnalytics) {
-      const isDarkMode = getIsDarkMode();
-      const defaultShadeColor = isDarkMode
-        ? DEFAULT_DARK_SHADE_COLOR
-        : DEFAULT_LIGHT_SHADE_COLOR;
-
-      assert(settings, 'settings must exist');
-
-      if (
-        !settings.advancedSettings['Log_Groups'].switch &&
-        !settings.advancedSettings['Log_Insights'].switch
-      ) {
-        return;
-      }
-
-      const logsInsights_needInject =
-        settings.advancedSettings['Log_Insights'].wantBackground;
-      const logsInsights_shadeColor = _get(
-        settings,
-        ['advancedSettings', 'Log_Insights', 'evenRowsShadeColor'],
-        defaultShadeColor,
-      );
-
-      const css = `
-        ${
-          logsInsights_needInject
-            ? `
-              #result-table-body > table:nth-child(2n) tr[data-slot="table-row"] > td {
-                background-color: ${logsInsights_shadeColor} !important;
-              }
-            `
-            : ''
-        }
-      `;
-
-      if (!document.querySelector('style[data-id="shaded-rows"]')) {
-        log.debug('injecting shaded rows CSS for Log Analytics');
-        injectCSSDirect(css);
-
-        const styleTag = document.querySelector(
-          'style:last-of-type',
-        ) as HTMLStyleElement | null;
-        if (!styleTag) {
-          log.warn('style tag with last-of-type not found');
-          return;
-        }
-        styleTag.setAttribute('data-id', 'shaded-rows');
-      }
+    if (window.location.href.includes('#log-analytics')) {
+      if (document.querySelector(STYLE_SELECTOR)) return;
+      const css = buildLogAnalyticsCSS();
+      if (css) injectAndTag(css, document);
       return;
     }
 
@@ -86,91 +98,15 @@ const injectStyleShadedEvenRows = () => {
       'iframe#microConsole-Logs',
     ) as HTMLIFrameElement | null;
 
-    if (!iframe) {
-      log.debug('iframe not found, skipping');
+    if (!iframe?.contentDocument) {
+      log.debug('iframe not ready, skipping');
       return;
     }
 
-    const isDarkMode = getIsDarkMode();
-    const iframeDoc = iframe.contentDocument;
+    if (iframe.contentDocument.querySelector(STYLE_SELECTOR)) return;
 
-    if (!iframeDoc) {
-      log.debug('iframe contentDocument not ready, skipping');
-      return;
-    }
-
-    const defaultShadeColor = isDarkMode
-      ? DEFAULT_DARK_SHADE_COLOR
-      : DEFAULT_LIGHT_SHADE_COLOR;
-
-    assert(settings, 'settings must exist');
-
-    if (
-      !settings.advancedSettings['Log_Groups'].switch &&
-      !settings.advancedSettings['Log_Insights'].switch
-    ) {
-      return;
-    }
-
-    const logsGroups_needInject =
-      settings.advancedSettings['Log_Groups'].wantBackground;
-    const logsGroups_shadeColor = _get(
-      settings,
-      ['advancedSettings', 'Log_Groups', 'evenRowsShadeColor'],
-      defaultShadeColor,
-    );
-    const logsInsights_needInject =
-      settings.advancedSettings['Log_Insights'].wantBackground;
-    const logsInsights_shadeColor = _get(
-      settings,
-      ['advancedSettings', 'Log_Insights', 'evenRowsShadeColor'],
-      defaultShadeColor,
-    );
-
-    const css = `
-					${
-            logsInsights_needInject
-              ? `
-								.logs-table__body-row:nth-child(2n) {
-									border: unset !important;
-								}
-								.logs-table__body-row:nth-child(2n) .logs-table__body-cell {
-									background-color: unset !important;
-								}
-								.logs-table__body-row:nth-child(2n) > * {
-									background-color: ${logsInsights_shadeColor} !important;
-								}
-							`
-              : ''
-          }
-					${
-            logsGroups_needInject
-              ? `
-								.logs__log-events-table-v3 table:not(.awsui-cw-date-time-range-calendar-table) td[class*=awsui_body-cell-shaded] {
-									background-color: ${logsGroups_shadeColor} !important;
-								}
-								div .logs__log-events-table-v3 table:not(.awsui-cw-date-time-range-calendar-table) td[class*=awsui_body-cell-selected][class*=awsui_body-cell-shaded] {
-									background-color: ${logsGroups_shadeColor} !important;
-								}
-							`
-              : ''
-          }
-				`;
-
-    if (!iframeDoc.querySelector('style[data-id="shaded-rows"]')) {
-      log.debug('injecting shaded rows CSS');
-      injectCSS(css, iframe);
-
-      //NOTE - add attribute so that the second time i call the func i can check if already injected
-      const styleTag = iframeDoc.querySelector(
-        'style:last-of-type',
-      ) as HTMLStyleElement | null;
-      if (!styleTag) {
-        log.warn('style tag with last-of-type not found');
-        return;
-      }
-      styleTag.setAttribute('data-id', 'shaded-rows');
-    }
+    const css = buildIframeCSS();
+    if (css) injectAndTag(css, iframe.contentDocument);
   } catch (error) {
     log.error(error);
   }

@@ -17,7 +17,7 @@ describe('injectStyleShadedEvenRows', () => {
   it('does nothing when iframe is missing', () => {
     injectStyleShadedEvenRows();
 
-    expect(debugSpy).toHaveBeenCalledWith('iframe not found, skipping');
+    expect(debugSpy).toHaveBeenCalledWith('iframe not ready, skipping');
   });
 
   it('does nothing when iframe contentDocument is not ready', () => {
@@ -28,9 +28,7 @@ describe('injectStyleShadedEvenRows', () => {
 
     injectStyleShadedEvenRows();
 
-    expect(debugSpy).toHaveBeenCalledWith(
-      'iframe contentDocument not ready, skipping',
-    );
+    expect(debugSpy).toHaveBeenCalledWith('iframe not ready, skipping');
   });
 
   it('injects shaded rows CSS into iframe when switches are on and wantBackground is true', () => {
