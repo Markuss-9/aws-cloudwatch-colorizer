@@ -18,7 +18,8 @@ const TabSettings = ({
   setSettings: Dispatch<Settings>;
 }) => {
   const entries = Object.entries(settings.advancedSettings) as [SettingsPages, PageSettings][];
-  const [activeTab, setActiveTab] = useState<SettingsPages>(entries[0]?.[0] ?? 'Log_Groups');
+  const enabledEntries = entries.filter(([key]) => key !== 'Log_Tails');
+  const [activeTab, setActiveTab] = useState<SettingsPages>(enabledEntries[0]?.[0] ?? 'Log_Groups');
   const [openPicker, setOpenPicker] = useState<OpenPicker>(null);
   const [showAddLevel, setShowAddLevel] = useState(false);
   const [newLevelName, setNewLevelName] = useState('');
@@ -96,19 +97,23 @@ const TabSettings = ({
   return (
     <div className="flex flex-col gap-3">
       <div className="flex border-b border-[#555]">
-        {entries.map(([key]) => (
-          <button
-            key={key}
-            onClick={() => { setActiveTab(key); setOpenPicker(null); setShowAddLevel(false); }}
-            className={`flex-1 py-1.5 text-xs border-b-2 cursor-pointer bg-transparent border-none font-bold transition-colors ${
-              activeTab === key
-                ? 'text-[#1976d2] border-[#1976d2]'
-                : 'text-gray-400 border-transparent hover:text-gray-200'
-            }`}
-          >
-            {tabLabels[key]}
-          </button>
-        ))}
+        {entries.map(([key]) => {
+          const isDisabled = key === 'Log_Tails';
+          return (
+            <button
+              key={key}
+              disabled={isDisabled}
+              onClick={() => { setActiveTab(key); setOpenPicker(null); setShowAddLevel(false); }}
+              className={`flex-1 py-1.5 text-xs border-b-2 bg-transparent border-none font-bold transition-colors ${
+                activeTab === key
+                  ? 'text-[#1976d2] border-[#1976d2]'
+                  : 'text-gray-400 border-transparent hover:text-gray-200'
+              } ${isDisabled ? 'opacity-30 cursor-not-allowed' : 'cursor-pointer'}`}
+            >
+              {tabLabels[key]}
+            </button>
+          );
+        })}
       </div>
 
       <div className="flex items-center justify-center gap-2">

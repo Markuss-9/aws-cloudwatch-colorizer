@@ -107,7 +107,7 @@ const LevelRow = ({
         </div>
       )}
 
-      <div className="flex flex-wrap gap-1 mt-2">
+      <div className="flex flex-wrap gap-2 mt-4">
         {level.patterns.map((p, pi) => (
           <PatternChip
             key={pi}

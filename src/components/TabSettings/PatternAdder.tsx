@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { Plus } from 'lucide-react';
+import { Check, Plus, X } from 'lucide-react';
 
 const PatternAdder = ({ onAdd }: { onAdd: (pattern: string) => void }) => {
   const [adding, setAdding] = useState(false);
@@ -50,16 +50,16 @@ const PatternAdder = ({ onAdd }: { onAdd: (pattern: string) => void }) => {
       <button
         onMouseDown={(e) => e.preventDefault()}
         onClick={commit}
-        className="text-green-300 hover:text-green-100 cursor-pointer bg-transparent border-none p-0 leading-none text-xs flex items-center"
+        className="text-green-300 hover:text-green-100 cursor-pointer bg-transparent border-none p-0 flex items-center"
       >
-        ✓
+        <Check size={12} />
       </button>
       <button
         onMouseDown={(e) => e.preventDefault()}
         onClick={cancel}
-        className="text-gray-400 hover:text-gray-200 cursor-pointer bg-transparent border-none p-0 leading-none text-sm flex items-center"
+        className="text-gray-400 hover:text-gray-200 cursor-pointer bg-transparent border-none p-0 flex items-center"
       >
-        ×
+        <X size={12} />
       </button>
     </span>
   );
