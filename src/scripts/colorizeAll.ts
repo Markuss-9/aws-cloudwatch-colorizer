@@ -79,14 +79,38 @@ const logsInsightsFlow = () => {
   }
 };
 
+const logAnalyticsFlow = () => {
+  try {
+    assert(utils.settings, 'settings must exist');
+    const settings = utils.settings;
+
+    const messageCells = document.querySelectorAll<HTMLElement>(
+      '#result-table-body td[data-column="@message"]',
+    );
+    log.debug(`logAnalyticsFlow: found ${messageCells.length} @message cells`);
+
+    for (const cell of messageCells) {
+      const row = cell.closest<HTMLElement>('tr');
+      if (!row) continue;
+
+      colorizing(cell, row, settings.advancedSettings['Log_Insights']);
+    }
+  } catch (error) {
+    log.error(`LOG_ANALYTICS_FLOW: `, error);
+  }
+};
+
 const colorizeAll = () => {
   try {
     const currentUrl = window.location.href;
 
+    log.debug('colorizeAll');
+
     const isLogsGroupsPage = currentUrl.includes('log-groups');
     const isLogsInsightsPage = currentUrl.includes('logs-insights');
+    const isLogAnalyticsPage = currentUrl.includes('#log-analytics');
 
-    if (isLogsGroupsPage || isLogsInsightsPage) {
+    if (isLogsGroupsPage || isLogsInsightsPage || isLogAnalyticsPage) {
       injectStyleShadedEvenRows();
     }
 
@@ -95,6 +119,10 @@ const colorizeAll = () => {
     if (isLogsGroupsPage) {
       if (utils.settings.advancedSettings['Log_Groups'].switch) {
         logsGroupsFlow();
+      }
+    } else if (isLogAnalyticsPage) {
+      if (utils.settings.advancedSettings['Log_Insights'].switch) {
+        logAnalyticsFlow();
       }
     } else if (isLogsInsightsPage) {
       if (utils.settings.advancedSettings['Log_Insights'].switch) {
