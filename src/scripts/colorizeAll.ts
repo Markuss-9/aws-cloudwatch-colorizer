@@ -53,22 +53,14 @@ const logsGroupsFlow = () => {
 
 const logsInsightsFlow = () => {
   try {
-    const thElements = utils.getListFromClass('logs-table__header-cell');
-
-    const messageColPos = (thElements as HTMLElement[]).findIndex(
-      (el) => el.innerText === '@message',
-    );
-
     assert(utils.settings, 'settings must exist');
     const settings = utils.settings;
     const elements = utils.getListFromClass('logs-table__body-row');
     for (let row of elements) {
-      if (row.getElementsByClassName('logs-table__body-cell').length) {
-        const child = row.getElementsByClassName('logs-table__body-cell')[
-          messageColPos
-        ] as HTMLElement;
+      const cells = row.getElementsByClassName('logs-table__body-cell');
+      for (let child of cells) {
         colorizing(
-          child,
+          child as HTMLElement,
           row as HTMLElement,
           settings.advancedSettings['Log_Insights'],
         );
@@ -85,9 +77,9 @@ const logAnalyticsFlow = () => {
     const settings = utils.settings;
 
     const messageCells = document.querySelectorAll<HTMLElement>(
-      '#result-table-body td[data-column="@message"]',
+      '#result-table-body td[data-column]',
     );
-    log.debug(`logAnalyticsFlow: found ${messageCells.length} @message cells`);
+    log.debug(`logAnalyticsFlow: found ${messageCells.length} data cells`);
 
     for (const cell of messageCells) {
       const row = cell.closest<HTMLElement>('tr');
