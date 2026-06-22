@@ -10,6 +10,12 @@ const injectCSS = (css: string, iframe: HTMLIFrameElement) => {
   iframe.contentDocument.head.appendChild(style);
 };
 
+const injectCSSDirect = (css: string) => {
+  const style = document.createElement('style');
+  style.textContent = css;
+  document.head.appendChild(style);
+};
+
 const DEFAULT_LIGHT_SHADE_COLOR = 'rgba(42, 42, 42, 0.1)';
 const DEFAULT_DARK_SHADE_COLOR = 'rgba(42, 42, 42, 0.4)';
 
@@ -23,6 +29,59 @@ const getIsDarkMode = (): boolean => {
 
 const injectStyleShadedEvenRows = () => {
   try {
+    const isLogAnalytics = window.location.href.includes('#log-analytics');
+
+    if (isLogAnalytics) {
+      const isDarkMode = getIsDarkMode();
+      const defaultShadeColor = isDarkMode
+        ? DEFAULT_DARK_SHADE_COLOR
+        : DEFAULT_LIGHT_SHADE_COLOR;
+
+      assert(settings, 'settings must exist');
+
+      if (
+        !settings.advancedSettings['Log_Groups'].switch &&
+        !settings.advancedSettings['Log_Insights'].switch
+      ) {
+        return;
+      }
+
+      const logsInsights_needInject =
+        settings.advancedSettings['Log_Insights'].wantBackground;
+      const logsInsights_shadeColor = _get(
+        settings,
+        ['advancedSettings', 'Log_Insights', 'evenRowsShadeColor'],
+        defaultShadeColor,
+      );
+
+      const css = `
+        ${
+          logsInsights_needInject
+            ? `
+              #result-table-body > table:nth-child(2n) tr[data-slot="table-row"] > td {
+                background-color: ${logsInsights_shadeColor} !important;
+              }
+            `
+            : ''
+        }
+      `;
+
+      if (!document.querySelector('style[data-id="shaded-rows"]')) {
+        log.debug('injecting shaded rows CSS for Log Analytics');
+        injectCSSDirect(css);
+
+        const styleTag = document.querySelector(
+          'style:last-of-type',
+        ) as HTMLStyleElement | null;
+        if (!styleTag) {
+          log.warn('style tag with last-of-type not found');
+          return;
+        }
+        styleTag.setAttribute('data-id', 'shaded-rows');
+      }
+      return;
+    }
+
     const iframe = document.querySelector(
       'iframe#microConsole-Logs',
     ) as HTMLIFrameElement | null;

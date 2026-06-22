@@ -27,9 +27,57 @@ export const getIframeElement = (): Promise<HTMLIFrameElement> => {
   });
 };
 
+export const getTableBodyElement = (): Promise<HTMLElement> => {
+  return new Promise((resolve) => {
+    resetCheckIframe();
+    intervalIdDOM = window.setInterval(() => {
+      const element = document.getElementById('result-table-body');
+      log.debug('checking for result-table-body');
+      if (element) {
+        log.debug('found result-table-body');
+        clearInterval(intervalIdDOM);
+        resolve(element);
+      }
+    }, 1500);
+  });
+};
+
 export const mutationObs = new MutationObserver(debounce(colorizeAll, 50));
 
-export const startObserve = () =>
+const observeTableBody = (body: HTMLElement) => {
+  const parent = body.parentElement;
+  if (!parent) {
+    log.warn('result-table-body has no parent element');
+    return;
+  }
+
+  mutationObs.observe(parent, {
+    subtree: true,
+    childList: true,
+    characterData: true,
+  });
+
+  // pre-existing rows (missed by observer)
+  colorizeAll();
+};
+
+export const startObserve = () => {
+  const isLogAnalytics = window.location.href.includes('#log-analytics');
+
+  if (isLogAnalytics) {
+    resetCheckIframe();
+    mutationObs.disconnect();
+
+    getTableBodyElement()
+      .then((body: HTMLElement) => {
+        observeTableBody(body);
+      })
+      .catch((error) => {
+        log.error('Error:', error);
+      });
+    return;
+  }
+
   getIframeElement()
     .then((iframe: HTMLIFrameElement) => {
       assert(iframe.contentWindow, 'iframe contentWindow must exist');
@@ -42,3 +90,4 @@ export const startObserve = () =>
     .catch((error) => {
       log.error('Error:', error);
     });
+};
