@@ -24,7 +24,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       'inline-flex items-center justify-center font-cursive transition-colors focus-visible:outline-none disabled:pointer-events-none disabled:opacity-40';
 
     const variants: Record<string, string> = {
-      default: 'bg-[#1976d2] text-white hover:bg-[#1565c0] active:bg-[#0d47a1]',
+      default: 'bg-brand text-white hover:bg-brand-hover active:bg-brand-active',
       outline: 'border border-current bg-transparent hover:opacity-80',
       text: 'bg-transparent hover:opacity-80',
       rainbow: 'bg-transparent border border-solid',
@@ -40,7 +40,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       default: '',
       on: 'bg-on text-black hover:bg-on-light active:bg-on-dark',
       off: 'bg-off text-black hover:bg-off-light active:bg-off-dark',
-      warning: 'text-[#ff9800] border-[#ff9800]',
+      warning: 'text-warning border-warning',
     };
 
     let variantClasses = variants[variant];

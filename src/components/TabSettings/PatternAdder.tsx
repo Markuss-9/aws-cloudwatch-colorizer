@@ -10,7 +10,7 @@ const PatternAdder = ({ onAdd }: { onAdd: (pattern: string) => void }) => {
     return (
       <button
         onClick={() => setAdding(true)}
-        className="inline-flex items-center gap-0.5 text-blue-300 hover:text-blue-100 cursor-pointer bg-transparent border border-dashed border-blue-400/40 hover:border-blue-400/70 rounded px-1.5 text-[10px] h-[18px] leading-none transition-colors"
+        className="inline-flex items-center gap-0.5 text-blue-300 hover:text-blue-100 cursor-pointer bg-transparent border border-dashed border-blue-400/60 hover:border-blue-400 rounded px-1.5 text-[10px] h-[18px] leading-none transition-colors"
       >
         <Plus size={10} />
         pattern
@@ -41,10 +41,12 @@ const PatternAdder = ({ onAdd }: { onAdd: (pattern: string) => void }) => {
     >
       <input
         value={value}
-        onChange={e => setValue(e.target.value)}
-        onKeyDown={e => { if (e.key === 'Enter') commit(); }}
+        onChange={(e) => setValue(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') commit();
+        }}
         placeholder="pattern"
-        className="h-full bg-[#444] text-white text-[11px] px-1 border border-[#666] rounded outline-none focus:border-blue-400 w-16"
+        className="h-full bg-border-muted text-white text-[11px] px-1 border border-border-form rounded outline-none focus:border-blue-400 w-16"
         autoFocus
       />
       <button
@@ -57,7 +59,7 @@ const PatternAdder = ({ onAdd }: { onAdd: (pattern: string) => void }) => {
       <button
         onMouseDown={(e) => e.preventDefault()}
         onClick={cancel}
-        className="text-gray-400 hover:text-gray-200 cursor-pointer bg-transparent border-none p-0 flex items-center"
+        className="text-gray-300 hover:text-gray-100 cursor-pointer bg-transparent border-none p-0 flex items-center"
       >
         <X size={12} />
       </button>

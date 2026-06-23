@@ -1,7 +1,12 @@
 import { Dispatch, useState } from 'react';
 
 import LevelRow from './LevelRow';
-import type { Settings, LevelPreset, SettingsPages, PageSettings } from '@/types';
+import type {
+  Settings,
+  LevelPreset,
+  SettingsPages,
+  PageSettings,
+} from '@/types';
 import { Switch } from '@/components/ui/switch';
 
 type OpenPicker = {
@@ -17,20 +22,30 @@ const TabSettings = ({
   settings: Settings;
   setSettings: Dispatch<Settings>;
 }) => {
-  const entries = Object.entries(settings.advancedSettings) as [SettingsPages, PageSettings][];
+  const entries = Object.entries(settings.advancedSettings) as [
+    SettingsPages,
+    PageSettings,
+  ][];
   const enabledEntries = entries.filter(([key]) => key !== 'Log_Tails');
-  const [activeTab, setActiveTab] = useState<SettingsPages>(enabledEntries[0]?.[0] ?? 'Log_Groups');
+  const [activeTab, setActiveTab] = useState<SettingsPages>(
+    enabledEntries[0]?.[0],
+  );
   const [openPicker, setOpenPicker] = useState<OpenPicker>(null);
-  const [showAddLevel, setShowAddLevel] = useState(false);
-  const [newLevelName, setNewLevelName] = useState('');
-  const [newLevelPatterns, setNewLevelPatterns] = useState('');
-  const [newLevelEmoji, setNewLevelEmoji] = useState('');
+  const [autoFocusKeyIdx, setAutoFocusKeyIdx] = useState<number | null>(null);
 
   const activePage = settings.advancedSettings[activeTab];
 
   const togglePageSwitch = () => {
     const updated = structuredClone(settings);
-    updated.advancedSettings[activeTab].switch = !updated.advancedSettings[activeTab].switch;
+    updated.advancedSettings[activeTab].switch =
+      !updated.advancedSettings[activeTab].switch;
+    setSettings(updated);
+  };
+
+  const toggleWantBackground = () => {
+    const updated = structuredClone(settings);
+    updated.advancedSettings[activeTab].wantBackground =
+      !updated.advancedSettings[activeTab].wantBackground;
     setSettings(updated);
   };
 
@@ -43,8 +58,9 @@ const TabSettings = ({
 
   const deleteLevel = (levelIdx: number) => {
     const updated = structuredClone(settings);
-    updated.advancedSettings[activeTab].levels =
-      updated.advancedSettings[activeTab].levels.filter((_, i) => i !== levelIdx);
+    updated.advancedSettings[activeTab].levels = updated.advancedSettings[
+      activeTab
+    ].levels.filter((_, i) => i !== levelIdx);
     setSettings(updated);
     setOpenPicker(null);
   };
@@ -52,7 +68,9 @@ const TabSettings = ({
   const removePattern = (levelIdx: number, patternIdx: number) => {
     const updated = structuredClone(settings);
     updated.advancedSettings[activeTab].levels[levelIdx].patterns =
-      updated.advancedSettings[activeTab].levels[levelIdx].patterns.filter((_, i) => i !== patternIdx);
+      updated.advancedSettings[activeTab].levels[levelIdx].patterns.filter(
+        (_, i) => i !== patternIdx,
+      );
     setSettings(updated);
   };
 
@@ -65,27 +83,23 @@ const TabSettings = ({
   };
 
   const addLevel = () => {
-    if (!newLevelName.trim()) return;
     const updated = structuredClone(settings);
     const levels = updated.advancedSettings[activeTab].levels;
-    const maxCode = levels.length > 0 ? Math.max(...levels.map(l => l.code), 30) : 30;
-    const patterns = newLevelPatterns.split(',').map(s => s.trim()).filter(Boolean);
+    const maxCode =
+      levels.length > 0 ? Math.max(...levels.map((l) => l.code), 30) : 30;
     const newLevel: LevelPreset = {
       enabled: true,
       code: maxCode + 1,
-      level: newLevelName.trim().toLowerCase().replace(/\s+/g, '_'),
-      patterns: patterns.length > 0 ? patterns : [newLevelName.trim().toLowerCase()],
+      level: '',
+      patterns: [],
       color: 'rgba(255, 255, 255, 1)',
       backgroundColor: 'rgba(100, 100, 100, 0.3)',
-      emoji: newLevelEmoji || '📋',
-      label: newLevelName.trim(),
+      emoji: '📋',
+      label: 'New Level',
     };
     levels.push(newLevel);
     setSettings(updated);
-    setShowAddLevel(false);
-    setNewLevelName('');
-    setNewLevelPatterns('');
-    setNewLevelEmoji('');
+    setAutoFocusKeyIdx(levels.length - 1);
   };
 
   const tabLabels: Record<SettingsPages, string> = {
@@ -96,19 +110,25 @@ const TabSettings = ({
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex border-b border-[#555]">
+      <div className="flex border-b border-border-default">
         {entries.map(([key]) => {
           const isDisabled = key === 'Log_Tails';
           return (
             <button
               key={key}
               disabled={isDisabled}
-              onClick={() => { setActiveTab(key); setOpenPicker(null); setShowAddLevel(false); }}
+              onClick={() => {
+                setActiveTab(key);
+                setOpenPicker(null);
+                setAutoFocusKeyIdx(null);
+              }}
               className={`flex-1 py-1.5 text-xs border-b-2 bg-transparent border-none font-bold transition-colors ${
                 activeTab === key
-                  ? 'text-[#1976d2] border-[#1976d2]'
-                  : 'text-gray-400 border-transparent hover:text-gray-200'
-              } ${isDisabled ? 'opacity-30 cursor-not-allowed' : 'cursor-pointer'}`}
+                  ? 'text-brand border-brand'
+                  : 'text-gray-300 border-transparent hover:text-white'
+              } ${
+                isDisabled ? 'opacity-30 cursor-not-allowed' : 'cursor-pointer'
+              }`}
             >
               {tabLabels[key]}
             </button>
@@ -116,17 +136,31 @@ const TabSettings = ({
         })}
       </div>
 
-      <div className="flex items-center justify-center gap-2">
-        <Switch checked={activePage.switch} onCheckedChange={togglePageSwitch} />
-        <span className="text-xs text-gray-300">
-          {activePage.switch ? 'Colorizing' : 'Disabled'}
-        </span>
+      <div className="flex items-center justify-center gap-4">
+        <div className="flex items-center gap-2">
+          <Switch
+            checked={activePage.switch}
+            onCheckedChange={togglePageSwitch}
+          />
+          <span className="text-xs text-gray-300">
+            {activePage.switch ? 'Colorizing' : 'Disabled'}
+          </span>
+        </div>
+        <div className="flex items-center gap-2">
+          <Switch
+            checked={activePage.wantBackground}
+            onCheckedChange={toggleWantBackground}
+          />
+          <span className="text-xs text-gray-300">
+            {activePage.wantBackground ? 'Background' : 'Replace'}
+          </span>
+        </div>
       </div>
 
       <div className="flex flex-col gap-1.5">
         {activePage.levels.map((level, idx) => (
           <LevelRow
-            key={`${level.level}-${idx}`}
+            key={`${activeTab}-${level.level}-${idx}`}
             level={level}
             idx={idx}
             activeTab={activeTab}
@@ -138,56 +172,20 @@ const TabSettings = ({
             onRemovePattern={removePattern}
             onAddPattern={addPattern}
             onOpenPicker={setOpenPicker}
+            wantBackground={activePage.wantBackground}
+            autoFocusKey={idx === autoFocusKeyIdx}
+            onAutoFocusDone={() => setAutoFocusKeyIdx(null)}
           />
         ))}
       </div>
 
-      <div className="border-t border-[#555] pt-2">
-        {showAddLevel ? (
-          <div className="flex flex-col gap-1.5">
-            <input
-              value={newLevelName}
-              onChange={e => setNewLevelName(e.target.value)}
-              placeholder="Level name"
-              className="bg-[#444] text-white text-xs px-2 py-1 border border-[#666] rounded"
-            />
-            <div className="flex gap-1">
-              <input
-                value={newLevelPatterns}
-                onChange={e => setNewLevelPatterns(e.target.value)}
-                placeholder="patterns (comma sep.)"
-                className="flex-1 bg-[#444] text-white text-xs px-2 py-1 border border-[#666] rounded"
-              />
-              <input
-                value={newLevelEmoji}
-                onChange={e => setNewLevelEmoji(e.target.value)}
-                placeholder="emoji"
-                className="w-12 bg-[#444] text-white text-xs px-2 py-1 border border-[#666] rounded text-center"
-              />
-            </div>
-            <div className="flex justify-center gap-2">
-              <button
-                onClick={() => setShowAddLevel(false)}
-                className="px-3 py-1 text-xs text-gray-300 hover:text-white cursor-pointer bg-transparent border border-[#666] rounded"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={addLevel}
-                className="px-3 py-1 text-xs text-white bg-[#1976d2] hover:bg-[#1565c0] cursor-pointer border-none rounded"
-              >
-                Add
-              </button>
-            </div>
-          </div>
-        ) : (
-          <button
-            onClick={() => setShowAddLevel(true)}
-            className="w-full text-xs text-blue-300 hover:text-blue-100 cursor-pointer bg-transparent border-none py-1"
-          >
-            + Add Level
-          </button>
-        )}
+      <div className="border-t border-border-default pt-2">
+        <button
+          onClick={addLevel}
+          className="w-full text-xs text-blue-300 hover:text-blue-100 cursor-pointer bg-transparent border border-dashed border-blue-400/40 hover:border-blue-400/70 rounded py-1.5 transition-colors"
+        >
+          + Add Level
+        </button>
       </div>
     </div>
   );

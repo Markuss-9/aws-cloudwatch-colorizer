@@ -1,6 +1,10 @@
 import TabSettings from '@/components/TabSettings';
 import { Dispatch } from 'react';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { Button } from '@/components/ui/button';
 import type { Settings } from '@/types';
 
@@ -14,7 +18,7 @@ const Settings = ({
   resetSettings: VoidFunction;
 }) => {
   return (
-    <div className="flex flex-col gap-3 p-3">
+    <div className="flex flex-col gap-3 p-3 bg-surface min-h-full">
       <h3 className="text-2xl font-cursive">Settings</h3>
       <TabSettings settings={settings} setSettings={setSettings} />
       <div className="flex justify-center">

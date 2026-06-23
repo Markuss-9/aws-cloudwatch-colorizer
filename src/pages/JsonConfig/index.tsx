@@ -62,7 +62,7 @@ const JsonConfig = ({
         onChange={(e) => {
           setJsonText(e.target.value);
         }}
-        className="w-full h-[220px] bg-[#1e1e1e] text-green-400 text-xs font-mono p-2 border border-[#444] rounded resize-none"
+        className="w-full h-[220px] bg-surface-input text-green-400 text-xs font-mono p-2 border border-border-muted rounded resize-none"
         spellCheck={false}
       />
       <div className="flex gap-2">
@@ -94,13 +94,6 @@ const JsonConfig = ({
           Save &amp; Apply
         </Button>
       </div>
-      <Button
-        variant="text"
-        onClick={() => navigate('/settings')}
-        className="text-xs"
-      >
-        ← Back to Settings
-      </Button>
     </div>
   );
 };

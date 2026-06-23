@@ -81,39 +81,41 @@ function App() {
 
   return (
     <TooltipProvider>
-      <div className="App text-white text-center flex flex-col relative">
+      <div className="App text-white text-center flex flex-col relative bg-surface">
         <SimpleBar style={{ maxHeight: 400 }}>
-          <Routes>
-            <Route
-              path="/*"
-              element={
-                <Home
-                  settings={settings || defaultSettings}
-                  setSettings={setSettings}
-                />
-              }
-            />
-            <Route
-              path="/settings"
-              element={
-                <Settings
-                  settings={settings || defaultSettings}
-                  setSettings={setSettings}
-                  resetSettings={resetSettings}
-                />
-              }
-            />
-            <Route path="/tutorial" element={<Tutorial />} />
-            <Route
-              path="/config"
-              element={
-                <JsonConfig
-                  settings={settings || defaultSettings}
-                  setSettings={setSettings}
-                />
-              }
-            />
-          </Routes>
+          <div className="pb-14">
+            <Routes>
+              <Route
+                path="/*"
+                element={
+                  <Home
+                    settings={settings || defaultSettings}
+                    setSettings={setSettings}
+                  />
+                }
+              />
+              <Route
+                path="/settings"
+                element={
+                  <Settings
+                    settings={settings || defaultSettings}
+                    setSettings={setSettings}
+                    resetSettings={resetSettings}
+                  />
+                }
+              />
+              <Route path="/tutorial" element={<Tutorial />} />
+              <Route
+                path="/config"
+                element={
+                  <JsonConfig
+                    settings={settings || defaultSettings}
+                    setSettings={setSettings}
+                  />
+                }
+              />
+            </Routes>
+          </div>
         </SimpleBar>
         <SimpleBottomNavigation />
       </div>

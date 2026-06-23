@@ -26,7 +26,7 @@ export default function SimpleBottomNavigation() {
 
   return (
     <div className="w-4/5 mx-auto absolute bottom-[5px] left-0 right-0">
-      <nav className="flex justify-around bg-[#9b9b9b] border border-black rounded-lg p-1">
+      <nav className="flex justify-around bg-surface-nav border border-border-muted rounded-lg p-1">
         {items.map((item, index) => (
           <button
             key={item.label}
@@ -36,8 +36,8 @@ export default function SimpleBottomNavigation() {
             }}
             className={`flex flex-col items-center gap-0.5 px-2 py-1 rounded border-none cursor-pointer font-bold transition-colors ${
               value === index
-                ? 'bg-[#1976d2] text-white'
-                : 'bg-transparent text-black hover:bg-[#888]'
+                ? 'bg-brand text-white'
+                : 'bg-transparent text-gray-300 hover:bg-surface-card'
             }`}
           >
             <item.icon size={18} />

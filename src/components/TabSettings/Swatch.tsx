@@ -1,4 +1,8 @@
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 const Swatch = ({
   color,
@@ -12,7 +16,7 @@ const Swatch = ({
   <Tooltip>
     <TooltipTrigger asChild>
       <button
-        className="w-5 h-5 rounded-full border border-black cursor-pointer shrink-0 hover:ring-1 hover:ring-white/40 transition-shadow"
+        className="w-5 h-5 rounded-full border border-white/30 cursor-pointer shrink-0 hover:ring-1 hover:ring-white/60 transition-shadow"
         style={{ backgroundColor: color }}
         onClick={onClick}
       />

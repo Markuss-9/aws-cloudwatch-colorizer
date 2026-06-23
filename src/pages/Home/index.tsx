@@ -24,15 +24,14 @@ const Home = ({
   const perf = settings.performance;
   const isManual = perf === 'manual';
 
-  const handleToggle = () =>
-    setSettings({ ...settings, master: !master });
+  const handleToggle = () => setSettings({ ...settings, master: !master });
 
   const handleChange = (newPerf: PerformanceMode) => {
     if (newPerf) setSettings({ ...settings, performance: newPerf });
   };
 
   return (
-    <div className="flex flex-col items-center gap-3 py-3 px-3">
+    <div className="flex flex-col items-center gap-3 py-3 px-3 bg-surface min-h-full">
       {/* Header */}
       <div className="flex justify-between w-full items-center">
         <h3 className="text-lg font-cursive">Home</h3>

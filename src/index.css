@@ -57,10 +57,19 @@
   --color-brand: #1976d2;
   --color-brand-hover: #1565c0;
   --color-brand-active: #0d47a1;
-  --color-surface: #363636;
+  --color-surface: #1c1c1c;
+  --color-surface-alt: #363636;
   --color-surface-dark: #000000;
-  --color-surface-hover: #444;
-  --color-surface-elevated: #555;
+  --color-surface-nav: #2a2a2a;
+  --color-surface-card: #3a3a3a;
+  --color-surface-hover: #4a4a4a;
+  --color-surface-elevated: #5f5f5f;
+  --color-surface-input: #1e1e1e;
+  --color-surface-tooltip: #333;
+  --color-border-muted: #444;
+  --color-border-default: #555;
+  --color-border-form: #777;
+  --color-warning: #ff9800;
 
   --font-cursive: cursive;
 
