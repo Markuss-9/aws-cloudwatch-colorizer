@@ -1,6 +1,20 @@
 import { useState } from 'react';
 import type { Dispatch, SetStateAction } from 'react';
 
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from '@dnd-kit/core';
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+  arrayMove,
+} from '@dnd-kit/sortable';
+
 import LevelRow from './LevelRow';
 import type {
   Settings,
@@ -27,12 +41,16 @@ const TabSettings = ({
     SettingsPages,
     PageSettings,
   ][];
-  const enabledEntries = entries.filter(([key]) => key !== 'Log_Tails');
+  const enabledEntries = entries;
   const [activeTab, setActiveTab] = useState<SettingsPages>(
     enabledEntries[0]?.[0],
   );
   const [openPicker, setOpenPicker] = useState<OpenPicker>(null);
   const [autoFocusKeyIdx, setAutoFocusKeyIdx] = useState<number | null>(null);
+
+  const levelSensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+  );
 
   const activePage = settings.advancedSettings[activeTab];
 
@@ -149,32 +167,61 @@ const TabSettings = ({
     });
   };
 
+  const handleLevelDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+    setSettings((prev) => {
+      const updated = structuredClone(prev);
+      const levels = updated.advancedSettings[activeTab].levels;
+      const oldIdx = levels.findIndex((l) => String(l.code) === active.id);
+      const newIdx = levels.findIndex((l) => String(l.code) === over.id);
+      if (oldIdx === -1 || newIdx === -1) return prev;
+      updated.advancedSettings[activeTab].levels = arrayMove(
+        levels,
+        oldIdx,
+        newIdx,
+      );
+      return updated;
+    });
+    setOpenPicker(null);
+  };
+
+  const movePattern = (levelIdx: number, fromIdx: number, toIdx: number) => {
+    setSettings((prev) => {
+      const updated = structuredClone(prev);
+      const patterns =
+        updated.advancedSettings[activeTab].levels[levelIdx].patterns;
+      updated.advancedSettings[activeTab].levels[levelIdx].patterns = arrayMove(
+        patterns,
+        fromIdx,
+        toIdx,
+      );
+      return updated;
+    });
+  };
+
   const tabLabels: Record<SettingsPages, string> = {
     Log_Groups: 'Log Groups',
-    Log_Insights: 'Insights',
-    Log_Tails: 'Tails',
+    Log_Insights: 'Logs Insights',
+    Log_Analytics: 'Logs Analytics',
   };
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex border-b border-app-border">
+      <div className="flex gap-1 bg-app-surface/40 rounded-lg p-0.5">
         {entries.map(([key]) => {
-          const isDisabled = key === 'Log_Tails';
           return (
             <button
               key={key}
-              disabled={isDisabled}
               onClick={() => {
                 setActiveTab(key);
                 setOpenPicker(null);
                 setAutoFocusKeyIdx(null);
               }}
-              className={`flex-1 py-1.5 text-xs border-b-2 bg-transparent border-none font-bold transition-colors ${
+              className={`flex-1 py-1.5 text-xs rounded-md font-bold transition-all cursor-pointer border-none ${
                 activeTab === key
-                  ? 'text-brand border-brand'
-                  : 'text-app-muted border-transparent hover:text-app-text'
-              } ${
-                isDisabled ? 'opacity-30 cursor-not-allowed' : 'cursor-pointer'
+                  ? 'bg-app-accent text-black shadow-sm'
+                  : 'text-app-muted hover:text-app-text bg-transparent'
               }`}
             >
               {tabLabels[key]}
@@ -234,30 +281,44 @@ const TabSettings = ({
         </div>
       </div>
 
-      <div className="flex flex-col gap-1.5">
-        {activePage.levels.map((level, idx) => (
-          <LevelRow
-            key={`${activeTab}-${level.level}-${idx}`}
-            level={level}
-            idx={idx}
-            activeTab={activeTab}
-            openPicker={openPicker}
-            onToggleEnabled={toggleLevelEnabled}
-            onDelete={deleteLevel}
-            onRemovePattern={removePattern}
-            onAddPattern={addPattern}
-            onOpenPicker={setOpenPicker}
-            onUpdateField={updateLevelField}
-            onUpdateKey={updateLevelKey}
-            onUpdateColor={updateLevelColor}
-            wantBackground={activePage.wantBackground}
-            autoFocusKey={idx === autoFocusKeyIdx}
-            onAutoFocusDone={() => setAutoFocusKeyIdx(null)}
-          />
-        ))}
-      </div>
+      <DndContext
+        sensors={levelSensors}
+        collisionDetection={closestCenter}
+        onDragEnd={handleLevelDragEnd}
+      >
+        <SortableContext
+          items={activePage.levels.map((l) => String(l.code))}
+          strategy={verticalListSortingStrategy}
+        >
+          <div className="flex flex-col gap-1.5">
+            {activePage.levels.map((level, idx) => (
+              <LevelRow
+                key={level.code}
+                level={level}
+                idx={idx}
+                activeTab={activeTab}
+                openPicker={openPicker}
+                onToggleEnabled={toggleLevelEnabled}
+                onDelete={deleteLevel}
+                onRemovePattern={removePattern}
+                onAddPattern={addPattern}
+                onOpenPicker={setOpenPicker}
+                onUpdateField={updateLevelField}
+                onUpdateKey={updateLevelKey}
+                onUpdateColor={updateLevelColor}
+                wantBackground={activePage.wantBackground}
+                autoFocusKey={idx === autoFocusKeyIdx}
+                onAutoFocusDone={() => setAutoFocusKeyIdx(null)}
+                onMovePattern={(fromIdx, toIdx) =>
+                  movePattern(idx, fromIdx, toIdx)
+                }
+              />
+            ))}
+          </div>
+        </SortableContext>
+      </DndContext>
 
-      <div className="border-t border-app-border pt-2">
+      <div>
         <button
           onClick={addLevel}
           className="w-full text-xs text-app-muted hover:text-app-text cursor-pointer bg-transparent border border-dashed border-app-border hover:border-app-text/40 rounded py-1.5 transition-colors"

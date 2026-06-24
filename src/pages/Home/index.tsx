@@ -31,8 +31,20 @@ const Home = ({
 
   const handleToggle = () => setSettings({ ...settings, master: !master });
 
+  const scrollToBottom = () => {
+    const el = document.querySelector('.simplebar-content-wrapper');
+    if (el) {
+      el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
+    }
+  };
+
   const handleChange = (newPerf: PerformanceMode) => {
-    if (newPerf) setSettings({ ...settings, performance: newPerf });
+    if (newPerf) {
+      setSettings({ ...settings, performance: newPerf });
+      if (newPerf === 'manual') {
+        setTimeout(scrollToBottom, 0);
+      }
+    }
   };
 
   return (

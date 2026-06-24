@@ -1,4 +1,4 @@
-import { settings } from './utils';
+import { settings, getCurrentPage, PAGE_PATTERNS } from './utils';
 import { log } from '@/logger';
 import { assert } from '@/assert';
 
@@ -27,7 +27,8 @@ const areSwitchesOff = (): boolean => {
   assert(settings, 'settings must exist');
   return (
     !settings.advancedSettings['Log_Groups'].switch &&
-    !settings.advancedSettings['Log_Insights'].switch
+    !settings.advancedSettings['Log_Insights'].switch &&
+    !settings.advancedSettings['Log_Analytics'].switch
   );
 };
 
@@ -84,7 +85,7 @@ const injectStyleShadedEvenRows = () => {
   try {
     if (areSwitchesOff()) return;
 
-    if (window.location.href.includes('#log-analytics')) {
+    if (getCurrentPage() === PAGE_PATTERNS.LOG_ANALYTICS) {
       if (document.querySelector(STYLE_SELECTOR)) return;
       const css = buildLogAnalyticsCSS();
       if (css) injectAndTag(css, document);

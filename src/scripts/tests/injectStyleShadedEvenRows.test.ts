@@ -50,7 +50,7 @@ describe('injectStyleShadedEvenRows', () => {
     expect(appendChildSpy).toHaveBeenCalled();
   });
 
-  it('does not inject CSS when both Log_Groups and Log_Insights switches are off', () => {
+  it('does not inject CSS when all page switches are off', () => {
     const disabledSettings = {
       ...defaultSettings,
       advancedSettings: {
@@ -61,6 +61,10 @@ describe('injectStyleShadedEvenRows', () => {
         },
         Log_Insights: {
           ...defaultSettings.advancedSettings.Log_Insights,
+          switch: false,
+        },
+        Log_Analytics: {
+          ...defaultSettings.advancedSettings.Log_Analytics,
           switch: false,
         },
       },

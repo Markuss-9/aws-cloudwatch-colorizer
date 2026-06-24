@@ -25,7 +25,7 @@ export type PerformanceMode = 'timer' | 'dom' | 'net' | 'manual';
 export interface AdvancedSettings {
   Log_Groups: PageSettings;
   Log_Insights: PageSettings;
-  Log_Tails: PageSettings;
+  Log_Analytics: PageSettings;
 }
 
 export type SettingsPages = keyof AdvancedSettings & (string & {});

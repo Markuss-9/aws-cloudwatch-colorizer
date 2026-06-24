@@ -81,12 +81,12 @@ const defaultSettings: Settings = {
       isAvailable: true,
       wantBackground: true,
     },
-    Log_Tails: {
-      title: 'Log Tails',
+    Log_Analytics: {
+      title: 'Log Analytics',
       levels: defaultLevels(),
-      id: 'Log_Tails',
-      switch: false,
-      isAvailable: false,
+      id: 'Log_Analytics',
+      switch: true,
+      isAvailable: true,
       wantBackground: true,
     },
   },

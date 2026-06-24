@@ -103,11 +103,11 @@ const logAnalyticsFlow = () => {
         const result = colorizing(
           cell,
           row,
-          settings.advancedSettings['Log_Insights'],
+          settings.advancedSettings['Log_Analytics'],
         );
         if (result) anyMatched = true;
       }
-      if (!anyMatched && settings.advancedSettings['Log_Insights'].wantBackground) {
+      if (!anyMatched && settings.advancedSettings['Log_Analytics'].wantBackground) {
         row.style.removeProperty('background-color');
       }
     }
@@ -132,7 +132,7 @@ const colorizeAll = () => {
         logsGroupsFlow();
       }
     } else if (page === utils.PAGE_PATTERNS.LOG_ANALYTICS) {
-      if (utils.settings.advancedSettings['Log_Insights'].switch) {
+      if (utils.settings.advancedSettings['Log_Analytics'].switch) {
         logAnalyticsFlow();
       }
     } else if (page === utils.PAGE_PATTERNS.LOGS_INSIGHTS) {

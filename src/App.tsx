@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import './App.css';
 
-import SimpleBottomNavigation from './components/SimpleBottomNavigation';
+import BottomNav from './components/BottomNav';
 import { Route, Routes } from 'react-router-dom';
 import Settings from './pages/Settings';
 import Home from './pages/Home';
@@ -106,7 +106,7 @@ function App() {
             </Routes>
           </div>
         </SimpleBar>
-        <SimpleBottomNavigation />
+        <BottomNav />
       </div>
     </TooltipProvider>
   );

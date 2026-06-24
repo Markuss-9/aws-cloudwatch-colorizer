@@ -1,5 +1,20 @@
 import { useState, useRef, useEffect } from 'react';
-import { Trash2 } from 'lucide-react';
+import { Trash2, GripVertical } from 'lucide-react';
+
+import {
+  useSortable,
+  SortableContext,
+  horizontalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from '@dnd-kit/core';
 
 import ColorPicker from '../ColorPicker';
 import Swatch from './Swatch';
@@ -38,6 +53,7 @@ const LevelRow = ({
   wantBackground,
   autoFocusKey,
   onAutoFocusDone,
+  onMovePattern,
 }: {
   level: LevelPreset;
   idx: number;
@@ -62,7 +78,27 @@ const LevelRow = ({
   wantBackground: boolean;
   autoFocusKey?: boolean;
   onAutoFocusDone?: () => void;
+  onMovePattern: (fromIdx: number, toIdx: number) => void;
 }) => {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: String(level.code) });
+
+  const patternSensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+  );
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : undefined,
+  };
+
   const isOpen = openPicker?.page === activeTab && openPicker.levelIdx === idx;
   const [editingField, setEditingField] = useState<'emoji' | 'label' | null>(
     null,
@@ -95,14 +131,34 @@ const LevelRow = ({
     setEditValue('');
   };
 
+  const handlePatternDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+    const oldIdx = Number(String(active.id).replace('p-', ''));
+    const newIdx = Number(String(over.id).replace('p-', ''));
+    onMovePattern(oldIdx, newIdx);
+  };
+
   const handleSaveLevelKey = (val: string) => {
     onUpdateKey(idx, val);
     onAutoFocusDone?.();
   };
 
   return (
-    <div className="bg-surface-card border border-white/[5%] rounded p-3 relative overflow-hidden">
+    <div
+      ref={setNodeRef}
+      style={style}
+      className="bg-surface-card border border-white/[5%] rounded p-3 relative overflow-hidden"
+    >
       <div className="flex items-center gap-2">
+        <button
+          {...attributes}
+          {...listeners}
+          className="cursor-grab active:cursor-grabbing bg-transparent border-none p-0 flex items-center justify-center text-gray-400 hover:text-white transition-colors"
+        >
+          <GripVertical size={14} />
+        </button>
+
         <Swatch
           color={wantBackground ? level.backgroundColor : level.color}
           label={wantBackground ? 'Background' : 'Foreground'}
@@ -224,16 +280,28 @@ const LevelRow = ({
         </div>
       )}
 
-      <div className="flex flex-wrap gap-2 mt-4">
-        {level.patterns.map((p, pi) => (
-          <PatternChip
-            key={pi}
-            text={p}
-            onRemove={() => onRemovePattern(idx, pi)}
-          />
-        ))}
-        <PatternAdder onAdd={(pattern) => onAddPattern(idx, pattern)} />
-      </div>
+      <DndContext
+        sensors={patternSensors}
+        collisionDetection={closestCenter}
+        onDragEnd={handlePatternDragEnd}
+      >
+        <SortableContext
+          items={level.patterns.map((_, i) => `p-${i}`)}
+          strategy={horizontalListSortingStrategy}
+        >
+          <div className="flex flex-wrap gap-2 mt-4">
+            {level.patterns.map((p, pi) => (
+              <PatternChip
+                key={`p-${pi}`}
+                id={`p-${pi}`}
+                text={p}
+                onRemove={() => onRemovePattern(idx, pi)}
+              />
+            ))}
+            <PatternAdder onAdd={(pattern) => onAddPattern(idx, pattern)} />
+          </div>
+        </SortableContext>
+      </DndContext>
     </div>
   );
 };

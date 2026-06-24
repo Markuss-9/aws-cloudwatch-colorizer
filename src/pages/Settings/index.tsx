@@ -19,9 +19,14 @@ const Settings = ({
 }) => {
   return (
     <div className="flex flex-col gap-3 p-3 min-h-full bg-app-bg">
-      <h3 className="text-sm text-app-text font-mono tracking-tight">
-        Settings
-      </h3>
+      <div className="space-y-0.5">
+        <h3 className="text-sm text-app-text font-mono tracking-tight">
+          Settings
+        </h3>
+        <p className="text-[10px] text-app-muted font-mono leading-relaxed">
+          Configure color schemes for each CloudWatch log view
+        </p>
+      </div>
       <TabSettings settings={settings} setSettings={setSettings} />
       <div className="flex justify-center">
         <Tooltip>
