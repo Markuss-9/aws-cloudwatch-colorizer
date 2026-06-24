@@ -1,0 +1,12 @@
+Introducing AWS CloudWatch Colorizer, a powerful Google Chrome extension engineered to streamline log interpretation within AWS CloudWatch. With this tool, identifying errors, warnings, info, and debug logs becomes a breeze, significantly reducing the time it takes to pinpoint critical issues.
+
+This extension seamlessly integrates with CloudWatch's Log Groups, Log Insights, and Log Analytics sections, enhancing your monitoring workflow.
+
+Tailor your viewing experience with two distinct modes: Replace and Background. In Replace mode, keywords like "error" or "warning" are highlighted with designated colors and accompanying emojis, while Background mode shades entire log rows based on their significance (maintaining the shade opacity for the even rows). Each log level supports multiple match patterns with whole-word matching, eliminating false positives on words like "terrorizing". Plus, both modes support customizing hues to your preference using the color picker from the extension UI.
+
+Experience seamless log colorization with Auto Mode, offering two performance options: DOM and Timer. Dom mode stands out as the optimal choice for performance, automatically colorizing logs with each page change, eliminating the need for continuous manual interaction. The redesigned tabbed settings UI includes dedicated controls for levels, patterns, colors, and a JSON editor for copy-paste configuration.
+
+Enhance your AWS CloudWatch experience today with AWS CloudWatch Colorizer. Simplify log interpretation, streamline debugging, and boost productivity by effortlessly identifying critical errors.
+
+This project is open source and available on GitHub:
+https://github.com/Markuss-9/aws-cloudwatch-colorizer
