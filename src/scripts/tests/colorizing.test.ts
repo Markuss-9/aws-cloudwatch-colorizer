@@ -279,6 +279,38 @@ describe('word matching - false positive prevention', () => {
   });
 });
 
+describe('JSON stringified logs', () => {
+  it('matches uppercase level value in JSON log', () => {
+    const elWithMessage = createSpanWithText(
+      '{"level":"ERROR","data":"critical failure detected"}',
+    );
+
+    const result = findPattern({
+      levels: [wordPreset('error')],
+      elWithMessage,
+    });
+
+    expect(result).not.toBeNull();
+    expect(result?.pattern).toBe('error');
+    expect(result?.matchText).toBe('ERROR');
+  });
+
+  it('matches level value in JSON log with timestamp prefix', () => {
+    const elWithMessage = createSpanWithText(
+      `{\\"level\\":\\"WARN\\",\\"message\\":\\"disk space low\\"}`,
+    );
+
+    const result = findPattern({
+      levels: [wordPreset('warn')],
+      elWithMessage,
+    });
+
+    expect(result).not.toBeNull();
+    expect(result?.pattern).toBe('warn');
+    expect(result?.matchText).toBe('WARN');
+  });
+});
+
 describe('regex mode', () => {
   it('matches pattern as raw regex with alternation', () => {
     const elWithMessage = createSpanWithText('critical: system failure');
