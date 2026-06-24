@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { log } from '@/logger';
 import injectStyleShadedEvenRows from '../injectStyleShadedEvenRows';
 import { setSettings } from '../utils';
+import { PAGE_SETTINGS_KEYS } from '@/types';
 import defaultSettings from '@/defaultSettings';
 
 let debugSpy: ReturnType<typeof vi.spyOn>;
@@ -55,16 +56,16 @@ describe('injectStyleShadedEvenRows', () => {
       ...defaultSettings,
       advancedSettings: {
         ...defaultSettings.advancedSettings,
-        Log_Groups: {
-          ...defaultSettings.advancedSettings.Log_Groups,
+        [PAGE_SETTINGS_KEYS.LOG_GROUPS]: {
+          ...defaultSettings.advancedSettings[PAGE_SETTINGS_KEYS.LOG_GROUPS],
           switch: false,
         },
-        Log_Insights: {
-          ...defaultSettings.advancedSettings.Log_Insights,
+        [PAGE_SETTINGS_KEYS.LOG_INSIGHTS]: {
+          ...defaultSettings.advancedSettings[PAGE_SETTINGS_KEYS.LOG_INSIGHTS],
           switch: false,
         },
-        Log_Analytics: {
-          ...defaultSettings.advancedSettings.Log_Analytics,
+        [PAGE_SETTINGS_KEYS.LOG_ANALYTICS]: {
+          ...defaultSettings.advancedSettings[PAGE_SETTINGS_KEYS.LOG_ANALYTICS],
           switch: false,
         },
       },

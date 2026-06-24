@@ -2,7 +2,7 @@ import { debounce } from 'lodash-es';
 import { log } from '@/logger';
 import colorizeAll from '@/scripts/colorizeAll';
 import { assert } from '@/assert';
-import { PAGE_PATTERNS } from '@/scripts/utils';
+import { PAGE_SETTINGS_KEYS } from '@/types';
 
 export let intervalIdDOM: NodeJS.Timeout | string | number | undefined =
   undefined;
@@ -72,7 +72,7 @@ export const startObserve = (page: string | null) => {
 
   const gen = ++observeGen;
 
-  if (page === PAGE_PATTERNS.LOG_ANALYTICS) {
+  if (page === PAGE_SETTINGS_KEYS.LOG_ANALYTICS) {
     getTableBodyElement()
       .then((body: HTMLElement) => {
         if (gen !== observeGen) return;

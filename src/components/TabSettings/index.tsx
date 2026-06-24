@@ -23,6 +23,7 @@ import type {
   PageSettings,
 } from '@/types';
 import { Switch } from '@/components/ui/switch';
+import { PAGE_SETTINGS_KEYS } from '@/types';
 
 type OpenPicker = {
   page: SettingsPages;
@@ -201,9 +202,9 @@ const TabSettings = ({
   };
 
   const tabLabels: Record<SettingsPages, string> = {
-    Log_Groups: 'Log Groups',
-    Log_Insights: 'Logs Insights',
-    Log_Analytics: 'Logs Analytics',
+    [PAGE_SETTINGS_KEYS.LOG_GROUPS]: 'Log Groups',
+    [PAGE_SETTINGS_KEYS.LOG_INSIGHTS]: 'Logs Insights',
+    [PAGE_SETTINGS_KEYS.LOG_ANALYTICS]: 'Logs Analytics',
   };
 
   return (

@@ -1,4 +1,5 @@
-import { settings, getCurrentPage, PAGE_PATTERNS } from './utils';
+import { settings, getCurrentPage } from './utils';
+import { PAGE_SETTINGS_KEYS } from '@/types';
 import { log } from '@/logger';
 import { assert } from '@/assert';
 
@@ -14,7 +15,11 @@ const getIsDarkMode = (): boolean =>
 const getDefaultShadeColor = (): string =>
   getIsDarkMode() ? DEFAULT_DARK_SHADE_COLOR : DEFAULT_LIGHT_SHADE_COLOR;
 
-const getSectionConfig = (section: 'Log_Groups' | 'Log_Insights') => {
+const getSectionConfig = (
+  section:
+    | typeof PAGE_SETTINGS_KEYS.LOG_GROUPS
+    | typeof PAGE_SETTINGS_KEYS.LOG_INSIGHTS,
+) => {
   assert(settings, 'settings must exist');
   const s = settings.advancedSettings[section];
   return {
@@ -26,9 +31,9 @@ const getSectionConfig = (section: 'Log_Groups' | 'Log_Insights') => {
 const areSwitchesOff = (): boolean => {
   assert(settings, 'settings must exist');
   return (
-    !settings.advancedSettings['Log_Groups'].switch &&
-    !settings.advancedSettings['Log_Insights'].switch &&
-    !settings.advancedSettings['Log_Analytics'].switch
+    !settings.advancedSettings[PAGE_SETTINGS_KEYS.LOG_GROUPS].switch &&
+    !settings.advancedSettings[PAGE_SETTINGS_KEYS.LOG_INSIGHTS].switch &&
+    !settings.advancedSettings[PAGE_SETTINGS_KEYS.LOG_ANALYTICS].switch
   );
 };
 
@@ -65,13 +70,15 @@ const cssForAnalyticsInsights = (shadeColor: string) => `
 `;
 
 const buildLogAnalyticsCSS = (): string => {
-  const { needInject, shadeColor } = getSectionConfig('Log_Insights');
+  const { needInject, shadeColor } = getSectionConfig(
+    PAGE_SETTINGS_KEYS.LOG_INSIGHTS,
+  );
   return needInject ? cssForAnalyticsInsights(shadeColor) : '';
 };
 
 const buildIframeCSS = (): string => {
-  const insights = getSectionConfig('Log_Insights');
-  const groups = getSectionConfig('Log_Groups');
+  const insights = getSectionConfig(PAGE_SETTINGS_KEYS.LOG_INSIGHTS);
+  const groups = getSectionConfig(PAGE_SETTINGS_KEYS.LOG_GROUPS);
 
   return [
     insights.needInject && cssForInsightsShade(insights.shadeColor),
@@ -85,7 +92,7 @@ const injectStyleShadedEvenRows = () => {
   try {
     if (areSwitchesOff()) return;
 
-    if (getCurrentPage() === PAGE_PATTERNS.LOG_ANALYTICS) {
+    if (getCurrentPage() === PAGE_SETTINGS_KEYS.LOG_ANALYTICS) {
       if (document.querySelector(STYLE_SELECTOR)) return;
       const css = buildLogAnalyticsCSS();
       if (css) injectAndTag(css, document);

@@ -2,17 +2,12 @@ import { assert } from '@/assert';
 import { log } from '@/logger';
 import defaultSettings from '@/defaultSettings';
 import type { Settings } from '@/types';
-
-export const PAGE_PATTERNS = {
-  LOG_GROUPS: 'LOG_GROUPS',
-  LOGS_INSIGHTS: 'LOGS_INSIGHTS',
-  LOG_ANALYTICS: 'LOG_ANALYTICS',
-} as const;
+import { PAGE_SETTINGS_KEYS } from '@/types';
 
 const PAGE_URL_PATTERNS: Record<string, RegExp> = {
-  [PAGE_PATTERNS.LOG_ANALYTICS]: /#log-analytics/,
-  [PAGE_PATTERNS.LOG_GROUPS]: /\/log-group\/.+\/log-events\//,
-  [PAGE_PATTERNS.LOGS_INSIGHTS]: /#logsV2:logs-insights/,
+  [PAGE_SETTINGS_KEYS.LOG_ANALYTICS]: /#log-analytics/,
+  [PAGE_SETTINGS_KEYS.LOG_GROUPS]: /\/log-group\/.+\/log-events\//,
+  [PAGE_SETTINGS_KEYS.LOG_INSIGHTS]: /#logsV2:logs-insights/,
 };
 
 export const getCurrentPage = (): string | null => {

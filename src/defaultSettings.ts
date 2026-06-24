@@ -1,3 +1,4 @@
+import { PAGE_SETTINGS_KEYS } from './types';
 import type { Settings, LevelPreset } from './types';
 
 function presets<T extends Record<string, Omit<LevelPreset, 'level'>>>(
@@ -65,26 +66,26 @@ const defaultSettings: Settings = {
   master: true,
   performance: 'dom',
   advancedSettings: {
-    Log_Groups: {
-      title: 'Log groups',
+    [PAGE_SETTINGS_KEYS.LOG_GROUPS]: {
+      title: 'Log Groups',
       levels: defaultLevels(),
-      id: 'Log_Groups',
+      id: PAGE_SETTINGS_KEYS.LOG_GROUPS,
       switch: true,
       isAvailable: true,
       wantBackground: true,
     },
-    Log_Insights: {
+    [PAGE_SETTINGS_KEYS.LOG_INSIGHTS]: {
       title: 'Log Insights',
       levels: defaultLevels(),
-      id: 'Log_Insights',
+      id: PAGE_SETTINGS_KEYS.LOG_INSIGHTS,
       switch: true,
       isAvailable: true,
       wantBackground: true,
     },
-    Log_Analytics: {
+    [PAGE_SETTINGS_KEYS.LOG_ANALYTICS]: {
       title: 'Log Analytics',
       levels: defaultLevels(),
-      id: 'Log_Analytics',
+      id: PAGE_SETTINGS_KEYS.LOG_ANALYTICS,
       switch: true,
       isAvailable: true,
       wantBackground: true,

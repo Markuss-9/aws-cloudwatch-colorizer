@@ -3,6 +3,7 @@ import { log } from '@/logger';
 
 import colorizing from './colorizing';
 import * as utils from './utils';
+import { PAGE_SETTINGS_KEYS } from '@/types';
 import injectStyleShadedEvenRows from './injectStyleShadedEvenRows';
 import { assert } from '@/assert';
 
@@ -48,11 +49,11 @@ const logsGroupsFlow = () => {
       const result = colorizing(
         child,
         row as HTMLElement,
-        settings.advancedSettings['Log_Groups'],
+        settings.advancedSettings[PAGE_SETTINGS_KEYS.LOG_GROUPS],
       );
       if (
         !result &&
-        settings.advancedSettings['Log_Groups'].wantBackground
+        settings.advancedSettings[PAGE_SETTINGS_KEYS.LOG_GROUPS].wantBackground
       ) {
         (row as HTMLElement).style.removeProperty('background-color');
       }
@@ -74,11 +75,15 @@ const logsInsightsFlow = () => {
         const result = colorizing(
           child as HTMLElement,
           row as HTMLElement,
-          settings.advancedSettings['Log_Insights'],
+          settings.advancedSettings[PAGE_SETTINGS_KEYS.LOG_INSIGHTS],
         );
         if (result) anyMatched = true;
       }
-      if (!anyMatched && settings.advancedSettings['Log_Insights'].wantBackground) {
+      if (
+        !anyMatched &&
+        settings.advancedSettings[PAGE_SETTINGS_KEYS.LOG_INSIGHTS]
+          .wantBackground
+      ) {
         (row as HTMLElement).style.removeProperty('background-color');
       }
     }
@@ -103,11 +108,15 @@ const logAnalyticsFlow = () => {
         const result = colorizing(
           cell,
           row,
-          settings.advancedSettings['Log_Analytics'],
+          settings.advancedSettings[PAGE_SETTINGS_KEYS.LOG_ANALYTICS],
         );
         if (result) anyMatched = true;
       }
-      if (!anyMatched && settings.advancedSettings['Log_Analytics'].wantBackground) {
+      if (
+        !anyMatched &&
+        settings.advancedSettings[PAGE_SETTINGS_KEYS.LOG_ANALYTICS]
+          .wantBackground
+      ) {
         row.style.removeProperty('background-color');
       }
     }
@@ -127,16 +136,22 @@ const colorizeAll = () => {
 
     assert(utils.settings, 'Settings are not loaded');
 
-    if (page === utils.PAGE_PATTERNS.LOG_GROUPS) {
-      if (utils.settings.advancedSettings['Log_Groups'].switch) {
+    if (page === PAGE_SETTINGS_KEYS.LOG_GROUPS) {
+      if (
+        utils.settings.advancedSettings[PAGE_SETTINGS_KEYS.LOG_GROUPS].switch
+      ) {
         logsGroupsFlow();
       }
-    } else if (page === utils.PAGE_PATTERNS.LOG_ANALYTICS) {
-      if (utils.settings.advancedSettings['Log_Analytics'].switch) {
+    } else if (page === PAGE_SETTINGS_KEYS.LOG_ANALYTICS) {
+      if (
+        utils.settings.advancedSettings[PAGE_SETTINGS_KEYS.LOG_ANALYTICS].switch
+      ) {
         logAnalyticsFlow();
       }
-    } else if (page === utils.PAGE_PATTERNS.LOGS_INSIGHTS) {
-      if (utils.settings.advancedSettings['Log_Insights'].switch) {
+    } else if (page === PAGE_SETTINGS_KEYS.LOG_INSIGHTS) {
+      if (
+        utils.settings.advancedSettings[PAGE_SETTINGS_KEYS.LOG_INSIGHTS].switch
+      ) {
         logsInsightsFlow();
       }
     }

@@ -22,10 +22,16 @@ export interface PageSettings {
 
 export type PerformanceMode = 'timer' | 'dom' | 'net' | 'manual';
 
+export const PAGE_SETTINGS_KEYS = {
+  LOG_GROUPS: 'Log_Groups',
+  LOG_INSIGHTS: 'Log_Insights',
+  LOG_ANALYTICS: 'Log_Analytics',
+} as const;
+
 export interface AdvancedSettings {
-  Log_Groups: PageSettings;
-  Log_Insights: PageSettings;
-  Log_Analytics: PageSettings;
+  [PAGE_SETTINGS_KEYS.LOG_GROUPS]: PageSettings;
+  [PAGE_SETTINGS_KEYS.LOG_INSIGHTS]: PageSettings;
+  [PAGE_SETTINGS_KEYS.LOG_ANALYTICS]: PageSettings;
 }
 
 export type SettingsPages = keyof AdvancedSettings & (string & {});
