@@ -31,6 +31,9 @@ export default function BottomNav() {
             onClick={() => {
               setValue(index);
               navigate(item.path);
+              document
+                .querySelector('.simplebar-content-wrapper')
+                ?.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
             }}
             className={`relative flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-md border-none cursor-pointer font-mono text-[10px] transition-colors ${
               value === index
