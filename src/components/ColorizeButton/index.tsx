@@ -31,7 +31,7 @@ const ColorizeButton = ({ master }: master) => {
         <button
           onClick={manualColorize}
           disabled={!master}
-          className="rainbow border border-solid border-transparent bg-rainbow-btn text-transparent bg-clip-text hover:bg-rainbow-btn-light disabled:opacity-40 px-4 py-2 rounded cursor-pointer font-cursive"
+          className="rainbow border border-solid border-transparent bg-rainbow-btn text-transparent bg-clip-text hover:bg-rainbow-btn-light disabled:opacity-40 px-4 py-2 rounded cursor-pointer font-sans font-semibold tracking-wider"
         >
           COLORIZE
         </button>

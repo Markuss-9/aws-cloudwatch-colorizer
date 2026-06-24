@@ -24,7 +24,8 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       'inline-flex items-center justify-center font-cursive transition-colors focus-visible:outline-none disabled:pointer-events-none disabled:opacity-40';
 
     const variants: Record<string, string> = {
-      default: 'bg-brand text-white hover:bg-brand-hover active:bg-brand-active',
+      default:
+        'bg-brand text-white hover:bg-brand-hover active:bg-brand-active',
       outline: 'border border-current bg-transparent hover:opacity-80',
       text: 'bg-transparent hover:opacity-80',
       rainbow: 'bg-transparent border border-solid',

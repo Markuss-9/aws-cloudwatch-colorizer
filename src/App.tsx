@@ -4,7 +4,6 @@ import './App.css';
 import SimpleBottomNavigation from './components/SimpleBottomNavigation';
 import { Route, Routes } from 'react-router-dom';
 import Settings from './pages/Settings';
-import Tutorial from './pages/Tutorial';
 import Home from './pages/Home';
 import JsonConfig from './pages/JsonConfig';
 
@@ -80,7 +79,7 @@ function App() {
 
   return (
     <TooltipProvider>
-      <div className="App text-white text-center flex flex-col relative bg-surface">
+      <div className="App text-white text-center flex flex-col relative bg-app-bg">
         <SimpleBar style={{ maxHeight: 400 }}>
           <div className="pb-14">
             <Routes>
@@ -98,7 +97,6 @@ function App() {
                   />
                 }
               />
-              <Route path="/tutorial" element={<Tutorial />} />
               <Route
                 path="/config"
                 element={

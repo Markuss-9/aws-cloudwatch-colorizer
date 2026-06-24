@@ -1,6 +1,6 @@
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { Home, Lightbulb, Settings, FileJson } from 'lucide-react';
+import { Home, Settings, FileJson } from 'lucide-react';
 
 export default function SimpleBottomNavigation() {
   const navigate = useNavigate();
@@ -10,7 +10,6 @@ export default function SimpleBottomNavigation() {
     { label: 'Home', icon: Home, path: '/' },
     { label: 'Settings', icon: Settings, path: '/settings' },
     { label: 'Config', icon: FileJson, path: '/config' },
-    { label: 'Tutorial', icon: Lightbulb, path: '/tutorial' },
   ];
 
   const pathToIndex: Record<string, number> = {};

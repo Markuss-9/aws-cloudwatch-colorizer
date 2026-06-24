@@ -157,7 +157,7 @@ const TabSettings = ({
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex border-b border-border-default">
+      <div className="flex border-b border-app-border">
         {entries.map(([key]) => {
           const isDisabled = key === 'Log_Tails';
           return (
@@ -172,7 +172,7 @@ const TabSettings = ({
               className={`flex-1 py-1.5 text-xs border-b-2 bg-transparent border-none font-bold transition-colors ${
                 activeTab === key
                   ? 'text-brand border-brand'
-                  : 'text-gray-300 border-transparent hover:text-white'
+                  : 'text-app-muted border-transparent hover:text-app-text'
               } ${
                 isDisabled ? 'opacity-30 cursor-not-allowed' : 'cursor-pointer'
               }`}
@@ -183,24 +183,54 @@ const TabSettings = ({
         })}
       </div>
 
-      <div className="flex items-center justify-center gap-4">
+      <div className="flex items-center justify-between rounded-lg border border-app-border px-3 py-2 bg-app-surface">
         <div className="flex items-center gap-2">
           <Switch
             checked={activePage.switch}
             onCheckedChange={togglePageSwitch}
           />
-          <span className="text-xs text-gray-300">
-            {activePage.switch ? 'Colorizing' : 'Disabled'}
+          <span
+            className={`text-xs ${
+              activePage.switch ? 'text-app-accent' : 'text-app-muted'
+            }`}
+          >
+            {activePage.switch ? 'Enabled' : 'Disabled'}
           </span>
         </div>
-        <div className="flex items-center gap-2">
-          <Switch
-            checked={activePage.wantBackground}
-            onCheckedChange={toggleWantBackground}
-          />
-          <span className="text-xs text-gray-300">
-            {activePage.wantBackground ? 'Background' : 'Replace'}
-          </span>
+        <div className="flex rounded-md border border-app-border overflow-hidden">
+          <button
+            onClick={() =>
+              setSettings((prev) => {
+                const u = structuredClone(prev);
+                u.advancedSettings[activeTab].wantBackground = true;
+                return u;
+              })
+            }
+            className={`text-[11px] px-2.5 py-1 text-center transition-colors cursor-pointer border-none font-medium ${
+              activePage.wantBackground
+                ? 'bg-app-accent text-black'
+                : 'bg-transparent text-app-muted hover:text-app-text'
+            }`}
+          >
+            Background
+          </button>
+          <div className="w-px bg-app-border" />
+          <button
+            onClick={() =>
+              setSettings((prev) => {
+                const u = structuredClone(prev);
+                u.advancedSettings[activeTab].wantBackground = false;
+                return u;
+              })
+            }
+            className={`text-[11px] px-2.5 py-1 text-center transition-colors cursor-pointer border-none font-medium ${
+              !activePage.wantBackground
+                ? 'bg-app-accent text-black'
+                : 'bg-transparent text-app-muted hover:text-app-text'
+            }`}
+          >
+            Replace
+          </button>
         </div>
       </div>
 
@@ -227,10 +257,10 @@ const TabSettings = ({
         ))}
       </div>
 
-      <div className="border-t border-border-default pt-2">
+      <div className="border-t border-app-border pt-2">
         <button
           onClick={addLevel}
-          className="w-full text-xs text-blue-300 hover:text-blue-100 cursor-pointer bg-transparent border border-dashed border-blue-400/40 hover:border-blue-400/70 rounded py-1.5 transition-colors"
+          className="w-full text-xs text-app-muted hover:text-app-text cursor-pointer bg-transparent border border-dashed border-app-border hover:border-app-text/40 rounded py-1.5 transition-colors"
         >
           + Add Level
         </button>

@@ -18,8 +18,10 @@ const Settings = ({
   resetSettings: VoidFunction;
 }) => {
   return (
-    <div className="flex flex-col gap-3 p-3 bg-surface min-h-full">
-      <h3 className="text-2xl font-cursive">Settings</h3>
+    <div className="flex flex-col gap-3 p-3 min-h-full bg-app-bg">
+      <h3 className="text-sm text-app-text font-mono tracking-tight">
+        Settings
+      </h3>
       <TabSettings settings={settings} setSettings={setSettings} />
       <div className="flex justify-center">
         <Tooltip>

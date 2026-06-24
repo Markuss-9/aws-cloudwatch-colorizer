@@ -48,9 +48,17 @@ const LevelRow = ({
   onRemovePattern: (levelIdx: number, patternIdx: number) => void;
   onAddPattern: (levelIdx: number, pattern: string) => void;
   onOpenPicker: (picker: OpenPicker) => void;
-  onUpdateField: (levelIdx: number, field: 'emoji' | 'label', value: string) => void;
+  onUpdateField: (
+    levelIdx: number,
+    field: 'emoji' | 'label',
+    value: string,
+  ) => void;
   onUpdateKey: (levelIdx: number, value: string) => void;
-  onUpdateColor: (levelIdx: number, field: 'color' | 'backgroundColor', value: string) => void;
+  onUpdateColor: (
+    levelIdx: number,
+    field: 'color' | 'backgroundColor',
+    value: string,
+  ) => void;
   wantBackground: boolean;
   autoFocusKey?: boolean;
   onAutoFocusDone?: () => void;
@@ -127,7 +135,7 @@ const LevelRow = ({
                 if (e.key === 'Enter') commitEdit();
                 if (e.key === 'Escape') cancelEdit();
               }}
-              className="w-7 bg-transparent text-xs text-center border-b border-border-default outline-none focus:border-blue-400"
+              className="w-7 bg-transparent text-xs text-center border-b border-app-border outline-none focus:border-app-brand"
             />
           ) : !wantBackground ? (
             <span
@@ -148,7 +156,7 @@ const LevelRow = ({
                 if (e.key === 'Enter') commitEdit();
                 if (e.key === 'Escape') cancelEdit();
               }}
-              className="flex-1 min-w-0 bg-transparent text-xs border-b border-border-default outline-none focus:border-blue-400"
+              className="flex-1 min-w-0 bg-transparent text-xs border-b border-app-border outline-none focus:border-app-brand"
               style={{ color: level.color }}
             />
           ) : !wantBackground ? (

@@ -52,9 +52,11 @@ const JsonConfig = ({
   };
 
   return (
-    <div className="flex flex-col gap-3 p-3">
-      <h3 className="text-2xl font-cursive text-center">JSON Config</h3>
-      <p className="text-xs text-gray-400 text-center">
+    <div className="flex flex-col gap-3 p-3 bg-app-bg">
+      <h3 className="text-sm text-app-text font-mono tracking-tight text-center">
+        JSON Config
+      </h3>
+      <p className="text-xs text-center text-app-muted">
         Edit, copy, or import the full configuration
       </p>
       <textarea
@@ -62,7 +64,7 @@ const JsonConfig = ({
         onChange={(e) => {
           setJsonText(e.target.value);
         }}
-        className="w-full h-[220px] bg-surface-input text-green-400 text-xs font-mono p-2 border border-border-muted rounded resize-none"
+        className="w-full h-[220px] bg-app-surface text-app-accent text-xs font-mono p-2 border border-app-border rounded resize-none"
         spellCheck={false}
       />
       <div className="flex gap-2">
