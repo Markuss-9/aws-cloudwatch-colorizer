@@ -44,9 +44,6 @@ const cssForInsightsShade = (shadeColor: string) => `
   border: unset !important;
 }
 .logs-table__body-row:nth-child(2n) .logs-table__body-cell {
-  background-color: unset !important;
-}
-.logs-table__body-row:nth-child(2n) > * {
   background-color: ${shadeColor} !important;
 }
 `;
@@ -61,7 +58,7 @@ div .logs__log-events-table-v3 table:not(.awsui-cw-date-time-range-calendar-tabl
 `;
 
 const cssForAnalyticsInsights = (shadeColor: string) => `
-#result-table-body > table:nth-child(2n) tr[data-slot="table-row"] > td {
+#result-table-body table:nth-child(2n) td {
   background-color: ${shadeColor} !important;
 }
 `;

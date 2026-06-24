@@ -17,11 +17,6 @@ const stripAnsi = (text: string) =>
 const buildRegex = (pattern: string, isRegex: boolean) =>
   isRegex ? new RegExp(pattern, 'i') : new RegExp(`\\b${pattern}\\b`, 'i');
 
-// I create a label instead of a span because when i search the most child element i take the last one
-// and if the span is the most child element i cannot find it and i create infinite spans inside spans
-// and to avoid it the if statement has classList.contains(CLASS_NAME_TAG) and querySelector with the same class to be sure that i don't create infinite spans inside spans
-
-// TODO: Fix the search in the pages to take the last element without the CLASS_NAME_TAG class
 const replaceWithLabel = ({
   foundPattern,
   elWithMessage,
@@ -36,25 +31,73 @@ const replaceWithLabel = ({
     return;
   }
 
-  const content = stripAnsi(elWithMessage.textContent ?? '');
   const { matchIndex, matchText, levelPreset } = foundPattern;
+  const matchEnd = matchIndex + matchText.length;
+
+  const textNodes: Text[] = [];
+  const walker = document.createTreeWalker(
+    elWithMessage,
+    NodeFilter.SHOW_TEXT,
+  );
+  let node: Text | null;
+  while ((node = walker.nextNode() as Text | null)) {
+    textNodes.push(node);
+  }
+
+  let charIdx = 0;
+  let startNode: Text | null = null;
+  let startOffset = 0;
+  let endNode: Text | null = null;
+  let endOffset = 0;
+
+  for (const textNode of textNodes) {
+    const content = textNode.textContent ?? '';
+    const nodeEnd = charIdx + content.length;
+
+    if (!startNode && matchIndex < nodeEnd) {
+      startNode = textNode;
+      startOffset = matchIndex - charIdx;
+    }
+
+    if (matchEnd <= nodeEnd) {
+      endNode = textNode;
+      endOffset = matchEnd - charIdx;
+      break;
+    }
+
+    charIdx += content.length;
+  }
+
+  if (!startNode || !endNode) return;
 
   const label = document.createElement('label');
-
   label.className = CLASS_NAME_TAG;
   label.style.color = levelPreset.color;
   label.textContent = `${levelPreset.emoji} ${levelPreset.label}`;
 
-  const beforeText = content.slice(0, matchIndex);
-  const afterText = content.slice(matchIndex + matchText.length);
+  const range = document.createRange();
+  range.setStart(startNode, startOffset);
+  range.setEnd(endNode, endOffset);
+  range.deleteContents();
+  range.insertNode(label);
 
-  elWithMessage.textContent = '';
+  let el = label.parentElement;
+  while (el && el !== elWithMessage) {
+    const onlyLabel = Array.from(el.childNodes).every(
+      (n) =>
+        n === label ||
+        (n.nodeType === Node.TEXT_NODE && !(n.textContent ?? '').trim()),
+    );
 
-  elWithMessage.append(
-    document.createTextNode(beforeText),
-    label,
-    document.createTextNode(afterText),
-  );
+    if (onlyLabel) {
+      const parent = el.parentElement;
+      parent?.insertBefore(label, el);
+      el.remove();
+      el = parent;
+    } else {
+      break;
+    }
+  }
 };
 
 const regexCache = new Map<string, RegExp>();
@@ -76,7 +119,7 @@ export const findPattern = ({
   levels: PageSettings['levels'];
   elWithMessage: HTMLElement;
 }): FoundPattern | null => {
-  const textToSearch = stripAnsi(elWithMessage.textContent ?? '').slice(0, 50);
+  const textToSearch = stripAnsi(elWithMessage.textContent ?? '').slice(0, 500);
 
   if (!textToSearch) return null;
 

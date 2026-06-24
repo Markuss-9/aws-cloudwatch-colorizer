@@ -32,14 +32,19 @@ const logsGroupsFlow = () => {
         continue;
       }
 
-      const span = tdElements[messageColPos].getElementsByTagName('span');
-
-      assert(span, 'span cannot be empty');
       assert(utils.settings, 'settings must exist');
-      assert(Object.keys(span).length, 'span cannot be empty');
+
+      const child =
+        tdElements[messageColPos].querySelector<HTMLElement>(
+          '.logs__log-events-table__cell',
+        ) ??
+        tdElements[messageColPos].querySelector<HTMLElement>(
+          '[data-testid="logs__log-events-table__formatted-message"]',
+        );
+
+      if (!child) continue;
 
       const settings = utils.settings;
-      const child = span[span.length - 1] as HTMLElement;
       colorizing(
         child,
         row as HTMLElement,

@@ -12,7 +12,7 @@ const messages = [
   'debug: entering function processOrder with transaction ID 48201',
   'dbg: cache miss for key user_48201 in redis cluster',
 
-  // === Patterns after a short prefix (still within the 50-char window) ===
+  // === Patterns after a short prefix ===
   '49071 - WARN - A generic warning message here',
   '49071 - [ERR] - A bracketed error message example',
   '[31merror[39m A log line with ANSI escape codes',
@@ -33,10 +33,9 @@ const messages = [
   'An erroneous entry was logged by the validator',
   'Some err happening deep in the stack trace',
 
-  // === Long messages — pattern appears beyond the 50-char check window (no match) ===
+  // === Long messages ===
   'LONG_MODULE_NAME_that_is_very_long_and_then_has_error_at_the_end_of_line',
   '2024-12-01 15:30:45,678 [us-east-1] [ec2-user] [i-0abc1234] ERROR: failure in payment processing system',
-  'A very long prefix text that pushes the keyword error way past the fifty char check limit',
   'This line has a massive amount of fluff and padding before the word error appears way down here',
 
   // === JSON stringified logs ===

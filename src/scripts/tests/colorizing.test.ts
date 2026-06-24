@@ -241,19 +241,6 @@ describe('findPattern', () => {
 
       expect(result).toBeNull();
     });
-
-    it('does not match when the pattern is beyond the 50-char window', () => {
-      const elWithMessage = createSpanWithText(
-        'A very long prefix text that pushes the keyword error way past the fifty char check limit',
-      );
-
-      const result = findPattern({
-        levels: [wordPreset('error')],
-        elWithMessage,
-      });
-
-      expect(result).toBeNull();
-    });
   });
 });
 

@@ -93,6 +93,9 @@ export const startObserve = (page: string | null) => {
         childList: true,
         characterData: true,
       });
+
+      // pre-existing rows (missed by observer)
+      colorizeAll();
     })
     .catch((error) => {
       log.error('Error:', error);
