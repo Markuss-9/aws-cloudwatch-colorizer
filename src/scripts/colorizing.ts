@@ -35,10 +35,7 @@ const replaceWithLabel = ({
   const matchEnd = matchIndex + matchText.length;
 
   const textNodes: Text[] = [];
-  const walker = document.createTreeWalker(
-    elWithMessage,
-    NodeFilter.SHOW_TEXT,
-  );
+  const walker = document.createTreeWalker(elWithMessage, NodeFilter.SHOW_TEXT);
   let node: Text | null;
   while ((node = walker.nextNode() as Text | null)) {
     textNodes.push(node);
@@ -184,23 +181,22 @@ export default function colorizing(
   pageSettings: PageSettings,
 ) {
   try {
-    const levels = pageSettings.levels;
+    const levels = pageSettings.levels.filter((level) => level.enabled);
     const found = findPattern({ levels, elWithMessage });
-
-    if (found !== null) {
-      if (pageSettings.wantBackground) {
-        if (
-          parentElem.style.backgroundColor !== found.levelPreset.backgroundColor
-        ) {
-          parentElem.style.backgroundColor = found.levelPreset.backgroundColor;
-        }
-      } else {
-        replaceWithLabel({ foundPattern: found, elWithMessage });
-      }
-      return found;
+    if (!found) {
+      return null;
     }
 
-    parentElem.style.removeProperty('background-color');
+    if (pageSettings.wantBackground) {
+      if (
+        parentElem.style.backgroundColor !== found.levelPreset.backgroundColor
+      ) {
+        parentElem.style.backgroundColor = found.levelPreset.backgroundColor;
+      }
+    } else {
+      replaceWithLabel({ foundPattern: found, elWithMessage });
+    }
+    return found;
   } catch (error) {
     if (error instanceof UnreachableError) {
       throw error;

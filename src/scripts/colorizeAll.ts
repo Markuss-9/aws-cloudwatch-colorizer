@@ -45,11 +45,17 @@ const logsGroupsFlow = () => {
       if (!child) continue;
 
       const settings = utils.settings;
-      colorizing(
+      const result = colorizing(
         child,
         row as HTMLElement,
         settings.advancedSettings['Log_Groups'],
       );
+      if (
+        !result &&
+        settings.advancedSettings['Log_Groups'].wantBackground
+      ) {
+        (row as HTMLElement).style.removeProperty('background-color');
+      }
     }
   } catch (error) {
     log.error(`LOGS_GROUPS_FLOW: `, error);
@@ -63,12 +69,17 @@ const logsInsightsFlow = () => {
     const elements = utils.getListFromClass('logs-table__body-row');
     for (let row of elements) {
       const cells = row.getElementsByClassName('logs-table__body-cell');
+      let anyMatched = false;
       for (let child of cells) {
-        colorizing(
+        const result = colorizing(
           child as HTMLElement,
           row as HTMLElement,
           settings.advancedSettings['Log_Insights'],
         );
+        if (result) anyMatched = true;
+      }
+      if (!anyMatched && settings.advancedSettings['Log_Insights'].wantBackground) {
+        (row as HTMLElement).style.removeProperty('background-color');
       }
     }
   } catch (error) {
@@ -81,16 +92,24 @@ const logAnalyticsFlow = () => {
     assert(utils.settings, 'settings must exist');
     const settings = utils.settings;
 
-    const messageCells = document.querySelectorAll<HTMLElement>(
-      '#result-table-body td[data-column]',
+    const rows = document.querySelectorAll<HTMLElement>(
+      '#result-table-body tr',
     );
-    log.debug(`logAnalyticsFlow: found ${messageCells.length} data cells`);
 
-    for (const cell of messageCells) {
-      const row = cell.closest<HTMLElement>('tr');
-      if (!row) continue;
-
-      colorizing(cell, row, settings.advancedSettings['Log_Insights']);
+    for (const row of rows) {
+      const cells = row.querySelectorAll<HTMLElement>('td[data-column]');
+      let anyMatched = false;
+      for (const cell of cells) {
+        const result = colorizing(
+          cell,
+          row,
+          settings.advancedSettings['Log_Insights'],
+        );
+        if (result) anyMatched = true;
+      }
+      if (!anyMatched && settings.advancedSettings['Log_Insights'].wantBackground) {
+        row.style.removeProperty('background-color');
+      }
     }
   } catch (error) {
     log.error(`LOG_ANALYTICS_FLOW: `, error);

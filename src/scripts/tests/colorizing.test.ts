@@ -98,14 +98,14 @@ describe('colorizing - integration', () => {
     );
   });
 
-  it('deletes background when no word matches', () => {
+  it('does not clear background when no word matches (caller responsibility)', () => {
     const elWithMessage = createSpanWithText('No matching words here');
     const parentElem = createParentElem();
     parentElem.style.backgroundColor = 'red';
     parentElem.appendChild(elWithMessage);
 
     colorizing(elWithMessage, parentElem, mockSettings);
-    expect(parentElem.style.backgroundColor).toBeFalsy();
+    expect(parentElem.style.backgroundColor).toBeTruthy();
   });
 });
 
