@@ -1,4 +1,5 @@
-import { Dispatch, useState } from 'react';
+import { useState } from 'react';
+import type { Dispatch, SetStateAction } from 'react';
 
 import LevelRow from './LevelRow';
 import type {
@@ -20,7 +21,7 @@ const TabSettings = ({
   setSettings,
 }: {
   settings: Settings;
-  setSettings: Dispatch<Settings>;
+  setSettings: Dispatch<SetStateAction<Settings>>;
 }) => {
   const entries = Object.entries(settings.advancedSettings) as [
     SettingsPages,
@@ -36,70 +37,116 @@ const TabSettings = ({
   const activePage = settings.advancedSettings[activeTab];
 
   const togglePageSwitch = () => {
-    const updated = structuredClone(settings);
-    updated.advancedSettings[activeTab].switch =
-      !updated.advancedSettings[activeTab].switch;
-    setSettings(updated);
+    setSettings((prev) => {
+      const updated = structuredClone(prev);
+      updated.advancedSettings[activeTab].switch =
+        !updated.advancedSettings[activeTab].switch;
+      return updated;
+    });
   };
 
   const toggleWantBackground = () => {
-    const updated = structuredClone(settings);
-    updated.advancedSettings[activeTab].wantBackground =
-      !updated.advancedSettings[activeTab].wantBackground;
-    setSettings(updated);
+    setSettings((prev) => {
+      const updated = structuredClone(prev);
+      updated.advancedSettings[activeTab].wantBackground =
+        !updated.advancedSettings[activeTab].wantBackground;
+      return updated;
+    });
   };
 
   const toggleLevelEnabled = (levelIdx: number) => {
-    const updated = structuredClone(settings);
-    updated.advancedSettings[activeTab].levels[levelIdx].enabled =
-      !updated.advancedSettings[activeTab].levels[levelIdx].enabled;
-    setSettings(updated);
+    setSettings((prev) => {
+      const updated = structuredClone(prev);
+      updated.advancedSettings[activeTab].levels[levelIdx].enabled =
+        !updated.advancedSettings[activeTab].levels[levelIdx].enabled;
+      return updated;
+    });
   };
 
   const deleteLevel = (levelIdx: number) => {
-    const updated = structuredClone(settings);
-    updated.advancedSettings[activeTab].levels = updated.advancedSettings[
-      activeTab
-    ].levels.filter((_, i) => i !== levelIdx);
-    setSettings(updated);
+    setSettings((prev) => {
+      const updated = structuredClone(prev);
+      updated.advancedSettings[activeTab].levels = updated.advancedSettings[
+        activeTab
+      ].levels.filter((_, i) => i !== levelIdx);
+      return updated;
+    });
     setOpenPicker(null);
   };
 
   const removePattern = (levelIdx: number, patternIdx: number) => {
-    const updated = structuredClone(settings);
-    updated.advancedSettings[activeTab].levels[levelIdx].patterns =
-      updated.advancedSettings[activeTab].levels[levelIdx].patterns.filter(
-        (_, i) => i !== patternIdx,
-      );
-    setSettings(updated);
+    setSettings((prev) => {
+      const updated = structuredClone(prev);
+      updated.advancedSettings[activeTab].levels[levelIdx].patterns =
+        updated.advancedSettings[activeTab].levels[levelIdx].patterns.filter(
+          (_, i) => i !== patternIdx,
+        );
+      return updated;
+    });
   };
 
   const addPattern = (levelIdx: number, pattern: string) => {
     if (!pattern.trim()) return;
-    const updated = structuredClone(settings);
-    const l = updated.advancedSettings[activeTab].levels[levelIdx];
-    if (!l.patterns.includes(pattern.trim())) l.patterns.push(pattern.trim());
-    setSettings(updated);
+    setSettings((prev) => {
+      const updated = structuredClone(prev);
+      const l = updated.advancedSettings[activeTab].levels[levelIdx];
+      if (!l.patterns.includes(pattern.trim())) l.patterns.push(pattern.trim());
+      return updated;
+    });
+  };
+
+  const updateLevelField = (
+    levelIdx: number,
+    field: 'emoji' | 'label',
+    value: string,
+  ) => {
+    setSettings((prev) => {
+      const updated = structuredClone(prev);
+      updated.advancedSettings[activeTab].levels[levelIdx][field] = value;
+      return updated;
+    });
+  };
+
+  const updateLevelKey = (levelIdx: number, value: string) => {
+    setSettings((prev) => {
+      const updated = structuredClone(prev);
+      updated.advancedSettings[activeTab].levels[levelIdx].level = value;
+      return updated;
+    });
+  };
+
+  const updateLevelColor = (
+    levelIdx: number,
+    field: 'color' | 'backgroundColor',
+    value: string,
+  ) => {
+    setSettings((prev) => {
+      const updated = structuredClone(prev);
+      updated.advancedSettings[activeTab].levels[levelIdx][field] = value;
+      return updated;
+    });
   };
 
   const addLevel = () => {
-    const updated = structuredClone(settings);
-    const levels = updated.advancedSettings[activeTab].levels;
-    const maxCode =
-      levels.length > 0 ? Math.max(...levels.map((l) => l.code), 30) : 30;
-    const newLevel: LevelPreset = {
-      enabled: true,
-      code: maxCode + 1,
-      level: '',
-      patterns: [],
-      color: 'rgba(255, 255, 255, 1)',
-      backgroundColor: 'rgba(100, 100, 100, 0.3)',
-      emoji: '📋',
-      label: 'New Level',
-    };
-    levels.push(newLevel);
-    setSettings(updated);
-    setAutoFocusKeyIdx(levels.length - 1);
+    setSettings((prev) => {
+      const updated = structuredClone(prev);
+      const levels = updated.advancedSettings[activeTab].levels;
+      const maxCode =
+        levels.length > 0 ? Math.max(...levels.map((l) => l.code), 30) : 30;
+      const newLevel: LevelPreset = {
+        enabled: true,
+        code: maxCode + 1,
+        level: '',
+        patterns: [],
+        color: 'rgba(255, 255, 255, 1)',
+        backgroundColor: 'rgba(100, 100, 100, 0.3)',
+        emoji: '📋',
+        label: 'New Level',
+      };
+      levels.push(newLevel);
+      setAutoFocusKeyIdx(levels.length - 1);
+      return updated;
+    });
   };
 
   const tabLabels: Record<SettingsPages, string> = {
@@ -165,13 +212,14 @@ const TabSettings = ({
             idx={idx}
             activeTab={activeTab}
             openPicker={openPicker}
-            settings={settings}
-            setSettings={setSettings}
             onToggleEnabled={toggleLevelEnabled}
             onDelete={deleteLevel}
             onRemovePattern={removePattern}
             onAddPattern={addPattern}
             onOpenPicker={setOpenPicker}
+            onUpdateField={updateLevelField}
+            onUpdateKey={updateLevelKey}
+            onUpdateColor={updateLevelColor}
             wantBackground={activePage.wantBackground}
             autoFocusKey={idx === autoFocusKeyIdx}
             onAutoFocusDone={() => setAutoFocusKeyIdx(null)}

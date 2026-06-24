@@ -53,6 +53,13 @@ export const LEVEL_PRESETS = presets({
 
 export type PresetName = keyof typeof LEVEL_PRESETS;
 
+const defaultLevels = () => [
+  { ...LEVEL_PRESETS.error },
+  { ...LEVEL_PRESETS.warn },
+  { ...LEVEL_PRESETS.info },
+  { ...LEVEL_PRESETS.debug },
+];
+
 const defaultSettings: Settings = {
   version: 2,
   master: true,
@@ -60,47 +67,29 @@ const defaultSettings: Settings = {
   advancedSettings: {
     Log_Groups: {
       title: 'Log groups',
-      levels: [
-        LEVEL_PRESETS.error,
-        LEVEL_PRESETS.warn,
-        LEVEL_PRESETS.info,
-        LEVEL_PRESETS.debug,
-      ],
+      levels: defaultLevels(),
       id: 'Log_Groups',
       switch: true,
       isAvailable: true,
       wantBackground: true,
-      // evenRowsShadeColor: 'rgba(42, 42, 42, 0.4)',
     },
     Log_Insights: {
       title: 'Log Insights',
-      levels: [
-        LEVEL_PRESETS.error,
-        LEVEL_PRESETS.warn,
-        LEVEL_PRESETS.info,
-        LEVEL_PRESETS.debug,
-      ],
+      levels: defaultLevels(),
       id: 'Log_Insights',
       switch: true,
       isAvailable: true,
       wantBackground: true,
-      // evenRowsShadeColor: 'rgba(42, 42, 42, 0.4)',
     },
     Log_Tails: {
       title: 'Log Tails',
-      levels: [
-        LEVEL_PRESETS.error,
-        LEVEL_PRESETS.warn,
-        LEVEL_PRESETS.info,
-        LEVEL_PRESETS.debug,
-      ],
+      levels: defaultLevels(),
       id: 'Log_Tails',
       switch: false,
       isAvailable: false,
       wantBackground: true,
-      // evenRowsShadeColor: 'rgba(42, 42, 42, 0.4)',
     },
   },
 };
 
-export default defaultSettings;
+export default structuredClone(defaultSettings);

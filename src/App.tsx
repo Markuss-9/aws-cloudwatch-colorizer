@@ -18,7 +18,7 @@ import type { Settings as AppSettings } from './types';
 import defaultSettings from './defaultSettings';
 
 function App() {
-  const [settings, setSettings] = useState<AppSettings | undefined>();
+  const [settings, setSettings] = useState<AppSettings>(defaultSettings);
 
   if (process.env.NODE_ENV === 'production') {
     const getSettings = () => {
@@ -35,8 +35,7 @@ function App() {
 
     useEffect(() => {
       chrome.storage.local.get(['settings'], (result) => {
-        if (!result.settings) setSettings(defaultSettings);
-        else setSettings(result.settings);
+        if (result.settings) setSettings(result.settings);
       });
     }, []);
 
@@ -76,7 +75,7 @@ function App() {
 
   const resetSettings = () => {
     if (process.env.NODE_ENV === 'production') chrome.storage.local.clear();
-    setSettings(defaultSettings);
+    setSettings(structuredClone(defaultSettings));
   };
 
   return (
@@ -87,18 +86,13 @@ function App() {
             <Routes>
               <Route
                 path="/*"
-                element={
-                  <Home
-                    settings={settings || defaultSettings}
-                    setSettings={setSettings}
-                  />
-                }
+                element={<Home settings={settings} setSettings={setSettings} />}
               />
               <Route
                 path="/settings"
                 element={
                   <Settings
-                    settings={settings || defaultSettings}
+                    settings={settings}
                     setSettings={setSettings}
                     resetSettings={resetSettings}
                   />
@@ -108,10 +102,7 @@ function App() {
               <Route
                 path="/config"
                 element={
-                  <JsonConfig
-                    settings={settings || defaultSettings}
-                    setSettings={setSettings}
-                  />
+                  <JsonConfig settings={settings} setSettings={setSettings} />
                 }
               />
             </Routes>

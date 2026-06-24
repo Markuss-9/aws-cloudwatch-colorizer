@@ -1,4 +1,4 @@
-import { Dispatch } from 'react';
+import type { Dispatch, SetStateAction } from 'react';
 import { ExternalLink, Power, Zap } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -18,7 +18,7 @@ const Home = ({
   setSettings,
 }: {
   settings: Settings;
-  setSettings: Dispatch<Settings>;
+  setSettings: Dispatch<SetStateAction<Settings>>;
 }) => {
   const master = settings.master;
   const perf = settings.performance;

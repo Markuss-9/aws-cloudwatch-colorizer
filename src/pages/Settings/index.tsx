@@ -1,20 +1,20 @@
 import TabSettings from '@/components/TabSettings';
-import { Dispatch } from 'react';
+import type { Dispatch, SetStateAction } from 'react';
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { Button } from '@/components/ui/button';
-import type { Settings } from '@/types';
+import type { Settings as SettingsTypes } from '@/types';
 
 const Settings = ({
   settings,
   setSettings,
   resetSettings,
 }: {
-  settings: Settings;
-  setSettings: Dispatch<Settings>;
+  settings: SettingsTypes;
+  setSettings: Dispatch<SetStateAction<SettingsTypes>>;
   resetSettings: VoidFunction;
 }) => {
   return (

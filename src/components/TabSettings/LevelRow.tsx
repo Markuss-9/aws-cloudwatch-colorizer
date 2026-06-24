@@ -1,4 +1,4 @@
-import { Dispatch, useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Trash2 } from 'lucide-react';
 
 import ColorPicker from '../ColorPicker';
@@ -8,7 +8,7 @@ import ForegroundPreview from './ForegroundPreview';
 import BackgroundPreview from './BackgroundPreview';
 import PatternChip from './PatternChip';
 import PatternAdder from './PatternAdder';
-import type { Settings, LevelPreset, SettingsPages } from '@/types';
+import type { LevelPreset, SettingsPages } from '@/types';
 import { Switch } from '@/components/ui/switch';
 import {
   Tooltip,
@@ -27,13 +27,14 @@ const LevelRow = ({
   idx,
   activeTab,
   openPicker,
-  settings,
-  setSettings,
   onToggleEnabled,
   onDelete,
   onRemovePattern,
   onAddPattern,
   onOpenPicker,
+  onUpdateField,
+  onUpdateKey,
+  onUpdateColor,
   wantBackground,
   autoFocusKey,
   onAutoFocusDone,
@@ -42,13 +43,14 @@ const LevelRow = ({
   idx: number;
   activeTab: SettingsPages;
   openPicker: OpenPicker;
-  settings: Settings;
-  setSettings: Dispatch<Settings>;
   onToggleEnabled: (idx: number) => void;
   onDelete: (idx: number) => void;
   onRemovePattern: (levelIdx: number, patternIdx: number) => void;
   onAddPattern: (levelIdx: number, pattern: string) => void;
-  onOpenPicker: Dispatch<OpenPicker>;
+  onOpenPicker: (picker: OpenPicker) => void;
+  onUpdateField: (levelIdx: number, field: 'emoji' | 'label', value: string) => void;
+  onUpdateKey: (levelIdx: number, value: string) => void;
+  onUpdateColor: (levelIdx: number, field: 'color' | 'backgroundColor', value: string) => void;
   wantBackground: boolean;
   autoFocusKey?: boolean;
   onAutoFocusDone?: () => void;
@@ -75,13 +77,7 @@ const LevelRow = ({
   const commitEdit = () => {
     if (!editingField) return;
     const val = editValue.trim();
-    if (val) {
-      const updated = structuredClone(settings);
-      if (editingField === 'emoji')
-        updated.advancedSettings[activeTab].levels[idx].emoji = val;
-      else updated.advancedSettings[activeTab].levels[idx].label = val;
-      setSettings(updated);
-    }
+    if (val) onUpdateField(idx, editingField, val);
     setEditingField(null);
     setEditValue('');
   };
@@ -92,9 +88,7 @@ const LevelRow = ({
   };
 
   const handleSaveLevelKey = (val: string) => {
-    const updated = structuredClone(settings);
-    updated.advancedSettings[activeTab].levels[idx].level = val;
-    setSettings(updated);
+    onUpdateKey(idx, val);
     onAutoFocusDone?.();
   };
 
@@ -169,7 +163,11 @@ const LevelRow = ({
           ) : null}
         </span>
 
-        <KeyBadge level={level.level} onSave={handleSaveLevelKey} autoFocus={autoFocusKey} />
+        <KeyBadge
+          level={level.level}
+          onSave={handleSaveLevelKey}
+          autoFocus={autoFocusKey}
+        />
 
         <Switch
           checked={level.enabled}
@@ -212,11 +210,7 @@ const LevelRow = ({
             currentColor={level[openPicker!.field]}
             onClose={() => onOpenPicker(null)}
             handleColorChange={(color) => {
-              const updated = structuredClone(settings);
-              updated.advancedSettings[activeTab].levels[idx][
-                openPicker!.field
-              ] = color;
-              setSettings(updated);
+              onUpdateColor(idx, openPicker!.field, color);
             }}
           />
         </div>
