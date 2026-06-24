@@ -4,12 +4,10 @@ import './App.css';
 import SimpleBottomNavigation from './components/SimpleBottomNavigation';
 import { Route, Routes } from 'react-router-dom';
 import Settings from './pages/Settings';
-import Tutorial from './pages/Tutorial';
-
 import Home from './pages/Home';
+import JsonConfig from './pages/JsonConfig';
 
-import { createTheme } from '@mui/material/styles';
-import { ThemeProvider } from '@mui/material/styles';
+import { TooltipProvider } from '@/components/ui/tooltip';
 import SimpleBar from 'simplebar-react';
 import 'simplebar/dist/simplebar.min.css';
 
@@ -18,51 +16,8 @@ import manifest from './scripts/manifest.json';
 import type { Settings as AppSettings } from './types';
 import defaultSettings from './defaultSettings';
 
-declare module '@mui/material/styles' {
-  interface Palette {
-    off: Palette['primary'];
-    on: Palette['primary'];
-    rainbowButton: Palette['primary'];
-  }
-
-  interface PaletteOptions {
-    off?: PaletteOptions['primary'];
-    on?: PaletteOptions['primary'];
-    rainbowButton?: PaletteOptions['primary'];
-  }
-}
-
-declare module '@mui/material/Button' {
-  interface ButtonPropsColorOverrides {
-    off: true;
-    on: true;
-    rainbowButton: true;
-  }
-}
-
-const theme = createTheme({
-  palette: {
-    off: {
-      main: '#530606',
-      light: '#5c0707',
-      dark: '#430505',
-      contrastText: '#000000',
-    },
-    on: { main: '#1b5e20', light: '#1c6422', dark: '#164e1a' },
-    rainbowButton: {
-      main: '#ffffff00',
-      light: '#dbdbdb69',
-      dark: '#a5a5a57a',
-      contrastText: '#000000',
-    },
-  },
-  typography: {
-    fontFamily: ['cursive'].join(','),
-  },
-});
-
 function App() {
-  const [settings, setSettings] = useState<AppSettings | undefined>();
+  const [settings, setSettings] = useState<AppSettings>(defaultSettings);
 
   if (process.env.NODE_ENV === 'production') {
     const getSettings = () => {
@@ -79,8 +34,7 @@ function App() {
 
     useEffect(() => {
       chrome.storage.local.get(['settings'], (result) => {
-        if (!result.settings) setSettings(defaultSettings);
-        else setSettings(result.settings);
+        if (result.settings) setSettings(result.settings);
       });
     }, []);
 
@@ -119,40 +73,42 @@ function App() {
   }
 
   const resetSettings = () => {
-    if (process.env.NODE_ENV === 'production') chrome.storage.local.clear(); // to be certain to clear all
-    setSettings(defaultSettings);
+    if (process.env.NODE_ENV === 'production') chrome.storage.local.clear();
+    setSettings(structuredClone(defaultSettings));
   };
 
   return (
-    <ThemeProvider theme={theme}>
-      <div className="App">
+    <TooltipProvider>
+      <div className="App text-white text-center flex flex-col relative bg-app-bg">
         <SimpleBar style={{ maxHeight: 400 }}>
-          <Routes>
-            <Route
-              path="/*"
-              element={
-                <Home
-                  settings={settings || defaultSettings}
-                  setSettings={setSettings}
-                />
-              }
-            />
-            <Route
-              path="/settings"
-              element={
-                <Settings
-                  settings={settings || defaultSettings}
-                  setSettings={setSettings}
-                  resetSettings={resetSettings}
-                />
-              }
-            />
-            <Route path="/tutorial" element={<Tutorial />} />
-          </Routes>
+          <div className="pb-14">
+            <Routes>
+              <Route
+                path="/*"
+                element={<Home settings={settings} setSettings={setSettings} />}
+              />
+              <Route
+                path="/settings"
+                element={
+                  <Settings
+                    settings={settings}
+                    setSettings={setSettings}
+                    resetSettings={resetSettings}
+                  />
+                }
+              />
+              <Route
+                path="/config"
+                element={
+                  <JsonConfig settings={settings} setSettings={setSettings} />
+                }
+              />
+            </Routes>
+          </div>
         </SimpleBar>
         <SimpleBottomNavigation />
       </div>
-    </ThemeProvider>
+    </TooltipProvider>
   );
 }
 

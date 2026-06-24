@@ -2,14 +2,14 @@ import { settings } from './utils';
 import { log } from '@/logger';
 import { assert } from '@/assert';
 
-const DEFAULT_LIGHT_SHADE_COLOR = 'rgba(42, 42, 42, 0.1)';
-const DEFAULT_DARK_SHADE_COLOR = 'rgba(42, 42, 42, 0.4)';
+export const DEFAULT_LIGHT_SHADE_COLOR = 'rgba(42, 42, 42, 0.1)';
+export const DEFAULT_DARK_SHADE_COLOR = 'rgba(42, 42, 42, 0.4)';
 
 const STYLE_DATA_ID = 'shaded-rows';
 const STYLE_SELECTOR = `style[data-id="${STYLE_DATA_ID}"]`;
 
 const getIsDarkMode = (): boolean =>
-  Array.from(document.body.classList).some(c => c.includes('dark'));
+  Array.from(document.body.classList).some((c) => c.includes('dark'));
 
 const getDefaultShadeColor = (): string =>
   getIsDarkMode() ? DEFAULT_DARK_SHADE_COLOR : DEFAULT_LIGHT_SHADE_COLOR;

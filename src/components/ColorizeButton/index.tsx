@@ -1,4 +1,8 @@
-import { Button, Tooltip } from '@mui/material';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import './index.css';
 
 interface master {
@@ -22,36 +26,18 @@ const ColorizeButton = ({ master }: master) => {
       });
   };
   return (
-    <Button
-      onClick={manualColorize}
-      variant="text"
-      color="rainbowButton"
-      disabled={!master}
-      // sx={{
-      // 	background:
-      // 		"linear-gradient(90deg, rgba(255,0,0,1) 0%, rgba(255,214,0,1) 20%, rgba(150,255,0,1) 50%, rgba(25,0,255,1) 80%, rgba(255,0,121,1) 100%)",
-      // 	WebkitTextFillColor: "transparent",
-      // 	WebkitBackgroundClip: "text",
-      // 	borderImage:
-      // 		"linear-gradient(90deg, rgba(255,0,0,1) 0%, rgba(255,214,0,1) 20%, rgba(150,255,0,1) 50%, rgba(25,0,255,1) 80%, rgba(255,0,121,1) 100%) 1",
-      // }}
-      sx={{
-        border: 1,
-        borderImage: 'var(--gradient) 1',
-        '&:hover': {
-          animation: 'gradient-animation 1s ease',
-          animationFillMode: 'both',
-        },
-        '&:disabled': {
-          opacity: 0.4,
-        },
-      }}
-      className="rainbow"
-    >
-      <Tooltip title="Colorize all the elements one time">
-        <span>COLORIZE</span>
-      </Tooltip>
-    </Button>
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <button
+          onClick={manualColorize}
+          disabled={!master}
+          className="rainbow border border-solid border-transparent bg-rainbow-btn text-transparent bg-clip-text hover:bg-rainbow-btn-light disabled:opacity-40 px-4 py-2 rounded cursor-pointer font-sans font-semibold tracking-wider"
+        >
+          COLORIZE
+        </button>
+      </TooltipTrigger>
+      <TooltipContent>Colorize all the elements one time</TooltipContent>
+    </Tooltip>
   );
 };
 

@@ -1,39 +1,39 @@
-import { Button, Tooltip, Typography } from '@mui/material';
-import ControlledAccordions from '@/components/ControlledAccordions';
-import './style.css';
-import { Dispatch } from 'react';
-import type { Settings } from '@/types';
+import TabSettings from '@/components/TabSettings';
+import type { Dispatch, SetStateAction } from 'react';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
+import { Button } from '@/components/ui/button';
+import type { Settings as SettingsTypes } from '@/types';
 
 const Settings = ({
   settings,
   setSettings,
   resetSettings,
 }: {
-  settings: Settings;
-  setSettings: Dispatch<Settings>;
+  settings: SettingsTypes;
+  setSettings: Dispatch<SetStateAction<SettingsTypes>>;
   resetSettings: VoidFunction;
 }) => {
   return (
-    <>
-      <Typography variant="h3" sx={{ margin: 1 }}>
+    <div className="flex flex-col gap-3 p-3 min-h-full bg-app-bg">
+      <h3 className="text-sm text-app-text font-mono tracking-tight">
         Settings
-      </Typography>
-      <br />
-      <ControlledAccordions settings={settings} setSettings={setSettings} />
-      <br />
-      <br />
-      <br />
-      <Tooltip title={`Reset all settings to default`}>
-        <Button variant="outlined" color="warning" onClick={resetSettings}>
-          RESET
-        </Button>
-      </Tooltip>
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-    </>
+      </h3>
+      <TabSettings settings={settings} setSettings={setSettings} />
+      <div className="flex justify-center">
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button variant="outline" color="warning" onClick={resetSettings}>
+              Reset Defaults
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>Reset all settings to default</TooltipContent>
+        </Tooltip>
+      </div>
+    </div>
   );
 };
 
