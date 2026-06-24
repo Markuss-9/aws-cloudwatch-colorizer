@@ -94,29 +94,24 @@ const logAnalyticsFlow = () => {
 
 const colorizeAll = () => {
   try {
-    const currentUrl = window.location.href;
-
     log.debug('colorizeAll');
 
-    const isLogsGroupsPage = currentUrl.includes('log-groups');
-    const isLogsInsightsPage = currentUrl.includes('logs-insights');
-    const isLogAnalyticsPage = currentUrl.includes('#log-analytics');
+    const page = utils.getCurrentPage();
+    if (!page) return;
 
-    if (isLogsGroupsPage || isLogsInsightsPage || isLogAnalyticsPage) {
-      injectStyleShadedEvenRows();
-    }
+    injectStyleShadedEvenRows();
 
     assert(utils.settings, 'Settings are not loaded');
 
-    if (isLogsGroupsPage) {
+    if (page === utils.PAGE_PATTERNS.LOG_GROUPS) {
       if (utils.settings.advancedSettings['Log_Groups'].switch) {
         logsGroupsFlow();
       }
-    } else if (isLogAnalyticsPage) {
+    } else if (page === utils.PAGE_PATTERNS.LOG_ANALYTICS) {
       if (utils.settings.advancedSettings['Log_Insights'].switch) {
         logAnalyticsFlow();
       }
-    } else if (isLogsInsightsPage) {
+    } else if (page === utils.PAGE_PATTERNS.LOGS_INSIGHTS) {
       if (utils.settings.advancedSettings['Log_Insights'].switch) {
         logsInsightsFlow();
       }

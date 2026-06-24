@@ -3,6 +3,26 @@ import { log } from '@/logger';
 import defaultSettings from '@/defaultSettings';
 import type { Settings } from '@/types';
 
+export const PAGE_PATTERNS = {
+  LOG_GROUPS: 'LOG_GROUPS',
+  LOGS_INSIGHTS: 'LOGS_INSIGHTS',
+  LOG_ANALYTICS: 'LOG_ANALYTICS',
+} as const;
+
+const PAGE_URL_PATTERNS: Record<string, RegExp> = {
+  [PAGE_PATTERNS.LOG_ANALYTICS]: /#log-analytics/,
+  [PAGE_PATTERNS.LOG_GROUPS]: /\/log-group\/.+\/log-events\//,
+  [PAGE_PATTERNS.LOGS_INSIGHTS]: /#logsV2:logs-insights/,
+};
+
+export const getCurrentPage = (): string | null => {
+  const href = window.location.href;
+  for (const [id, regex] of Object.entries(PAGE_URL_PATTERNS)) {
+    if (regex.test(href)) return id;
+  }
+  return null;
+};
+
 const getIframe = (): HTMLIFrameElement => {
   const iframe = document.querySelector(
     'iframe#microConsole-Logs',
