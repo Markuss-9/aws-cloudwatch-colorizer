@@ -2,6 +2,7 @@ import { debounce } from 'lodash-es';
 import { log } from '@/logger';
 import colorizeAll from '@/scripts/colorizeAll';
 import { assert } from '@/assert';
+import { PAGE_PATTERNS } from '@/scripts/utils';
 
 export let intervalIdDOM: NodeJS.Timeout | string | number | undefined =
   undefined;
@@ -44,6 +45,8 @@ export const getTableBodyElement = (): Promise<HTMLElement> => {
 
 export const mutationObs = new MutationObserver(debounce(colorizeAll, 50));
 
+let observeGen = 0;
+
 const observeTableBody = (body: HTMLElement) => {
   const parent = body.parentElement;
   if (!parent) {
@@ -61,15 +64,18 @@ const observeTableBody = (body: HTMLElement) => {
   colorizeAll();
 };
 
-export const startObserve = () => {
-  const isLogAnalytics = window.location.href.includes('#log-analytics');
+export const startObserve = (page: string | null) => {
+  resetCheckIframe();
+  mutationObs.disconnect();
 
-  if (isLogAnalytics) {
-    resetCheckIframe();
-    mutationObs.disconnect();
+  if (!page) return;
 
+  const gen = ++observeGen;
+
+  if (page === PAGE_PATTERNS.LOG_ANALYTICS) {
     getTableBodyElement()
       .then((body: HTMLElement) => {
+        if (gen !== observeGen) return;
         observeTableBody(body);
       })
       .catch((error) => {
@@ -80,6 +86,7 @@ export const startObserve = () => {
 
   getIframeElement()
     .then((iframe: HTMLIFrameElement) => {
+      if (gen !== observeGen) return;
       assert(iframe.contentWindow, 'iframe contentWindow must exist');
       mutationObs.observe(iframe.contentWindow.document.body, {
         subtree: true,
