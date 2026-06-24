@@ -295,19 +295,19 @@ describe('JSON stringified logs', () => {
     expect(result?.matchText).toBe('ERROR');
   });
 
-  it('matches level value in JSON log with timestamp prefix', () => {
+  it('matches level in escaped-quotes JSON string', () => {
     const elWithMessage = createSpanWithText(
-      `{\\"level\\":\\"WARN\\",\\"message\\":\\"disk space low\\"}`,
+      `{\\"level\\":\\"ERROR\\",\\"data\\":\\"critical failure detected\\"}`,
     );
 
     const result = findPattern({
-      levels: [wordPreset('warn')],
+      levels: [wordPreset('error')],
       elWithMessage,
     });
 
     expect(result).not.toBeNull();
-    expect(result?.pattern).toBe('warn');
-    expect(result?.matchText).toBe('WARN');
+    expect(result?.pattern).toBe('error');
+    expect(result?.matchText).toBe('ERROR');
   });
 });
 

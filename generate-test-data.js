@@ -39,6 +39,10 @@ const messages = [
   'A very long prefix text that pushes the keyword error way past the fifty char check limit',
   'This line has a massive amount of fluff and padding before the word error appears way down here',
 
+  // === JSON stringified logs ===
+  '{"level":"ERROR","data":"critical failure detected"}',
+  `{\\"level\\":\\"ERROR\\",\\"data\\":\\"critical failure detected\\"}`,
+
   // === No-match messages ===
   'just some random log line with no matching keywords whatsoever',
   'heartbeat check completed: all systems operational and healthy',
