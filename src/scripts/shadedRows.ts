@@ -1,4 +1,5 @@
-import { settings, getCurrentPage } from './utils';
+import { settings } from './settings';
+import { getCurrentPage } from './pageDetector';
 import { PAGE_SETTINGS_KEYS } from '@/types';
 import { log } from '@/logger';
 import { assert } from '@/assert';
@@ -9,11 +10,11 @@ export const DEFAULT_DARK_SHADE_COLOR = 'rgba(42, 42, 42, 0.4)';
 const STYLE_DATA_ID = 'shaded-rows';
 const STYLE_SELECTOR = `style[data-id="${STYLE_DATA_ID}"]`;
 
-const getIsDarkMode = (): boolean =>
+const isDarkMode = (): boolean =>
   Array.from(document.body.classList).some((c) => c.includes('dark'));
 
 const getDefaultShadeColor = (): string =>
-  getIsDarkMode() ? DEFAULT_DARK_SHADE_COLOR : DEFAULT_LIGHT_SHADE_COLOR;
+  isDarkMode() ? DEFAULT_DARK_SHADE_COLOR : DEFAULT_LIGHT_SHADE_COLOR;
 
 const getSectionConfig = (
   section:
@@ -28,7 +29,7 @@ const getSectionConfig = (
   };
 };
 
-const areSwitchesOff = (): boolean => {
+const allSwitchesOff = (): boolean => {
   assert(settings, 'settings must exist');
   return (
     !settings.advancedSettings[PAGE_SETTINGS_KEYS.LOG_GROUPS].switch &&
@@ -63,7 +64,7 @@ div .logs__log-events-table-v3 table:not(.awsui-cw-date-time-range-calendar-tabl
 }
 `;
 
-const cssForAnalyticsInsights = (shadeColor: string) => `
+const cssForAnalyticsShade = (shadeColor: string) => `
 #result-table-body table:nth-child(2n) td {
   background-color: ${shadeColor} !important;
 }
@@ -73,7 +74,7 @@ const buildLogAnalyticsCSS = (): string => {
   const { needInject, shadeColor } = getSectionConfig(
     PAGE_SETTINGS_KEYS.LOG_INSIGHTS,
   );
-  return needInject ? cssForAnalyticsInsights(shadeColor) : '';
+  return needInject ? cssForAnalyticsShade(shadeColor) : '';
 };
 
 const buildIframeCSS = (): string => {
@@ -88,9 +89,9 @@ const buildIframeCSS = (): string => {
     .join('\n');
 };
 
-const injectStyleShadedEvenRows = () => {
+const injectShadedRows = () => {
   try {
-    if (areSwitchesOff()) return;
+    if (allSwitchesOff()) return;
 
     if (getCurrentPage() === PAGE_SETTINGS_KEYS.LOG_ANALYTICS) {
       if (document.querySelector(STYLE_SELECTOR)) return;
@@ -117,4 +118,4 @@ const injectStyleShadedEvenRows = () => {
   }
 };
 
-export default injectStyleShadedEvenRows;
+export default injectShadedRows;

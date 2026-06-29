@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import colorizing, { findPattern } from '../colorizing';
+import colorize, { findPattern } from '../colorize';
 import type { PageSettings, LevelPreset } from '@/types';
 import { PresetName, LEVEL_PRESETS } from '@/defaultSettings';
 
@@ -50,13 +50,13 @@ beforeEach(() => {
   vi.restoreAllMocks();
 });
 
-describe('colorizing - integration', () => {
+describe('colorize - integration', () => {
   it('injects a label when a matching word is found (no background)', () => {
     const { elWithMessage, parentElem } = createElementAndParent(
       'An error occurred in the system',
     );
 
-    colorizing(elWithMessage, parentElem, {
+    colorize(elWithMessage, parentElem, {
       ...mockSettings,
       wantBackground: false,
     });
@@ -71,7 +71,7 @@ describe('colorizing - integration', () => {
       'warn: something is wrong',
     );
 
-    colorizing(elWithMessage, parentElem, {
+    colorize(elWithMessage, parentElem, {
       ...mockSettings,
       wantBackground: true,
     });
@@ -88,7 +88,7 @@ describe('colorizing - integration', () => {
     const parentElem = createParentElem();
     parentElem.appendChild(elWithMessage);
 
-    colorizing(elWithMessage, parentElem, {
+    colorize(elWithMessage, parentElem, {
       ...mockSettings,
       wantBackground: false,
     });
@@ -104,7 +104,7 @@ describe('colorizing - integration', () => {
     parentElem.style.backgroundColor = 'red';
     parentElem.appendChild(elWithMessage);
 
-    colorizing(elWithMessage, parentElem, mockSettings);
+    colorize(elWithMessage, parentElem, mockSettings);
     expect(parentElem.style.backgroundColor).toBeTruthy();
   });
 });
@@ -360,12 +360,12 @@ describe('regex mode', () => {
     expect(result).toBeNull();
   });
 
-  it('works with replaceWithLabel via colorizing function', () => {
+  it('works with replaceWithLabel via colorize function', () => {
     const { elWithMessage, parentElem } = createElementAndParent(
       'FAILED: deployment aborted',
     );
 
-    colorizing(elWithMessage, parentElem, {
+    colorize(elWithMessage, parentElem, {
       ...mockSettings,
       wantBackground: false,
       levels: [

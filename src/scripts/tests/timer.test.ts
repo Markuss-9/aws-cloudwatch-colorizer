@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { startInterval, resetInterval } from '../performance/timer';
+import { startInterval, resetInterval } from '../observers/timer';
 
 beforeEach(() => {
   vi.useFakeTimers();

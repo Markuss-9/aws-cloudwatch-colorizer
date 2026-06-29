@@ -175,7 +175,7 @@ export const findPattern = ({
       };
 };
 
-export default function colorizing(
+export default function colorize(
   elWithMessage: HTMLElement,
   parentElem: HTMLElement,
   pageSettings: PageSettings,
@@ -201,7 +201,7 @@ export default function colorizing(
     if (error instanceof UnreachableError) {
       throw error;
     }
-    log.error('colorizing for element', { elWithMessage, parentElem }, error);
+    log.error('colorize for element', { elWithMessage, parentElem }, error);
     return;
   }
 }

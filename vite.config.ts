@@ -21,7 +21,7 @@ export default defineConfig({
           rename: { stripBase: true },
         },
         {
-          src: 'src/scripts/*.css',
+          src: 'src/scripts/styles/*.css',
           dest: '',
           rename: { stripBase: true },
         },

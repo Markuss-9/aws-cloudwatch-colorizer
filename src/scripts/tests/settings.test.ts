@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import defaultSettings from '@/defaultSettings';
-import { getSettings, setSettings, settings } from '../utils';
+import { getSettings, setSettings, settings } from '../settings';
 
 describe('utils', () => {
   beforeEach(() => {

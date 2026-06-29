@@ -1,63 +1,62 @@
 import { log } from '@/logger';
-import colorizeAll from './colorizeAll';
-import * as utils from './utils';
+import colorizeAll from './flows';
+import { settings, setSettings, getSettings } from './settings';
+import { getCurrentPage } from './pageDetector';
 
-import { startInterval, resetInterval } from './performance/timer';
-import { resetCheckIframe, mutationObs, startObserve } from './performance/dom';
+import { startInterval, resetInterval } from './observers/timer';
+import { resetCheckIframe, mutationObserver, startObserving } from './observers/mutation';
 import type { ExtensionMessage } from '@/types';
 import { assert } from '@/assert';
 
-const { getCurrentPage } = utils;
-
 const cleanupAll = () => {
   resetInterval();
-  mutationObs.disconnect();
+  mutationObserver.disconnect();
   resetCheckIframe();
 };
 
-const applyAction = () => {
+const applyPerformanceStrategy = () => {
   try {
-    if (!utils.settings?.master) {
+    if (!settings?.master) {
       cleanupAll();
       return;
     }
 
-    switch (utils.settings.performance) {
+    switch (settings.performance) {
       case 'timer':
         cleanupAll();
         startInterval();
         break;
       case 'dom':
         resetInterval();
-        startObserve(getCurrentPage());
+        startObserving(getCurrentPage());
         break;
       default:
         cleanupAll();
         break;
     }
   } catch (error) {
-    log.error('Error in applyAction:', error);
+    log.error('Error in applyPerformanceStrategy:', error);
   }
 };
 
-const startAction = async () => {
+const initialize = async () => {
   try {
-    utils.setSettings(await utils.getSettings());
-    assert(utils.settings, 'settings must exist');
-    applyAction();
+    setSettings(await getSettings());
+    assert(settings, 'settings must exist');
+    applyPerformanceStrategy();
   } catch (error) {
-    log.error('Error in startAction:', error);
+    log.error('Error in initialize:', error);
   }
 };
 
-startAction();
+initialize();
 
 let lastUrl = location.href;
 
 const onUrlChange = () => {
   if (location.href !== lastUrl) {
     lastUrl = location.href;
-    applyAction();
+    applyPerformanceStrategy();
   }
 };
 
@@ -67,7 +66,7 @@ window.addEventListener('popstate', onUrlChange);
 chrome.runtime.onMessage.addListener((message: ExtensionMessage) => {
   switch (message.type) {
     case 'changeSettings':
-      startAction();
+      initialize();
       break;
     case 'manualColorize':
       colorizeAll();

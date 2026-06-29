@@ -1,4 +1,4 @@
-import colorizeAll from '@/scripts/colorizeAll';
+import colorizeAll from '@/scripts/flows';
 
 let intervalId: NodeJS.Timeout | string | number | undefined = undefined;
 

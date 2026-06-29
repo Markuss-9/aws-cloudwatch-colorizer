@@ -1,27 +1,27 @@
 import { debounce } from 'lodash-es';
 import { log } from '@/logger';
-import colorizeAll from '@/scripts/colorizeAll';
+import colorizeAll from '@/scripts/flows';
 import { assert } from '@/assert';
 import { PAGE_SETTINGS_KEYS } from '@/types';
 
-export let intervalIdDOM: NodeJS.Timeout | string | number | undefined =
+export let iframePollingId: NodeJS.Timeout | string | number | undefined =
   undefined;
 
 export const resetCheckIframe = () => {
-  if (intervalIdDOM) clearInterval(intervalIdDOM);
+  if (iframePollingId) clearInterval(iframePollingId);
 };
 
 export const getIframeElement = (): Promise<HTMLIFrameElement> => {
   return new Promise((resolve) => {
     resetCheckIframe();
-    intervalIdDOM = window.setInterval(() => {
+    iframePollingId = window.setInterval(() => {
       const element = document.getElementById(
         'microConsole-Logs',
       ) as HTMLIFrameElement | null;
       log.debug('checking for iframe');
       if (element) {
         log.debug('found iframe');
-        clearInterval(intervalIdDOM);
+        clearInterval(iframePollingId);
         resolve(element);
       }
     }, 1500);
@@ -31,19 +31,19 @@ export const getIframeElement = (): Promise<HTMLIFrameElement> => {
 export const getTableBodyElement = (): Promise<HTMLElement> => {
   return new Promise((resolve) => {
     resetCheckIframe();
-    intervalIdDOM = window.setInterval(() => {
+    iframePollingId = window.setInterval(() => {
       const element = document.getElementById('result-table-body');
       log.debug('checking for result-table-body');
       if (element) {
         log.debug('found result-table-body');
-        clearInterval(intervalIdDOM);
+        clearInterval(iframePollingId);
         resolve(element);
       }
     }, 1500);
   });
 };
 
-export const mutationObs = new MutationObserver(debounce(colorizeAll, 50));
+export const mutationObserver = new MutationObserver(debounce(colorizeAll, 50));
 
 let observeGen = 0;
 
@@ -54,7 +54,7 @@ const observeTableBody = (body: HTMLElement) => {
     return;
   }
 
-  mutationObs.observe(parent, {
+  mutationObserver.observe(parent, {
     subtree: true,
     childList: true,
     characterData: true,
@@ -64,9 +64,9 @@ const observeTableBody = (body: HTMLElement) => {
   colorizeAll();
 };
 
-export const startObserve = (page: string | null) => {
+export const startObserving = (page: string | null) => {
   resetCheckIframe();
-  mutationObs.disconnect();
+  mutationObserver.disconnect();
 
   if (!page) return;
 
@@ -88,7 +88,7 @@ export const startObserve = (page: string | null) => {
     .then((iframe: HTMLIFrameElement) => {
       if (gen !== observeGen) return;
       assert(iframe.contentWindow, 'iframe contentWindow must exist');
-      mutationObs.observe(iframe.contentWindow.document.body, {
+      mutationObserver.observe(iframe.contentWindow.document.body, {
         subtree: true,
         childList: true,
         characterData: true,

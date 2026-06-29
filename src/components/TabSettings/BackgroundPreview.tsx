@@ -3,7 +3,7 @@ import { EyeOff } from 'lucide-react';
 import {
   DEFAULT_DARK_SHADE_COLOR,
   DEFAULT_LIGHT_SHADE_COLOR,
-} from '@/scripts/injectStyleShadedEvenRows';
+} from '@/scripts/shadedRows';
 
 const DARK_PAGE_BG = 'rgb(19, 25, 32)';
 const DARK_SHADE = DEFAULT_DARK_SHADE_COLOR;

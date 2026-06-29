@@ -1,15 +1,17 @@
 import { get as _get } from 'lodash-es';
 import { log } from '@/logger';
 
-import colorizing from './colorizing';
-import * as utils from './utils';
+import colorize from './colorize';
+import { getListFromTag, getListFromClass } from './dom';
+import { settings } from './settings';
+import { getCurrentPage } from './pageDetector';
 import { PAGE_SETTINGS_KEYS } from '@/types';
-import injectStyleShadedEvenRows from './injectStyleShadedEvenRows';
+import injectShadedRows from './shadedRows';
 import { assert } from '@/assert';
 
-const logsGroupsFlow = () => {
+const logGroupsFlow = () => {
   try {
-    const tables = utils.getListFromTag('table');
+    const tables = getListFromTag('table');
     if (!tables.length) return;
 
     const table = tables.find(
@@ -17,14 +19,14 @@ const logsGroupsFlow = () => {
         table.getAttribute('data-testid') !== 'relative-range-slow-picks',
     );
 
-    const thElements = utils.getListFromTag('th', table);
+    const thElements = getListFromTag('th', table);
 
     const messageColPos = thElements.findIndex(
       (thEl) => _get(thEl, ['dataset', 'focusId']) === 'header-message',
     );
 
-    const tbody = utils.getListFromTag('tbody', table)[0];
-    const trElements = utils.getListFromTag('tr', tbody);
+    const tbody = getListFromTag('tbody', table)[0];
+    const trElements = getListFromTag('tr', tbody);
 
     for (const row of trElements) {
       const tdElements = row.getElementsByTagName('td');
@@ -33,7 +35,7 @@ const logsGroupsFlow = () => {
         continue;
       }
 
-      assert(utils.settings, 'settings must exist');
+      assert(settings, 'settings must exist');
 
       const child =
         tdElements[messageColPos].querySelector<HTMLElement>(
@@ -45,15 +47,15 @@ const logsGroupsFlow = () => {
 
       if (!child) continue;
 
-      const settings = utils.settings;
-      const result = colorizing(
+      const setting = settings;
+      const result = colorize(
         child,
         row as HTMLElement,
-        settings.advancedSettings[PAGE_SETTINGS_KEYS.LOG_GROUPS],
+        setting.advancedSettings[PAGE_SETTINGS_KEYS.LOG_GROUPS],
       );
       if (
         !result &&
-        settings.advancedSettings[PAGE_SETTINGS_KEYS.LOG_GROUPS].wantBackground
+        setting.advancedSettings[PAGE_SETTINGS_KEYS.LOG_GROUPS].wantBackground
       ) {
         (row as HTMLElement).style.removeProperty('background-color');
       }
@@ -63,25 +65,25 @@ const logsGroupsFlow = () => {
   }
 };
 
-const logsInsightsFlow = () => {
+const logInsightsFlow = () => {
   try {
-    assert(utils.settings, 'settings must exist');
-    const settings = utils.settings;
-    const elements = utils.getListFromClass('logs-table__body-row');
+    assert(settings, 'settings must exist');
+    const s = settings;
+    const elements = getListFromClass('logs-table__body-row');
     for (let row of elements) {
       const cells = row.getElementsByClassName('logs-table__body-cell');
       let anyMatched = false;
       for (let child of cells) {
-        const result = colorizing(
+        const result = colorize(
           child as HTMLElement,
           row as HTMLElement,
-          settings.advancedSettings[PAGE_SETTINGS_KEYS.LOG_INSIGHTS],
+          s.advancedSettings[PAGE_SETTINGS_KEYS.LOG_INSIGHTS],
         );
         if (result) anyMatched = true;
       }
       if (
         !anyMatched &&
-        settings.advancedSettings[PAGE_SETTINGS_KEYS.LOG_INSIGHTS]
+        s.advancedSettings[PAGE_SETTINGS_KEYS.LOG_INSIGHTS]
           .wantBackground
       ) {
         (row as HTMLElement).style.removeProperty('background-color');
@@ -94,8 +96,8 @@ const logsInsightsFlow = () => {
 
 const logAnalyticsFlow = () => {
   try {
-    assert(utils.settings, 'settings must exist');
-    const settings = utils.settings;
+    assert(settings, 'settings must exist');
+    const s = settings;
 
     const rows = document.querySelectorAll<HTMLElement>(
       '#result-table-body tr',
@@ -105,16 +107,16 @@ const logAnalyticsFlow = () => {
       const cells = row.querySelectorAll<HTMLElement>('td[data-column]');
       let anyMatched = false;
       for (const cell of cells) {
-        const result = colorizing(
+        const result = colorize(
           cell,
           row,
-          settings.advancedSettings[PAGE_SETTINGS_KEYS.LOG_ANALYTICS],
+          s.advancedSettings[PAGE_SETTINGS_KEYS.LOG_ANALYTICS],
         );
         if (result) anyMatched = true;
       }
       if (
         !anyMatched &&
-        settings.advancedSettings[PAGE_SETTINGS_KEYS.LOG_ANALYTICS]
+        s.advancedSettings[PAGE_SETTINGS_KEYS.LOG_ANALYTICS]
           .wantBackground
       ) {
         row.style.removeProperty('background-color');
@@ -129,30 +131,30 @@ const colorizeAll = () => {
   try {
     log.debug('colorizeAll');
 
-    const page = utils.getCurrentPage();
+    const page = getCurrentPage();
     if (!page) return;
 
-    injectStyleShadedEvenRows();
+    injectShadedRows();
 
-    assert(utils.settings, 'Settings are not loaded');
+    assert(settings, 'Settings are not loaded');
 
     if (page === PAGE_SETTINGS_KEYS.LOG_GROUPS) {
       if (
-        utils.settings.advancedSettings[PAGE_SETTINGS_KEYS.LOG_GROUPS].switch
+        settings.advancedSettings[PAGE_SETTINGS_KEYS.LOG_GROUPS].switch
       ) {
-        logsGroupsFlow();
+        logGroupsFlow();
       }
     } else if (page === PAGE_SETTINGS_KEYS.LOG_ANALYTICS) {
       if (
-        utils.settings.advancedSettings[PAGE_SETTINGS_KEYS.LOG_ANALYTICS].switch
+        settings.advancedSettings[PAGE_SETTINGS_KEYS.LOG_ANALYTICS].switch
       ) {
         logAnalyticsFlow();
       }
     } else if (page === PAGE_SETTINGS_KEYS.LOG_INSIGHTS) {
       if (
-        utils.settings.advancedSettings[PAGE_SETTINGS_KEYS.LOG_INSIGHTS].switch
+        settings.advancedSettings[PAGE_SETTINGS_KEYS.LOG_INSIGHTS].switch
       ) {
-        logsInsightsFlow();
+        logInsightsFlow();
       }
     }
   } catch (error) {

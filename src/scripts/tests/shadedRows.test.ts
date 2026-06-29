@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { log } from '@/logger';
-import injectStyleShadedEvenRows from '../injectStyleShadedEvenRows';
-import { setSettings } from '../utils';
+import injectShadedRows from '../shadedRows';
+import { setSettings } from '../settings';
 import { PAGE_SETTINGS_KEYS } from '@/types';
 import defaultSettings from '@/defaultSettings';
 
@@ -14,9 +14,9 @@ beforeEach(() => {
   setSettings(defaultSettings);
 });
 
-describe('injectStyleShadedEvenRows', () => {
+describe('injectShadedRows', () => {
   it('does nothing when iframe is missing', () => {
-    injectStyleShadedEvenRows();
+    injectShadedRows();
 
     expect(debugSpy).toHaveBeenCalledWith('iframe not ready, skipping');
   });
@@ -27,7 +27,7 @@ describe('injectStyleShadedEvenRows', () => {
     document.body.appendChild(iframe);
     Object.defineProperty(iframe, 'contentDocument', { value: null });
 
-    injectStyleShadedEvenRows();
+    injectShadedRows();
 
     expect(debugSpy).toHaveBeenCalledWith('iframe not ready, skipping');
   });
@@ -41,7 +41,7 @@ describe('injectStyleShadedEvenRows', () => {
     const appendChildSpy = vi.spyOn(iframeDoc.head, 'appendChild');
     Object.defineProperty(iframe, 'contentDocument', { value: iframeDoc });
 
-    injectStyleShadedEvenRows();
+    injectShadedRows();
 
     const styleTag = iframeDoc.querySelector('style[data-id="shaded-rows"]');
     expect(styleTag).not.toBeNull();
@@ -78,7 +78,7 @@ describe('injectStyleShadedEvenRows', () => {
     const iframeDoc = document.implementation.createHTMLDocument();
     Object.defineProperty(iframe, 'contentDocument', { value: iframeDoc });
 
-    injectStyleShadedEvenRows();
+    injectShadedRows();
 
     const styleTag = iframeDoc.querySelector('style[data-id="shaded-rows"]');
     expect(styleTag).toBeNull();
@@ -93,7 +93,7 @@ describe('injectStyleShadedEvenRows', () => {
     const iframeDoc = document.implementation.createHTMLDocument();
     Object.defineProperty(iframe, 'contentDocument', { value: iframeDoc });
 
-    injectStyleShadedEvenRows();
+    injectShadedRows();
 
     const styleTag = iframeDoc.querySelector('style[data-id="shaded-rows"]');
     expect(styleTag).not.toBeNull();
