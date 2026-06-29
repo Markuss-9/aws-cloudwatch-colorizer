@@ -21,11 +21,6 @@ export default defineConfig({
           rename: { stripBase: true },
         },
         {
-          src: 'src/scripts/styles/*.css',
-          dest: '',
-          rename: { stripBase: true },
-        },
-        {
           src: 'img/aws_colorized_128x128.png',
           dest: 'img',
           rename: { stripBase: true },
