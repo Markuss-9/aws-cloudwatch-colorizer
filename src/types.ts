@@ -20,7 +20,7 @@ export interface PageSettings {
   evenRowsShadeColor?: string;
 }
 
-export type PerformanceMode = 'timer' | 'dom' | 'net' | 'manual';
+export type PerformanceMode = 'timer' | 'dom' | 'manual';
 
 export const PAGE_SETTINGS_KEYS = {
   LOG_GROUPS: 'Log_Groups',
