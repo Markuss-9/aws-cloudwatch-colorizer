@@ -1,5 +1,11 @@
 # Changelog
 
+## v2.0.1
+
+- **Fixed missing colors on Log Groups search page** — colorization now works on search/filter results within Log Groups.
+- **Accurate Background Preview** — fixed blend order and swapped manual RGBA parsing for chroma-js, giving a faithful preview of how colors render on the page.
+- **Refactored content script** — split monolithic `utils.ts` into focused modules
+
 ## v2.0.0
 
 - **Smarter word matching** — patterns now match whole words only, so "error" won't trigger on "terrorizing". Multiple match patterns per level are supported.
