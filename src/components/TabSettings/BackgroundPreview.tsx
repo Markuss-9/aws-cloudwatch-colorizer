@@ -7,7 +7,7 @@ import {
 
 const DARK_PAGE_BG = 'rgb(19, 25, 32)';
 const DARK_SHADE = DEFAULT_DARK_SHADE_COLOR;
-const LIGHT_PAGE_BG = 'rgb(252, 252, 253)';
+const LIGHT_PAGE_BG = 'rgb(242, 242, 243)';
 const LIGHT_SHADE = DEFAULT_LIGHT_SHADE_COLOR;
 
 function parseRgba(c: string) {
