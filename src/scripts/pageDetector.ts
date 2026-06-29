@@ -2,7 +2,7 @@ import { PAGE_SETTINGS_KEYS } from '@/types';
 
 const PAGE_URL_PATTERNS: Record<string, RegExp> = {
   [PAGE_SETTINGS_KEYS.LOG_ANALYTICS]: /#log-analytics/,
-  [PAGE_SETTINGS_KEYS.LOG_GROUPS]: /\/log-group\/.+\/log-events\//,
+  [PAGE_SETTINGS_KEYS.LOG_GROUPS]: /\/log-group\/.+\/log-events/,
   [PAGE_SETTINGS_KEYS.LOG_INSIGHTS]: /#logsV2:logs-insights/,
 };
 
