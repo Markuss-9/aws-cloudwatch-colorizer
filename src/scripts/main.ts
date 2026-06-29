@@ -4,7 +4,11 @@ import { settings, setSettings, getSettings } from './settings';
 import { getCurrentPage } from './pageDetector';
 
 import { startInterval, resetInterval } from './observers/timer';
-import { resetCheckIframe, mutationObserver, startObserving } from './observers/mutation';
+import {
+  resetCheckIframe,
+  mutationObserver,
+  startObserving,
+} from './observers/mutation';
 import type { ExtensionMessage } from '@/types';
 import { assert } from '@/assert';
 

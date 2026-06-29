@@ -1,33 +1,25 @@
 import { useMemo } from 'react';
 import { EyeOff } from 'lucide-react';
+import chroma from 'chroma-js';
 import {
   DEFAULT_DARK_SHADE_COLOR,
   DEFAULT_LIGHT_SHADE_COLOR,
 } from '@/scripts/shadedRows';
 
-const DARK_PAGE_BG = 'rgb(19, 25, 32)';
+const DARK_PAGE_BG = 'rgb(23, 16, 23)';
 const DARK_SHADE = DEFAULT_DARK_SHADE_COLOR;
-const LIGHT_PAGE_BG = 'rgb(242, 242, 243)';
+const LIGHT_PAGE_BG = 'rgb(252, 252, 253)';
 const LIGHT_SHADE = DEFAULT_LIGHT_SHADE_COLOR;
 
-function parseRgba(c: string) {
-  const m = c.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/);
-  if (!m) return { r: 255, g: 255, b: 255, a: 1 };
-  return {
-    r: Number(m[1]),
-    g: Number(m[2]),
-    b: Number(m[3]),
-    a: m[4] !== undefined ? Number(m[4]) : 1,
-  };
-}
-
 function blend(over: string, under: string): string {
-  const o = parseRgba(over);
-  const u = parseRgba(under);
-  const r = Math.round(o.r * o.a + u.r * (1 - o.a));
-  const g = Math.round(o.g * o.a + u.g * (1 - o.a));
-  const b = Math.round(o.b * o.a + u.b * (1 - o.a));
-  return `rgb(${r}, ${g}, ${b})`;
+  const o = chroma(over);
+  const u = chroma(under);
+  const [or, og, ob, oa] = o.rgba();
+  const [ur, ug, ub] = u.rgba();
+  const r = Math.round(or * oa + ur * (1 - oa));
+  const g = Math.round(og * oa + ug * (1 - oa));
+  const b = Math.round(ob * oa + ub * (1 - oa));
+  return chroma(r, g, b).css();
 }
 
 const BackgroundPreview = ({
@@ -42,7 +34,7 @@ const BackgroundPreview = ({
     [backgroundColor],
   );
   const darkEvenBg = useMemo(
-    () => blend(backgroundColor, blend(DARK_SHADE, DARK_PAGE_BG)),
+    () => blend(DARK_SHADE, blend(backgroundColor, DARK_PAGE_BG)),
     [backgroundColor],
   );
   const lightOddBg = useMemo(
@@ -50,7 +42,7 @@ const BackgroundPreview = ({
     [backgroundColor],
   );
   const lightEvenBg = useMemo(
-    () => blend(backgroundColor, blend(LIGHT_SHADE, LIGHT_PAGE_BG)),
+    () => blend(LIGHT_SHADE, blend(backgroundColor, LIGHT_PAGE_BG)),
     [backgroundColor],
   );
 
@@ -65,34 +57,38 @@ const BackgroundPreview = ({
     );
   }
 
+  const classesRow = 'flex items-center h-[24px] px-2 truncate';
+
   return (
     <div className="grid grid-cols-2 gap-3 text-[11px] leading-none">
-      <div className="flex flex-col overflow-hidden rounded text-white">
-        <div
-          className="flex items-center h-[24px] px-2 truncate"
-          style={{ backgroundColor: darkOddBg }}
-        >
-          {lorem}
-        </div>
-        <div
-          className="flex items-center h-[24px] px-2 truncate"
-          style={{ backgroundColor: darkEvenBg }}
-        >
-          {lorem}
+      <div className="flex flex-col gap-1 overflow-hidden rounded">
+        <span className="text-[10px] text-gray-400 text-center">Dark mode</span>
+        <div className="flex flex-col overflow-hidden rounded text-white">
+          <div className={classesRow} style={{ backgroundColor: darkOddBg }}>
+            {lorem}
+          </div>
+          <div className={classesRow} style={{ backgroundColor: darkEvenBg }}>
+            {lorem}
+          </div>
+          <div className={classesRow} style={{ backgroundColor: darkOddBg }}>
+            {lorem}
+          </div>
         </div>
       </div>
-      <div className="flex flex-col overflow-hidden rounded text-black">
-        <div
-          className="flex items-center h-[24px] px-2 truncate"
-          style={{ backgroundColor: lightOddBg }}
-        >
-          {lorem}
-        </div>
-        <div
-          className="flex items-center h-[24px] px-2 truncate"
-          style={{ backgroundColor: lightEvenBg }}
-        >
-          {lorem}
+      <div className="flex flex-col gap-1 overflow-hidden rounded">
+        <span className="text-[10px] text-gray-400 text-center">
+          Light mode
+        </span>
+        <div className="flex flex-col overflow-hidden rounded text-black">
+          <div className={classesRow} style={{ backgroundColor: lightOddBg }}>
+            {lorem}
+          </div>
+          <div className={classesRow} style={{ backgroundColor: lightEvenBg }}>
+            {lorem}
+          </div>
+          <div className={classesRow} style={{ backgroundColor: lightOddBg }}>
+            {lorem}
+          </div>
         </div>
       </div>
     </div>

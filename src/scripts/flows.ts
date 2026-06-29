@@ -83,8 +83,7 @@ const logInsightsFlow = () => {
       }
       if (
         !anyMatched &&
-        s.advancedSettings[PAGE_SETTINGS_KEYS.LOG_INSIGHTS]
-          .wantBackground
+        s.advancedSettings[PAGE_SETTINGS_KEYS.LOG_INSIGHTS].wantBackground
       ) {
         (row as HTMLElement).style.removeProperty('background-color');
       }
@@ -116,8 +115,7 @@ const logAnalyticsFlow = () => {
       }
       if (
         !anyMatched &&
-        s.advancedSettings[PAGE_SETTINGS_KEYS.LOG_ANALYTICS]
-          .wantBackground
+        s.advancedSettings[PAGE_SETTINGS_KEYS.LOG_ANALYTICS].wantBackground
       ) {
         row.style.removeProperty('background-color');
       }
@@ -139,21 +137,15 @@ const colorizeAll = () => {
     assert(settings, 'Settings are not loaded');
 
     if (page === PAGE_SETTINGS_KEYS.LOG_GROUPS) {
-      if (
-        settings.advancedSettings[PAGE_SETTINGS_KEYS.LOG_GROUPS].switch
-      ) {
+      if (settings.advancedSettings[PAGE_SETTINGS_KEYS.LOG_GROUPS].switch) {
         logGroupsFlow();
       }
     } else if (page === PAGE_SETTINGS_KEYS.LOG_ANALYTICS) {
-      if (
-        settings.advancedSettings[PAGE_SETTINGS_KEYS.LOG_ANALYTICS].switch
-      ) {
+      if (settings.advancedSettings[PAGE_SETTINGS_KEYS.LOG_ANALYTICS].switch) {
         logAnalyticsFlow();
       }
     } else if (page === PAGE_SETTINGS_KEYS.LOG_INSIGHTS) {
-      if (
-        settings.advancedSettings[PAGE_SETTINGS_KEYS.LOG_INSIGHTS].switch
-      ) {
+      if (settings.advancedSettings[PAGE_SETTINGS_KEYS.LOG_INSIGHTS].switch) {
         logInsightsFlow();
       }
     }

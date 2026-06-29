@@ -1,16 +1,12 @@
 # TODO
 
 ## Features
-- [ ] Add new log levels per section (level name, patterns, colors, emoji)
-- [ ] Add/remove patterns per level
 - [ ] Import JSON config from clipboard with validation
-- [ ] Drag-and-drop reorder levels within a section
 - [ ] Per-level regex toggle in the UI
 - [ ] Keyboard shortcuts for common actions
 
 ## UI/UX
 - [ ] Toast/notification system for config changes (save feedback)
-- [ ] Show a preview of how log lines will look. With the difference between dark and light mode
 
 ## Performance
 - [ ] Reduce re-renders — settings object changes propagate through the entire tree
